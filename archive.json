@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-12-16T00:41:01.497959+00:00",
+  "timestamp": "2021-12-19T00:45:08.793090+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -20794,7 +20794,7 @@
       "labels": [],
       "body": "Closes #288.",
       "createdAt": "2021-10-14T20:29:19Z",
-      "updatedAt": "2021-10-19T23:30:51Z",
+      "updatedAt": "2021-12-18T23:04:56Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "master",
       "baseRefOid": "cc8976938c08e25d22c349c67acef4b09cc7f11f",
@@ -20805,7 +20805,15 @@
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Hi \ud83d\udc4b \r\nTest-vectors check out with a DST for version 07 \ud83d\udc4d ",
+          "createdAt": "2021-12-18T23:04:56Z",
+          "updatedAt": "2021-12-18T23:04:56Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOBphpts4uj5J-",
@@ -21125,13 +21133,13 @@
       "labels": [],
       "body": "See the mailing list.",
       "createdAt": "2021-12-14T22:34:13Z",
-      "updatedAt": "2021-12-15T18:36:16Z",
+      "updatedAt": "2021-12-16T16:45:27Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "master",
       "baseRefOid": "95b1411627ef64b3db791c3e65305cd856e3da70",
       "headRepository": "cfrg/draft-irtf-cfrg-voprf",
       "headRefName": "caw/2hashdh-equiv",
-      "headRefOid": "df91c5c2ec192feca0bdeb946c392d854ffb5571",
+      "headRefOid": "fae8b23d448138f620e379f550c1f6f866e2d421",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -21157,8 +21165,74 @@
               "updatedAt": "2021-12-15T18:36:16Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4xuyhg",
+          "commit": {
+            "abbreviatedOid": "df91c5c"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-12-16T16:45:16Z",
+          "updatedAt": "2021-12-16T16:45:16Z",
+          "comments": [
+            {
+              "originalPosition": 47,
+              "body": "```suggestion\r\n`k + H2(t) = 0`. Because only a single choice of `k` leads to this \r\nundefined case, the distribution of `k'` defined via this transformation\r\nis statistically close to the distribution of a randomly sampled `k'`\r\nas output from `GG.GenerateKeyPair`.\r\n```",
+              "createdAt": "2021-12-16T16:45:16Z",
+              "updatedAt": "2021-12-16T16:45:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4xuylR",
+          "commit": {
+            "abbreviatedOid": "df91c5c"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2021-12-16T16:45:27Z",
+          "updatedAt": "2021-12-16T16:45:27Z",
+          "comments": [
+            {
+              "originalPosition": 16,
+              "body": "Fixed - thanks!",
+              "createdAt": "2021-12-16T16:45:27Z",
+              "updatedAt": "2021-12-16T16:45:27Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 301,
+      "id": "PR_kwDOBphpts4wCdYr",
+      "title": "Update github.com/bytemare implementations",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/301",
+      "state": "OPEN",
+      "author": "bytemare",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-12-18T22:26:30Z",
+      "updatedAt": "2021-12-18T22:26:30Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "master",
+      "baseRefOid": "95b1411627ef64b3db791c3e65305cd856e3da70",
+      "headRepository": "bytemare/draft-irtf-cfrg-voprf",
+      "headRefName": "patch-3",
+      "headRefOid": "e58f62199694776ca36c7dc79de6acfa859cc153",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
