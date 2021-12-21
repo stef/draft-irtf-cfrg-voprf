@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-12-19T00:45:08.793090+00:00",
+  "timestamp": "2021-12-21T00:45:00.904658+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -21213,24 +21213,26 @@
       "id": "PR_kwDOBphpts4wCdYr",
       "title": "Update github.com/bytemare implementations",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/301",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "bytemare",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2021-12-18T22:26:30Z",
-      "updatedAt": "2021-12-18T22:26:30Z",
+      "updatedAt": "2021-12-20T14:29:49Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "master",
       "baseRefOid": "95b1411627ef64b3db791c3e65305cd856e3da70",
       "headRepository": "bytemare/draft-irtf-cfrg-voprf",
       "headRefName": "patch-3",
       "headRefOid": "e58f62199694776ca36c7dc79de6acfa859cc153",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2021-12-20T14:29:49Z",
+      "mergedAt": "2021-12-20T14:29:49Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "5d1d957a10270f3d75750e089376d03eb2842277"
+      },
       "comments": [],
       "reviews": []
     }
