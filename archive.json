@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2021-12-21T00:45:00.904658+00:00",
+  "timestamp": "2022-01-02T00:44:45.138021+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -21233,6 +21233,32 @@
       "mergeCommit": {
         "oid": "5d1d957a10270f3d75750e089376d03eb2842277"
       },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 302,
+      "id": "PR_kwDOBphpts4wacYg",
+      "title": "use Proof type for proof inputs",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/302",
+      "state": "OPEN",
+      "author": "aldenml",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2021-12-31T04:37:52Z",
+      "updatedAt": "2021-12-31T04:37:52Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "master",
+      "baseRefOid": "5d1d957a10270f3d75750e089376d03eb2842277",
+      "headRepository": "aldenml/draft-irtf-cfrg-voprf",
+      "headRefName": "arg-type",
+      "headRefOid": "399b1be95f68f976b43b8ca7d5c70874bd4769ab",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
       "comments": [],
       "reviews": []
     }
