@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-01-02T00:44:45.138021+00:00",
+  "timestamp": "2022-01-04T00:43:45.259631+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -21241,26 +21241,92 @@
       "id": "PR_kwDOBphpts4wacYg",
       "title": "use Proof type for proof inputs",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/302",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "aldenml",
-      "authorAssociation": "NONE",
+      "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2021-12-31T04:37:52Z",
-      "updatedAt": "2021-12-31T04:37:52Z",
+      "updatedAt": "2022-01-03T17:08:29Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "master",
       "baseRefOid": "5d1d957a10270f3d75750e089376d03eb2842277",
       "headRepository": "aldenml/draft-irtf-cfrg-voprf",
       "headRefName": "arg-type",
       "headRefOid": "399b1be95f68f976b43b8ca7d5c70874bd4769ab",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2022-01-03T15:24:00Z",
+      "mergedAt": "2022-01-03T15:24:00Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "119a4d4cabd3c9d6d4f222b373d020338cb86539"
+      },
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks!",
+          "createdAt": "2022-01-03T15:23:54Z",
+          "updatedAt": "2022-01-03T15:23:54Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOBphpts4yPGQC",
+          "commit": {
+            "abbreviatedOid": "399b1be"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-01-03T15:23:49Z",
+          "updatedAt": "2022-01-03T15:23:49Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 303,
+      "id": "PR_kwDOBphpts4wcHEM",
+      "title": "add a c implementation to readme",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/303",
+      "state": "MERGED",
+      "author": "aldenml",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "For your consideration (relevant files):\r\n\r\nhttps://github.com/aldenml/ecc/blob/master/src/oprf.h\r\nhttps://github.com/aldenml/ecc/blob/master/src/oprf.c\r\nhttps://github.com/aldenml/ecc/blob/master/test/test_oprf.c\r\n",
+      "createdAt": "2022-01-02T03:29:17Z",
+      "updatedAt": "2022-01-03T17:08:08Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "master",
+      "baseRefOid": "5d1d957a10270f3d75750e089376d03eb2842277",
+      "headRepository": "aldenml/draft-irtf-cfrg-voprf",
+      "headRefName": "add-c-impl",
+      "headRefOid": "ddcb5d78d2a40919dd1970edcf03e951728212cd",
+      "closedAt": "2022-01-03T15:24:43Z",
+      "mergedAt": "2022-01-03T15:24:43Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "250a71063a5fb6e598f9823b53594a7fb4ad79c4"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOBphpts4yPGaZ",
+          "commit": {
+            "abbreviatedOid": "ddcb5d7"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "\ud83c\udf89  nice work!",
+          "createdAt": "2022-01-03T15:24:38Z",
+          "updatedAt": "2022-01-03T15:24:38Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
