@@ -1166,10 +1166,10 @@ elliptic curves.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
                 <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="xref">2.2</a>.  <a href="#name-discrete-log-equivalence-pr" class="xref">Discrete Log Equivalence Proofs</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2.2.1">
-                    <p id="section-toc.1-1.2.2.2.2.1.1"><a href="#section-2.2.1" class="xref">2.2.1</a>.  <a href="#name-dleq-proof-generation" class="xref">DLEQ Proof Generation</a></p>
+                    <p id="section-toc.1-1.2.2.2.2.1.1"><a href="#section-2.2.1" class="xref">2.2.1</a>.  <a href="#name-proof-generation" class="xref">Proof Generation</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2.2.2">
-                    <p id="section-toc.1-1.2.2.2.2.2.1"><a href="#section-2.2.2" class="xref">2.2.2</a>.  <a href="#name-dleq-proof-verification" class="xref">DLEQ Proof Verification</a></p>
+                    <p id="section-toc.1-1.2.2.2.2.2.1"><a href="#section-2.2.2" class="xref">2.2.2</a>.  <a href="#name-proof-verification" class="xref">Proof Verification</a></p>
 </li>
                 </ul>
 </li>
@@ -1227,7 +1227,7 @@ elliptic curves.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
                 <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="xref">5.1</a>.  <a href="#name-error-considerations" class="xref">Error Considerations</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
-                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-public-metadata" class="xref">Public Metadata</a></p>
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-poprf-public-input" class="xref">POPRF Public Input</a></p>
 </li>
             </ul>
 </li>
@@ -1373,9 +1373,9 @@ A Verifiable OPRF (VOPRF) is an OPRF wherein the server can prove to
 the client that F(k, x) was computed using the key k. A Partially-Oblivious
 PRF (POPRF) is a variant of a VOPRF wherein client and server interact
 in computing F(k, x, y), for some PRF F with server-provided key k,
-client-provided input x, and public input y <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span>, and client
-receives proof that F(k, x, y) was computed using k. A POPRF with fixed
-input y is functionally equivalent to a VOPRF.<a href="#section-1-1" class="pilcrow">¶</a></p>
+client-provided input x, and public input y, and client receives proof
+that F(k, x, y) was computed using k. A POPRF with fixed input y is
+functionally equivalent to a VOPRF.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">OPRFs have a variety of applications, including: password-protected secret
 sharing schemes <span>[<a href="#JKKX16" class="xref">JKKX16</a>]</span>, privacy-preserving password stores <span>[<a href="#SJKS17" class="xref">SJKS17</a>]</span>, and
 password-authenticated key exchange or PAKE <span>[<a href="#I-D.irtf-cfrg-opaque" class="xref">I-D.irtf-cfrg-opaque</a>]</span>.
@@ -1383,9 +1383,9 @@ Verifiable POPRFs are necessary in some applications such as Privacy Pass
 <span>[<a href="#I-D.davidson-pp-protocol" class="xref">I-D.davidson-pp-protocol</a>]</span>. Verifiable POPRFs have also been used for
 password-protected secret sharing schemes such as that of <span>[<a href="#JKK14" class="xref">JKK14</a>]</span>.<a href="#section-1-2" class="pilcrow">¶</a></p>
 <p id="section-1-3">This document specifies OPRF, VOPRF, and POPRF protocols built upon
-prime-order groups based on <span>[<a href="#JKKX16" class="xref">JKKX16</a>]</span> and <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span>. The document
-describes each protocol, application considerations, and their security
-properties.<a href="#section-1-3" class="pilcrow">¶</a></p>
+prime-order groups based on the 2HashDH <span>[<a href="#JKKX16" class="xref">JKKX16</a>]</span> and 3HashSDHI <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span>
+designs, respectively. The document describes each protocol variant,
+along with application considerations, and their security properties.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <div id="change-log">
 <section id="section-1.1">
         <h3 id="name-change-log">
@@ -1685,10 +1685,10 @@ built on a Chaum-Pedersen <span>[<a href="#ChaumPedersen" class="xref">ChaumPede
 two sub-sections: one for generating the proof, which is done by servers
 in the OPRF protocol, and another for verifying the proof, which is
 done by clients in the protocol.<a href="#section-2.2-1" class="pilcrow">¶</a></p>
-<div id="dleq-proof-generation">
+<div id="proof-generation">
 <section id="section-2.2.1">
-          <h4 id="name-dleq-proof-generation">
-<a href="#section-2.2.1" class="section-number selfRef">2.2.1. </a><a href="#name-dleq-proof-generation" class="section-name selfRef">DLEQ Proof Generation</a>
+          <h4 id="name-proof-generation">
+<a href="#section-2.2.1" class="section-number selfRef">2.2.1. </a><a href="#name-proof-generation" class="section-name selfRef">Proof Generation</a>
           </h4>
 <p id="section-2.2.1-1">Generating a proof is done with the <code>GenerateProof</code> function, defined below.
 This function takes four Elements, A, B, C, and D, and a single
@@ -1792,10 +1792,10 @@ clients and servers since it amortizes the cost of proof generation
 and bandwidth across multiple requests.<a href="#section-2.2.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="dleq-proof-verification">
+<div id="proof-verification">
 <section id="section-2.2.2">
-          <h4 id="name-dleq-proof-verification">
-<a href="#section-2.2.2" class="section-number selfRef">2.2.2. </a><a href="#name-dleq-proof-verification" class="section-name selfRef">DLEQ Proof Verification</a>
+          <h4 id="name-proof-verification">
+<a href="#section-2.2.2" class="section-number selfRef">2.2.2. </a><a href="#name-proof-verification" class="section-name selfRef">Proof Verification</a>
           </h4>
 <p id="section-2.2.2-1">Verifying a proof is done with the <code>VerifyProof</code> function, defined below.
 This function takes four Elements, A, B, C, and D, along with a Proof value
@@ -1953,7 +1953,7 @@ is shown below.<a href="#section-3-4" class="pilcrow">¶</a></p>
 
                evaluatedElement, proof = Evaluate(blindedElement)
 
-                             evaluatedElement
+                         evaluatedElement, proof
                                &lt;----------
 
   output = Finalize(input, blind, evaluatedElement, blindedElement, proof)
@@ -1981,7 +1981,7 @@ as in <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span>.<a href="#sec
 
                evaluatedElement, proof = Evaluate(blindedElement, info)
 
-                             evaluatedElement
+                         evaluatedElement, proof
                                &lt;----------
 
   output = Finalize(input, blind, evaluatedElement, blindedElement, proof, info)
@@ -2554,13 +2554,13 @@ order.<a href="#section-4.5-1.1.2.3" class="pilcrow">¶</a>
 <a href="#section-5" class="section-number selfRef">5. </a><a href="#name-application-considerations" class="section-name selfRef">Application Considerations</a>
       </h2>
 <p id="section-5-1">This section describes considerations for applications, including explicit error
-treatment and public metadata representation.<a href="#section-5-1" class="pilcrow">¶</a></p>
+treatment and public input representation for the POPRF protocol variant.<a href="#section-5-1" class="pilcrow">¶</a></p>
 <div id="error-considerations">
 <section id="section-5.1">
         <h3 id="name-error-considerations">
 <a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-error-considerations" class="section-name selfRef">Error Considerations</a>
         </h3>
-<p id="section-5.1-1">Some POPRF APIs specified in this document are fallible. For example, <code>Finalize</code>
+<p id="section-5.1-1">Some OPRF variants specified in this document have fallible operations. For example, <code>Finalize</code>
 and <code>Evaluate</code> can fail if any element received from the peer fails deserialization.
 The explicit errors generated throughout this specification, along with the
 conditions that lead to each error, are as follows:<a href="#section-5.1-1" class="pilcrow">¶</a></p>
@@ -2580,25 +2580,29 @@ an exhaustive list of all the errors an implementation might emit. For example,
 implementations might run out of memory and return a corresponding error.<a href="#section-5.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="public-metadata">
+<div id="poprf-public-input">
 <section id="section-5.2">
-        <h3 id="name-public-metadata">
-<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-public-metadata" class="section-name selfRef">Public Metadata</a>
+        <h3 id="name-poprf-public-input">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-poprf-public-input" class="section-name selfRef">POPRF Public Input</a>
         </h3>
-<p id="section-5.2-1">The optional and public <code>info</code> string included in the protocol allows clients
-and servers to cryptographically bind additional data to the POPRF output. This
-metadata is known to both parties at the start of the protocol. It is RECOMMENDED
-that this metadata be constructed with some type of higher-level domain separation
+<p id="section-5.2-1">Functionally, the VOPRF and POPRF variants differ in that the POPRF variant
+admits public input, whereas the VOPRF variant does not. Public input allows
+clients and servers to cryptographically bind additional data to the POPRF output.
+A POPRF with fixed public input is functionally equivalent to a VOPRF. However, there
+are differences in the underlying security assumptions made about each variant;
+see <a href="#cryptanalysis" class="xref">Section 6.2</a> for more details.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+<p id="section-5.2-2">This public input is known to both parties at the start of the protocol. It is RECOMMENDED
+that this public input be constructed with some type of higher-level domain separation
 to avoid cross protocol attacks or related issues. For example, protocols using
-this construction might ensure that the metadata uses a unique, prefix-free encoding.
+this construction might ensure that the public input uses a unique, prefix-free encoding.
 See <span>[<a href="#I-D.irtf-cfrg-hash-to-curve" class="xref">I-D.irtf-cfrg-hash-to-curve</a>], <a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-hash-to-curve-13#section-10.4" class="relref">Section 10.4</a></span> for further discussion on
-constructing domain separation values.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
-<p id="section-5.2-2">Implementations may choose to not let applications control <code>info</code> in cases where
+constructing domain separation values.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">Implementations may choose to not let applications control <code>info</code> in cases where
 this value is fixed or otherwise not useful to the application. In this case,
 the resulting protocol is functionally equivalent to an OPRF without public
 input. See <a href="#equiv-2hashdh" class="xref">Section 6.2.4</a> for discussion about repurposing existing non-verifiable
 OPRF implementations, i.e., those without the <code>info</code> parameter, using the construction
-in this specification.<a href="#section-5.2-2" class="pilcrow">¶</a></p>
+in this specification.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
