@@ -27,8 +27,8 @@ Abstract
    private key during the execution of the protocol.  A VOPRF can also
    be partially-oblivious, called a POPRF.  A POPRF allows clients and
    servers to provide public input to the PRF computation.  This
-   document an OPRF, VOPRF, and POPRF instantiated within standard
-   prime-order groups, including elliptic curves.
+   document specifies an OPRF, VOPRF, and POPRF instantiated within
+   standard prime-order groups, including elliptic curves.
 
 Discussion Venues
 
