@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-01-04T00:43:45.259631+00:00",
+  "timestamp": "2022-01-09T00:45:44.485643+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -21126,25 +21126,33 @@
       "id": "PR_kwDOBphpts4v2vCO",
       "title": "Add note on 2HashDH equivalence",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/300",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "See the mailing list.",
       "createdAt": "2021-12-14T22:34:13Z",
-      "updatedAt": "2021-12-16T16:45:27Z",
+      "updatedAt": "2022-01-07T00:32:57Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "master",
       "baseRefOid": "95b1411627ef64b3db791c3e65305cd856e3da70",
       "headRepository": "cfrg/draft-irtf-cfrg-voprf",
       "headRefName": "caw/2hashdh-equiv",
-      "headRefOid": "fae8b23d448138f620e379f550c1f6f866e2d421",
-      "closedAt": null,
+      "headRefOid": "443d45cf67029bc9f0e546dd1ff7f19aee04ba8e",
+      "closedAt": "2022-01-07T00:32:57Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Closing in favor of https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/304.",
+          "createdAt": "2022-01-07T00:32:57Z",
+          "updatedAt": "2022-01-07T00:32:57Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOBphpts4xqar6",
@@ -21324,6 +21332,156 @@
           "body": "\ud83c\udf89  nice work!",
           "createdAt": "2022-01-03T15:24:38Z",
           "updatedAt": "2022-01-03T15:24:38Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 304,
+      "id": "PR_kwDOBphpts4wovPt",
+      "title": "Major refactor to focus on three protocol variants: OPRF, VOPRF, and POPRF",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/304",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This refactor is predicated on the observation that 2HashDH and 3HashSDHI are equivalent for the non-verifiable case, and that public input is only really relevant for the verifiable case. The end result is three protocol variants in the spec: a base OPRF mode that is not variable, a 2HashDH verifiable mode without public input, and a 3HashDH-SDHI variant that is verifiable with public input. \r\n\r\nI think this is a good compromise given all the considerations involved -- threshold VOPRF, huzzah! -- and in the end yields a more understandable document. I also think the new structure should be easier to follow. \r\n\r\n[Rendered version of this PR](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/all-three/draft-irtf-cfrg-voprf.html).\r\n\r\nNote: test vectors have not yet been updated. I will do that in a followup series of commits once this gets some approvals.\r\n\r\ncc @kevinlewi, @bytemare, @hugokraw, @tomrist",
+      "createdAt": "2022-01-07T00:32:49Z",
+      "updatedAt": "2022-01-07T18:38:38Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "master",
+      "baseRefOid": "250a71063a5fb6e598f9823b53594a7fb4ad79c4",
+      "headRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "headRefName": "caw/all-three",
+      "headRefOid": "2fbaae109e2eb3ab75e048375deb0edb168c7936",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOBphpts4yeT-u",
+          "commit": {
+            "abbreviatedOid": "d74f417"
+          },
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2022-01-07T17:01:58Z",
+          "updatedAt": "2022-01-07T18:31:59Z",
+          "comments": [
+            {
+              "originalPosition": 44,
+              "body": "```suggestion\r\nto provide public input to the PRF computation. This document specifies an OPRF,\r\nVOPRF, and POPRF instantiated within standard prime-order groups, including\r\n```",
+              "createdAt": "2022-01-07T17:01:58Z",
+              "updatedAt": "2022-01-07T18:31:59Z"
+            },
+            {
+              "originalPosition": 42,
+              "body": "```suggestion\r\nbe partially-oblivious, then called a POPRF. A POPRF allows clients and servers\r\n```",
+              "createdAt": "2022-01-07T17:02:43Z",
+              "updatedAt": "2022-01-07T18:31:59Z"
+            },
+            {
+              "originalPosition": 705,
+              "body": "The client also needs the server's public key for verification in that step",
+              "createdAt": "2022-01-07T17:27:22Z",
+              "updatedAt": "2022-01-07T18:31:59Z"
+            },
+            {
+              "originalPosition": 728,
+              "body": "The client also needs the server's public key for verification in that step",
+              "createdAt": "2022-01-07T17:28:27Z",
+              "updatedAt": "2022-01-07T18:31:59Z"
+            },
+            {
+              "originalPosition": 1094,
+              "body": "Why is pkS left out if it's still needed at line 1042? If the pkS is pulled from the context (vs added as an argument), it might be beneficial to clarify that here.",
+              "createdAt": "2022-01-07T17:39:42Z",
+              "updatedAt": "2022-01-07T18:32:00Z"
+            },
+            {
+              "originalPosition": 1198,
+              "body": "Would it be clearer precising that \"commitment\" implies that the client has the server's public key before protocol execution?",
+              "createdAt": "2022-01-07T18:28:11Z",
+              "updatedAt": "2022-01-07T18:32:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yemhX",
+          "commit": {
+            "abbreviatedOid": "2fbaae1"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-07T18:33:00Z",
+          "updatedAt": "2022-01-07T18:33:01Z",
+          "comments": [
+            {
+              "originalPosition": 705,
+              "body": "I omitted these from all functions here and assumed they're implicit, since they're provided during context creation.",
+              "createdAt": "2022-01-07T18:33:01Z",
+              "updatedAt": "2022-01-07T18:33:01Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yemkv",
+          "commit": {
+            "abbreviatedOid": "2fbaae1"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-07T18:33:20Z",
+          "updatedAt": "2022-01-07T18:33:20Z",
+          "comments": [
+            {
+              "originalPosition": 1094,
+              "body": "Pulled from the context, and described in a comment at the top of the {{online}} section.",
+              "createdAt": "2022-01-07T18:33:20Z",
+              "updatedAt": "2022-01-07T18:33:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yemrH",
+          "commit": {
+            "abbreviatedOid": "2fbaae1"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-07T18:33:56Z",
+          "updatedAt": "2022-01-07T18:33:56Z",
+          "comments": [
+            {
+              "originalPosition": 1198,
+              "body": "That's already the case. The client receives passes the public key in the context creation (offline) phase.",
+              "createdAt": "2022-01-07T18:33:56Z",
+              "updatedAt": "2022-01-07T18:33:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yenhx",
+          "commit": {
+            "abbreviatedOid": "2fbaae1"
+          },
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-01-07T18:38:38Z",
+          "updatedAt": "2022-01-07T18:38:38Z",
           "comments": []
         }
       ]
