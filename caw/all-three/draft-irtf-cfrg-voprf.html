@@ -1846,7 +1846,7 @@ def VerifyProof(A, B, C, D, proof):
 
   expectedC = GG.HashToScalar(h2Input)
 
-  return CT_EQUAL(expectedC, c)
+  return expectedC == c
 </pre><a href="#section-2.2.2-2" class="pilcrow">¶</a>
 </div>
 <p id="section-2.2.2-3">The definition of <code>ComputeComposites</code> is given below. This function is
