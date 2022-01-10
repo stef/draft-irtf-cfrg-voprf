@@ -1962,7 +1962,7 @@ is shown below.<a href="#section-3-4" class="pilcrow">¶</a></p>
 <a href="#name-voprf-protocol-overview-wit" class="selfRef">VOPRF protocol overview with additional proof</a>
         </figcaption></figure>
 </div>
-<p id="section-3-6">In the partially-oblivious mode, the client and server can additionally provide a public
+<p id="section-3-6">The partially-oblivious mode extends the VOPRF mode such that the client and server can additionally provide a public
 input <code>info</code> that is used in computing the pseudorandom function. That is, the client and server
 interact to compute <code>output = F(skS, input, info)</code>. To support additional public input,
 the client and server augment the <code>pkS</code> and <code>skS</code>, respectively, using the <code>info</code> value,
