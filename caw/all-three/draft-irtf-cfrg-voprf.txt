@@ -947,7 +947,7 @@ Table of Contents
 
 3.3.3.  POPRF Protocol
 
-   The VOPRF protocol begins with the client blinding its input, using
+   The POPRF protocol begins with the client blinding its input, using
    the same Blind function as in Section 3.3.1.  Clients store the
    output blind locally and send blindedElement to the server for
    evaluation.  Upon receipt, servers compute an evaluated element and
