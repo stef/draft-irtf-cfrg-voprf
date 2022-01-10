@@ -1181,7 +1181,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info):
    errors generated throughout this specification, along with the
    conditions that lead to each error, are as follows:
 
-   *  VerifyError: Verifiable POPRF proof verification failed;
+   *  VerifyError: Verifiable OPRF proof verification failed;
       Section 3.3.2 and Section 3.3.3.
 
    *  DeserializeError: Group element or scalar deserialization failure;
