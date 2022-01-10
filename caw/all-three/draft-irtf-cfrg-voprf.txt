@@ -712,8 +712,8 @@ Table of Contents
 
     Figure 3: POPRF protocol overview with additional public input
 
-   Each protocol consists of an offline setup phase and an online setup
-   phase, described in Section 3.2 and Section 3.3, respectively.
+   Each protocol consists of an offline setup phase and an online phase,
+   described in Section 3.2 and Section 3.3, respectively.
    Configuration details for the offline phase are described in
    Section 3.1.
 
