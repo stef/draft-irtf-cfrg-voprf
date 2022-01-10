@@ -5,10 +5,10 @@
 Network Working Group                                        A. Davidson
 Internet-Draft                                            Brave Software
 Intended status: Informational                          A. Faz-Hernandez
-Expires: 11 July 2022                                        N. Sullivan
+Expires: 14 July 2022                                        N. Sullivan
                                                                C.A. Wood
                                                         Cloudflare, Inc.
-                                                          7 January 2022
+                                                         10 January 2022
 
 
    Oblivious Pseudorandom Functions (OPRFs) using Prime-Order Groups
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 11 July 2022.
+   This Internet-Draft will expire on 14 July 2022.
 
 Copyright Notice
 
@@ -436,7 +436,7 @@ Table of Contents
    describes functions for non-interactively proving and verifying this
    type of statement, built on a Chaum-Pedersen [ChaumPedersen] proof.
    It is split into two sub-sections: one for generating the proof,
-   which is done by servers in the OPRF protocol, and another for
+   which is done by servers in the verifiable protocols, and another for
    verifying the proof, which is done by clients in the protocol.
 
 2.2.1.  Proof Generation
