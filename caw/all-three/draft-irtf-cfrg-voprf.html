@@ -2737,7 +2737,7 @@ to instantiate the OPRF.<a href="#section-6.2.2-3" class="pilcrow">¶</a></p>
 128 bits of security against discrete log cryptanalysis. Then an
 adversary with access to a Q-sDH oracle and makes Q=2^20 queries can
 reduce the security of the instantiation by log_2(2^20)/2 = 10 bits.
-Launching an attack would require 2^(p/2-log_2(Q)/2) bits of memory.<a href="#section-6.2.2-4" class="pilcrow">¶</a></p>
+Launching this attack would require 2^(p/2-log_2(Q)/2) bits of memory.<a href="#section-6.2.2-4" class="pilcrow">¶</a></p>
 <p id="section-6.2.2-5">Notice that it is easy to instantiate a Q-sDH oracle using the OPRF
 functionality that we provide. A client can just submit sequential
 queries of the form (G, k * G, (k^2)G, ..., (k^(Q-1))G), where each
