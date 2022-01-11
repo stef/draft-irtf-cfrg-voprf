@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-01-09T00:45:44.485643+00:00",
+  "timestamp": "2022-01-11T00:45:57.893106+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4171,6 +4171,22 @@
       "body": "Since this specification defines a protocol, the API uses byte strings along the abstraction boundary. This means the implementation of core functions, like Blind, Evaluate, etc, all deal with de/serialization. It might be cleaner if we isolated the core cryptographic algorithms from the spec, i.e., those whose inputs are implementation specific, from the rest. ",
       "createdAt": "2021-11-15T16:00:24Z",
       "updatedAt": "2021-11-15T16:00:24Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 305,
+      "id": "I_kwDOBphpts5BauD1",
+      "title": "`HashToGroup` and `HashToScalar` can produce invalid keys",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/305",
+      "state": "OPEN",
+      "author": "daxpedda",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "`HashToGroup` can produce the identity element and `HashToScalar` can produce a zero scalar. It is extremely unlikely though.\r\n\r\nCurrently it's not specified how to behave when this happens. Potentially, on failure to produce a valid output, the program might just automatically try again, which would simply be rejection sampling. Maybe that's fine, IANA cryptographer.\r\n\r\nIn addition `DeriveKeyPair` relies on `HashToScalar`, but it's currently undefined how to handler zero scalars.\r\n```sage\r\ndef DeriveKeyPair(mode, suite, seed):\r\n  skS = GG.HashToScalar(seed, DST = \"HashToScalar-\" || contextString)\r\n  pkS = ScalarBaseMult(skS)\r\n  return skS, pkS\r\n```\r\nhttps://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-2.1-5\r\n> Two functions can be used for generating a (V)OPRF key pair (`skS`, `pkS`)\r\nwhere `skS` is a non-zero integer less than `p` and `pkS = ScalarBaseMult(skS)`:\r\n`GenerateKeyPair` and `DeriveKeyPair`.\r\n\r\nRelated: cfrg/draft-irtf-cfrg-opaque#298.",
+      "createdAt": "2022-01-10T07:04:29Z",
+      "updatedAt": "2022-01-10T07:04:29Z",
       "closedAt": null,
       "comments": []
     }
@@ -21348,18 +21364,26 @@
       "labels": [],
       "body": "This refactor is predicated on the observation that 2HashDH and 3HashSDHI are equivalent for the non-verifiable case, and that public input is only really relevant for the verifiable case. The end result is three protocol variants in the spec: a base OPRF mode that is not variable, a 2HashDH verifiable mode without public input, and a 3HashDH-SDHI variant that is verifiable with public input. \r\n\r\nI think this is a good compromise given all the considerations involved -- threshold VOPRF, huzzah! -- and in the end yields a more understandable document. I also think the new structure should be easier to follow. \r\n\r\n[Rendered version of this PR](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/all-three/draft-irtf-cfrg-voprf.html).\r\n\r\nNote: test vectors have not yet been updated. I will do that in a followup series of commits once this gets some approvals.\r\n\r\ncc @kevinlewi, @bytemare, @hugokraw, @tomrist",
       "createdAt": "2022-01-07T00:32:49Z",
-      "updatedAt": "2022-01-07T18:38:38Z",
+      "updatedAt": "2022-01-11T00:36:09Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "master",
       "baseRefOid": "250a71063a5fb6e598f9823b53594a7fb4ad79c4",
       "headRepository": "cfrg/draft-irtf-cfrg-voprf",
       "headRefName": "caw/all-three",
-      "headRefOid": "2fbaae109e2eb3ab75e048375deb0edb168c7936",
+      "headRefOid": "4a414a08c3cdcc044caaac1f3448dcc40b9dbd03",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@armfazh suggestions applied and comments resolved. Please have another look. ",
+          "createdAt": "2022-01-10T14:22:40Z",
+          "updatedAt": "2022-01-10T14:22:40Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOBphpts4yeT-u",
@@ -21483,6 +21507,409 @@
           "createdAt": "2022-01-07T18:38:38Z",
           "updatedAt": "2022-01-07T18:38:38Z",
           "comments": []
+        },
+        {
+          "id": "PRR_kwDOBphpts4ygrjk",
+          "commit": {
+            "abbreviatedOid": "2fbaae1"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "some small comments",
+          "createdAt": "2022-01-10T07:04:08Z",
+          "updatedAt": "2022-01-10T08:22:23Z",
+          "comments": [
+            {
+              "originalPosition": 107,
+              "body": "```suggestion\r\nFor serialization, all data structure descriptions use TLS notation {{RFC8446, Section 3}}.\r\n```",
+              "createdAt": "2022-01-10T07:04:08Z",
+              "updatedAt": "2022-01-10T08:22:23Z"
+            },
+            {
+              "originalPosition": 418,
+              "body": "```suggestion\r\nin the verifiable protocols, and another for verifying the proof, which is\r\n```",
+              "createdAt": "2022-01-10T07:07:22Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 608,
+              "body": "```suggestion\r\n  return CT_EQUAL(expectedC, proof.c)\r\n```",
+              "createdAt": "2022-01-10T07:13:27Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 612,
+              "body": "proof generation uses `ComputeCompositesFast` ",
+              "createdAt": "2022-01-10T07:14:49Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 688,
+              "body": "```suggestion\r\nthe `Evaluate` function is the same key as it used to produce the server's public key.\r\n```\r\n\r\n--to me, it wasn't clear who is their.",
+              "createdAt": "2022-01-10T07:19:45Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 709,
+              "body": "```suggestion\r\nThe partially-oblivious mode extends the VOPRF mode such that the client and server can additionally provide a public\r\n```\r\n\r\n-- or something like that,\r\n",
+              "createdAt": "2022-01-10T07:21:42Z",
+              "updatedAt": "2022-01-10T14:15:01Z"
+            },
+            {
+              "originalPosition": 710,
+              "body": "```suggestion\r\ninput `info` that is used in computing the pseudorandom function. That is, the client and server\r\n```",
+              "createdAt": "2022-01-10T07:26:12Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 786,
+              "body": "what about creating a function\r\n```python\r\ndef CreateContextString(mode,suite):\r\n    return \"VOPRF08-\" || I2OSP(modeVOPRF, 1) || I2OSP(suiteID, 2)\r\n\r\n```",
+              "createdAt": "2022-01-10T07:30:47Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 796,
+              "body": "include `info`?",
+              "createdAt": "2022-01-10T07:31:41Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 732,
+              "body": "```suggestion\r\nEach protocol consists of an offline setup phase and an online phase,\r\n```",
+              "createdAt": "2022-01-10T07:32:10Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 949,
+              "body": "I think the `InverseError` doesn't trigger in this function.",
+              "createdAt": "2022-01-10T07:40:22Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 1024,
+              "body": "```suggestion\r\nThe POPRF protocol begins with the client blinding its input, using the same\r\n```",
+              "createdAt": "2022-01-10T07:42:57Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 1106,
+              "body": "```suggestion\r\ndef Finalize(input, blind, evaluatedElement, blindedElement, proof, info):\r\n```",
+              "createdAt": "2022-01-10T07:48:33Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 1140,
+              "body": "```suggestion\r\n- `VerifyError`: Verifiable OPRF proof verification failed; {{voprf}} and {{poprf}}.\r\n```",
+              "createdAt": "2022-01-10T07:51:43Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 1218,
+              "body": "nizk was not defined before.",
+              "createdAt": "2022-01-10T07:55:45Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            },
+            {
+              "originalPosition": 1272,
+              "body": "```suggestion\r\nLaunching this attack would require 2^(p/2-log\\_2(Q)/2) bits of memory.\r\n```",
+              "createdAt": "2022-01-10T07:58:32Z",
+              "updatedAt": "2022-01-10T08:22:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yiWCK",
+          "commit": {
+            "abbreviatedOid": "9b69efa"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T14:09:36Z",
+          "updatedAt": "2022-01-10T14:09:37Z",
+          "comments": [
+            {
+              "originalPosition": 608,
+              "body": "```suggestion\r\n  return expectedC == c\r\n```",
+              "createdAt": "2022-01-10T14:09:36Z",
+              "updatedAt": "2022-01-10T14:09:37Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yiWJ2",
+          "commit": {
+            "abbreviatedOid": "9b69efa"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T14:10:00Z",
+          "updatedAt": "2022-01-10T14:10:00Z",
+          "comments": [
+            {
+              "originalPosition": 608,
+              "body": "proof.c is a byte string, whereas expectedC is a scalar. I'll just make this `==`.",
+              "createdAt": "2022-01-10T14:10:00Z",
+              "updatedAt": "2022-01-10T14:10:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yiWox",
+          "commit": {
+            "abbreviatedOid": "eeb066a"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T14:11:39Z",
+          "updatedAt": "2022-01-10T14:11:40Z",
+          "comments": [
+            {
+              "originalPosition": 614,
+              "body": "```suggestion\r\nThe definition of `ComputeComposites` is given below.\r\n```",
+              "createdAt": "2022-01-10T14:11:39Z",
+              "updatedAt": "2022-01-10T14:11:40Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yiXOE",
+          "commit": {
+            "abbreviatedOid": "9fe0439"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T14:13:37Z",
+          "updatedAt": "2022-01-10T14:13:38Z",
+          "comments": [
+            {
+              "originalPosition": 694,
+              "body": "```suggestion\r\nthe `Evaluate` function is the same private key corresponding to the server's public key.\r\n```",
+              "createdAt": "2022-01-10T14:13:37Z",
+              "updatedAt": "2022-01-10T14:13:38Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yiYlD",
+          "commit": {
+            "abbreviatedOid": "81a8cae"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T14:18:12Z",
+          "updatedAt": "2022-01-10T14:18:12Z",
+          "comments": [
+            {
+              "originalPosition": 786,
+              "body": "The purpose of these setup functions is to create the context string and then the context used for the online portion of the protocol, so I think it's better as-is. But your comment wasn't really clear to me, so maybe I'm missing your point?",
+              "createdAt": "2022-01-10T14:18:12Z",
+              "updatedAt": "2022-01-10T14:18:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yiY25",
+          "commit": {
+            "abbreviatedOid": "81a8cae"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T14:19:03Z",
+          "updatedAt": "2022-01-10T14:19:04Z",
+          "comments": [
+            {
+              "originalPosition": 796,
+              "body": "No, since `info` can change for each invocation of the online phase, we omit it here. The offline phase should include everything that doesn't change during the online phase.",
+              "createdAt": "2022-01-10T14:19:04Z",
+              "updatedAt": "2022-01-10T14:19:04Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yiY-h",
+          "commit": {
+            "abbreviatedOid": "81a8cae"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T14:19:24Z",
+          "updatedAt": "2022-01-10T14:19:25Z",
+          "comments": [
+            {
+              "originalPosition": 949,
+              "body": "Yep, copy pasta. Thanks.",
+              "createdAt": "2022-01-10T14:19:24Z",
+              "updatedAt": "2022-01-10T14:19:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yiY_b",
+          "commit": {
+            "abbreviatedOid": "81a8cae"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T14:19:27Z",
+          "updatedAt": "2022-01-10T14:19:28Z",
+          "comments": [
+            {
+              "originalPosition": 949,
+              "body": "```suggestion\r\nErrors: DeserializeError\r\n```",
+              "createdAt": "2022-01-10T14:19:27Z",
+              "updatedAt": "2022-01-10T14:19:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yiZvP",
+          "commit": {
+            "abbreviatedOid": "a1cb36f"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T14:21:45Z",
+          "updatedAt": "2022-01-10T14:21:45Z",
+          "comments": [
+            {
+              "originalPosition": 1216,
+              "body": "```suggestion\r\nat once whilst only constructing one proof object. This is enabled using\r\n```",
+              "createdAt": "2022-01-10T14:21:45Z",
+              "updatedAt": "2022-01-10T14:21:45Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yjBX0",
+          "commit": {
+            "abbreviatedOid": "66bf44f"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T16:23:50Z",
+          "updatedAt": "2022-01-10T16:23:51Z",
+          "comments": [
+            {
+              "originalPosition": 786,
+              "body": "my point is to factor out the context creation in a function, so we don't need to update in six different points when, for example, switching from `VOPRF-08` to `VOPRF-09`.",
+              "createdAt": "2022-01-10T16:23:50Z",
+              "updatedAt": "2022-01-10T16:23:51Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yjBzw",
+          "commit": {
+            "abbreviatedOid": "66bf44f"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T16:25:23Z",
+          "updatedAt": "2022-01-10T16:25:24Z",
+          "comments": [
+            {
+              "originalPosition": 786,
+              "body": "I don't think that's an improvement in clarity. In any case, it's editorial, so I think we can resolve this.",
+              "createdAt": "2022-01-10T16:25:23Z",
+              "updatedAt": "2022-01-10T16:25:24Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4ykRN3",
+          "commit": {
+            "abbreviatedOid": "62c5f4b"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T21:20:20Z",
+          "updatedAt": "2022-01-10T21:20:20Z",
+          "comments": [
+            {
+              "originalPosition": 1218,
+              "body": "not resolved yet",
+              "createdAt": "2022-01-10T21:20:20Z",
+              "updatedAt": "2022-01-10T21:20:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4ykRzr",
+          "commit": {
+            "abbreviatedOid": "62c5f4b"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-01-10T21:21:47Z",
+          "updatedAt": "2022-01-10T21:21:47Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOBphpts4ykhlZ",
+          "commit": {
+            "abbreviatedOid": "62c5f4b"
+          },
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T22:47:49Z",
+          "updatedAt": "2022-01-10T22:47:50Z",
+          "comments": [
+            {
+              "originalPosition": 786,
+              "body": "I agree with @armfazh, and to me, it reads more clearly :)",
+              "createdAt": "2022-01-10T22:47:49Z",
+              "updatedAt": "2022-01-10T22:47:50Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4ykjMq",
+          "commit": {
+            "abbreviatedOid": "62c5f4b"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-10T22:57:46Z",
+          "updatedAt": "2022-01-10T22:57:46Z",
+          "comments": [
+            {
+              "originalPosition": 786,
+              "body": "Fair enough -- done!",
+              "createdAt": "2022-01-10T22:57:46Z",
+              "updatedAt": "2022-01-10T22:57:46Z"
+            }
+          ]
         }
       ]
     }
