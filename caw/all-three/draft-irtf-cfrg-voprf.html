@@ -1030,7 +1030,7 @@ svg [stroke="fill"], svg [fill^="#fff"] {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Davidson, et al.</td>
-<td class="center">Expires 15 July 2022</td>
+<td class="center">Expires 16 July 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1043,12 +1043,12 @@ svg [stroke="fill"], svg [fill^="#fff"] {
 <dd class="internet-draft">draft-irtf-cfrg-voprf-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-01-11" class="published">11 January 2022</time>
+<time datetime="2022-01-12" class="published">12 January 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-07-15">15 July 2022</time></dd>
+<dd class="expires"><time datetime="2022-07-16">16 July 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1113,7 +1113,7 @@ elliptic curves.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 15 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 16 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1786,7 +1786,7 @@ def ComputeCompositesFast(k, B, Cs, Ds):
     h2Input = I2OSP(len(seed), 2) || seed || I2OSP(i, 2) ||
               I2OSP(len(Ci), 2) || Ci ||
               I2OSP(len(Di), 2) || Di ||
-              "Challenge"
+              "Composite"
     di = GG.HashToScalar(h2Input)
     M = di * Cs[i] + M
 
@@ -1891,7 +1891,7 @@ def ComputeComposites(B, Cs, Ds):
     h2Input = I2OSP(len(seed), 2) || seed || I2OSP(i, 2) ||
               I2OSP(len(Ci), 2) || Ci ||
               I2OSP(len(Di), 2) || Di ||
-              "Challenge"
+              "Composite"
     di = GG.HashToScalar(h2Input)
     M = di * Cs[i] + M
     Z = di * Ds[i] + Z
