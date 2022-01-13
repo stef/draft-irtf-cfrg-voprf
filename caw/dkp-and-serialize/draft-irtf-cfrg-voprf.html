@@ -2083,7 +2083,9 @@ def DeriveKeyPair(seed, info):
   while skS == 0:
     if counter &gt; 255:
       raise DeriveKeyPairError
-    skS = GG.HashToScalar(deriveInput, DST = "DeriveKeyPair" || contextString)
+    skS = GG.HashToScalar(deriveInput || I2OSP(counter, 1),
+                          DST = "DeriveKeyPair" || contextString)
+    counter = counter + 1
   pkS = ScalarBaseMult(skS)
   return skS, pkS
 </pre><a href="#section-3.2-2" class="pilcrow">¶</a>

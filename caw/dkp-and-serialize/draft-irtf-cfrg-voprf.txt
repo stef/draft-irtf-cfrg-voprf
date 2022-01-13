@@ -761,29 +761,31 @@ Table of Contents
    accepts a randmly generated seed of length Ns and optional public
    info string:
 
-Input:
+   Input:
 
-  opaque seed[Ns]
-  PublicInput info
+     opaque seed[Ns]
+     PublicInput info
 
-Output:
+   Output:
 
-  Scalar skS
-  Element pkS
+     Scalar skS
+     Element pkS
 
-Errors: DeriveKeyPairError
+   Errors: DeriveKeyPairError
 
-def DeriveKeyPair(seed, info):
-  contextString = CreateContextString(mode, suiteID)
-  deriveInput = seed || I2OSP(len(info), 2) || info
-  counter = 0
-  skS = 0
-  while skS == 0:
-    if counter > 255:
-      raise DeriveKeyPairError
-    skS = GG.HashToScalar(deriveInput, DST = "DeriveKeyPair" || contextString)
-  pkS = ScalarBaseMult(skS)
-  return skS, pkS
+   def DeriveKeyPair(seed, info):
+     contextString = CreateContextString(mode, suiteID)
+     deriveInput = seed || I2OSP(len(info), 2) || info
+     counter = 0
+     skS = 0
+     while skS == 0:
+       if counter > 255:
+         raise DeriveKeyPairError
+       skS = GG.HashToScalar(deriveInput || I2OSP(counter, 1),
+                             DST = "DeriveKeyPair" || contextString)
+       counter = counter + 1
+     pkS = ScalarBaseMult(skS)
+     return skS, pkS
 
    The OPRF variant server and client contexts are created as follows:
 
