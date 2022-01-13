@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-01-11T00:45:57.893106+00:00",
+  "timestamp": "2022-01-13T00:46:37.179901+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4187,6 +4187,74 @@
       "body": "`HashToGroup` can produce the identity element and `HashToScalar` can produce a zero scalar. It is extremely unlikely though.\r\n\r\nCurrently it's not specified how to behave when this happens. Potentially, on failure to produce a valid output, the program might just automatically try again, which would simply be rejection sampling. Maybe that's fine, IANA cryptographer.\r\n\r\nIn addition `DeriveKeyPair` relies on `HashToScalar`, but it's currently undefined how to handler zero scalars.\r\n```sage\r\ndef DeriveKeyPair(mode, suite, seed):\r\n  skS = GG.HashToScalar(seed, DST = \"HashToScalar-\" || contextString)\r\n  pkS = ScalarBaseMult(skS)\r\n  return skS, pkS\r\n```\r\nhttps://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-2.1-5\r\n> Two functions can be used for generating a (V)OPRF key pair (`skS`, `pkS`)\r\nwhere `skS` is a non-zero integer less than `p` and `pkS = ScalarBaseMult(skS)`:\r\n`GenerateKeyPair` and `DeriveKeyPair`.\r\n\r\nRelated: cfrg/draft-irtf-cfrg-opaque#298.",
       "createdAt": "2022-01-10T07:04:29Z",
       "updatedAt": "2022-01-10T07:04:29Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 306,
+      "id": "I_kwDOBphpts5BesNZ",
+      "title": "Specify key derivation",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/306",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The current spec punts on key derivation. In particular, it assumes some mechanism for deriving keys. To promote an EdDSA-like interface, wherein \"private keys\" are random seeds used to _derive_ actual scalars, it would be useful to specify the key generation mechanism. This might look something like the following:\r\n\r\n~~~\r\ndef DeriveKeyPair(seed, mode, suiteID, info):\r\n  contextString = \"VOPRF08-\" || \r\n                  I2OSP(mode, 1) || I2OSP(suiteID, 2) ||\r\n                  I2OSP(len(info), 2) || info\r\n  skS = GG.HashToScalar(seed, DST = \"DeriveKeyPair\" || contextString)\r\n  if skS == 0:\r\n    raise DeriveKeyPairError\r\n  pkS = ScalarBaseMult(skS)\r\n  return skS, pkS\r\n~~~\r\n\r\nOne could use this to derive keys for the OPRF, VOPRF, or POPRF protocol variants. For the POPRF case, `info` is repeated here and in the Evaluate interface, but this is not too dissimilar from HPKE, which admits application-specific information in the key schedule and at the AEAD level. Applications can choose how to expose `info` accordingly.",
+      "createdAt": "2022-01-11T01:50:46Z",
+      "updatedAt": "2022-01-12T18:23:23Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "body": "(thinking out loud): when deriving keys based on the mode+info, we do this because it is expected to separate the key spaces, so --for example-- we ensure that generating keys for OPRF are likely not the same than those for VOPRF.\r\n\r\nHowever, there is no way to determine whether a pair of keys (sk,pk) should be used in a particular protocol. In other words, any valid pair (sk,pk) can be used for any protocol variant. Is this something we need to prevent?\r\n\r\n",
+          "createdAt": "2022-01-11T21:05:55Z",
+          "updatedAt": "2022-01-11T21:05:55Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Is this something we need to prevent?\r\n\r\nIt's a good question, and something @tomrist and I discussed. There's (at least) two ways we can approach the question:\r\n\r\n1. Assume applications are capable of generating keeping keys separate. That is, treat key generation or derivation as something _external_ to the protocol.\r\n2. Assume applications are incapable of keeping keys separate, and enforce key diversification _within_ the protocol.\r\n\r\nOption (2) is similar to EdDSA, which treats \"private keys\" as random seeds and then derives scalars and public group elements from those seeds within the signing APIs. An application that then reuses the same seed across protocol modes would be safe, as the underlying scalars used for evaluation would necessarily be different.\r\n\r\nAt the end of the day, this is a question of where the `DeriveKeyPair` should exist, and what's best for implementations. I think option (2) is a totally reasonable and safe approach to the problem. It does, however, have the tradeoff that the \"abstraction\" layer to the protocol shifts away from scalar and group elements and towards something based on byte strings (random byte strings as private keys, and random byte strings as public keys). That might actually be an improvement in the long term, as it leaks less of the underlying implementation details, namely, that a prime-order group is involved, to applications. \r\n\r\nAll that said, I think we should (a) specify key derivation and (b) do it within the protocol. ",
+          "createdAt": "2022-01-12T01:20:40Z",
+          "updatedAt": "2022-01-12T01:20:40Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "Related: #305.\r\n\r\nI would like to note, that it is important for implementations to know what is supposed to be done in the case of `DeriveKeyPairError`. Is rejection sampling okay? Basically make a new seed and retry?",
+          "createdAt": "2022-01-12T03:39:40Z",
+          "updatedAt": "2022-01-12T03:39:40Z"
+        },
+        {
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "> However, there is no way to determine whether a pair of keys (sk,pk) should be used in a particular protocol. In other words, any valid pair (sk,pk) can be used for any protocol variant. Is this something we need to prevent?\r\n\r\nIsn't VOPRF _technically_ two protocols in one already? The evaluation part in VOPRF is in fact pure OPRF, and thus the same private key is used in OPRF and VOPRF. Given the proof work that has been done, is this a problem?",
+          "createdAt": "2022-01-12T18:22:00Z",
+          "updatedAt": "2022-01-12T18:22:00Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Given the proof work that has been done, is this a problem?\r\n\r\nIn general, we should strive to make sure that separate protocols use separate keys. The proposal above gets us this for essentially free. ",
+          "createdAt": "2022-01-12T18:23:23Z",
+          "updatedAt": "2022-01-12T18:23:23Z"
+        }
+      ]
+    },
+    {
+      "number": 307,
+      "id": "I_kwDOBphpts5BkG_m",
+      "title": "Unhandled zero scalars and identity elements",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/307",
+      "state": "OPEN",
+      "author": "daxpedda",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "This is a list of functions that contain group operations that might produce zero scalars or identity elements. I don't actually know if this is a problem or not in some of the cases, I'm going to leave that to actual cryptographers to figure out.\r\n\r\nAnother related issue is #305, which can yield identity points and zero scalars every time `HashToGroup` or `HashToScalar` is used, which is in a lot of places.\r\n\r\n- Unverifiable [`Evaluate`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.1.1-1) and verifiable [`Evaluate`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.2.1-1) use `HashToScalar`, which can return a zero scalar. It might not be an issue because it doesn't make the returned element an identity element.\r\n\r\n- [`FullEvaluate`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.1.2-1) uses `HashToGroup`, which could return the identity element. If `t = skS + m` yields one (zero is checked), `T = t^(-1) * P` would yield the identity element. This element is only used for the outputted hash, it might not be an issue after all.\r\n\r\n- [`GenerateProof`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.2.2-1) can return a zero scalar because of `s = (r - c * k) mod p`. Is this handled by the following `GG.SerializeScalar(s)`? I failed to find anything on that.\r\n\r\n- [`ComputeComposites`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.2.3-2) and [`ComputeCompositesFast`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.2.3-4) use `HashToScalar`, which can return a zero scalar, which is then used in `M = di * Cs[i] + M` and `Z = di * Ds[i] + Z`. At the end though, it can't actually return an identity element, so it might not be a problem.\r\n\r\n- [`Blind`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.3.1-1) can produce an identity element if `blind = GG.RandomScalar()` produces a 1 scalar. Which [seems to be allowed](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-2.1-4.5). This might not be a problem either because [`DeserializeElement`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-6.5-1) should make sure that it's not the identity element. But it would still be good if the error was caught earlier in the process.\r\n\r\n",
+      "createdAt": "2022-01-12T07:41:31Z",
+      "updatedAt": "2022-01-12T07:41:31Z",
       "closedAt": null,
       "comments": []
     }
@@ -21364,13 +21432,13 @@
       "labels": [],
       "body": "This refactor is predicated on the observation that 2HashDH and 3HashSDHI are equivalent for the non-verifiable case, and that public input is only really relevant for the verifiable case. The end result is three protocol variants in the spec: a base OPRF mode that is not variable, a 2HashDH verifiable mode without public input, and a 3HashDH-SDHI variant that is verifiable with public input. \r\n\r\nI think this is a good compromise given all the considerations involved -- threshold VOPRF, huzzah! -- and in the end yields a more understandable document. I also think the new structure should be easier to follow. \r\n\r\n[Rendered version of this PR](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/all-three/draft-irtf-cfrg-voprf.html).\r\n\r\nNote: test vectors have not yet been updated. I will do that in a followup series of commits once this gets some approvals.\r\n\r\ncc @kevinlewi, @bytemare, @hugokraw, @tomrist",
       "createdAt": "2022-01-07T00:32:49Z",
-      "updatedAt": "2022-01-11T00:36:09Z",
+      "updatedAt": "2022-01-12T01:25:20Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "master",
       "baseRefOid": "250a71063a5fb6e598f9823b53594a7fb4ad79c4",
       "headRepository": "cfrg/draft-irtf-cfrg-voprf",
       "headRefName": "caw/all-three",
-      "headRefOid": "4a414a08c3cdcc044caaac1f3448dcc40b9dbd03",
+      "headRefOid": "741b019b69d5dab5b6a1d5d5d018ce7b2e88a5a4",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
@@ -21382,6 +21450,20 @@
           "body": "@armfazh suggestions applied and comments resolved. Please have another look. ",
           "createdAt": "2022-01-10T14:22:40Z",
           "updatedAt": "2022-01-10T14:22:40Z"
+        },
+        {
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "@chris-wood We could piggyback #291 in this PR",
+          "createdAt": "2022-01-11T14:56:34Z",
+          "updatedAt": "2022-01-11T14:57:15Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@bytemare I figured we'd leave that out for now, since this is _primarily_ a refactoring.",
+          "createdAt": "2022-01-11T14:57:47Z",
+          "updatedAt": "2022-01-11T14:57:47Z"
         }
       ],
       "reviews": [
@@ -21908,6 +21990,65 @@
               "body": "Fair enough -- done!",
               "createdAt": "2022-01-10T22:57:46Z",
               "updatedAt": "2022-01-10T22:57:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4ykvm7",
+          "commit": {
+            "abbreviatedOid": "4a414a0"
+          },
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-11T00:35:28Z",
+          "updatedAt": "2022-01-11T02:24:43Z",
+          "comments": [
+            {
+              "originalPosition": 56,
+              "body": "Should `I2OSP(len(compositeDST), 2)` then be rather `I2OSP(len(compositeDST), 1)` ?",
+              "createdAt": "2022-01-11T00:35:28Z",
+              "updatedAt": "2022-01-11T02:24:43Z"
+            },
+            {
+              "originalPosition": 56,
+              "body": "The same comment applies to all the other dst that are not suffixed with the context string anymore",
+              "createdAt": "2022-01-11T00:36:09Z",
+              "updatedAt": "2022-01-11T02:24:43Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yk9Pv",
+          "commit": {
+            "abbreviatedOid": "4a414a0"
+          },
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "~There seems to be an error for the client and server in VOPRF when calling generate and verify functions.\r\nThe `C` argument in GenerateProof should be evaluated elements, and `D` argument blinded. Same for verification.\r\nR is the blinded element, Z is the evaluation.~ ",
+          "createdAt": "2022-01-11T02:42:32Z",
+          "updatedAt": "2022-01-11T02:59:05Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOBphpts4yn0GL",
+          "commit": {
+            "abbreviatedOid": "4a414a0"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-11T14:58:30Z",
+          "updatedAt": "2022-01-11T14:58:30Z",
+          "comments": [
+            {
+              "originalPosition": 56,
+              "body": "Yep, good idea!",
+              "createdAt": "2022-01-11T14:58:30Z",
+              "updatedAt": "2022-01-11T14:58:30Z"
             }
           ]
         }
