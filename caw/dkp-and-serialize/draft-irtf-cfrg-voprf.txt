@@ -5,10 +5,10 @@
 Network Working Group                                        A. Davidson
 Internet-Draft                                            Brave Software
 Intended status: Informational                          A. Faz-Hernandez
-Expires: 17 July 2022                                        N. Sullivan
+Expires: 19 July 2022                                        N. Sullivan
                                                                C.A. Wood
                                                         Cloudflare, Inc.
-                                                         13 January 2022
+                                                         15 January 2022
 
 
    Oblivious Pseudorandom Functions (OPRFs) using Prime-Order Groups
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 17 July 2022.
+   This Internet-Draft will expire on 19 July 2022.
 
 Copyright Notice
 
@@ -862,7 +862,7 @@ Table of Contents
      return blind, blindedElement
 
    Clients store blind locally, and sends blindedElement to the server
-   for evaluation.  Upon receipt, servers processs blindedElement using
+   for evaluation.  Upon receipt, servers process blindedElement using
    the Evaluate function described below.
 
    Input:
