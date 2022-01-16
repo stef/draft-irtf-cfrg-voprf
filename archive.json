@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-01-13T00:46:37.179901+00:00",
+  "timestamp": "2022-01-16T00:46:36.592390+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4202,7 +4202,7 @@
       "labels": [],
       "body": "The current spec punts on key derivation. In particular, it assumes some mechanism for deriving keys. To promote an EdDSA-like interface, wherein \"private keys\" are random seeds used to _derive_ actual scalars, it would be useful to specify the key generation mechanism. This might look something like the following:\r\n\r\n~~~\r\ndef DeriveKeyPair(seed, mode, suiteID, info):\r\n  contextString = \"VOPRF08-\" || \r\n                  I2OSP(mode, 1) || I2OSP(suiteID, 2) ||\r\n                  I2OSP(len(info), 2) || info\r\n  skS = GG.HashToScalar(seed, DST = \"DeriveKeyPair\" || contextString)\r\n  if skS == 0:\r\n    raise DeriveKeyPairError\r\n  pkS = ScalarBaseMult(skS)\r\n  return skS, pkS\r\n~~~\r\n\r\nOne could use this to derive keys for the OPRF, VOPRF, or POPRF protocol variants. For the POPRF case, `info` is repeated here and in the Evaluate interface, but this is not too dissimilar from HPKE, which admits application-specific information in the key schedule and at the AEAD level. Applications can choose how to expose `info` accordingly.",
       "createdAt": "2022-01-11T01:50:46Z",
-      "updatedAt": "2022-01-12T18:23:23Z",
+      "updatedAt": "2022-01-13T06:49:12Z",
       "closedAt": null,
       "comments": [
         {
@@ -4239,6 +4239,13 @@
           "body": "> Given the proof work that has been done, is this a problem?\r\n\r\nIn general, we should strive to make sure that separate protocols use separate keys. The proposal above gets us this for essentially free. ",
           "createdAt": "2022-01-12T18:23:23Z",
           "updatedAt": "2022-01-12T18:23:23Z"
+        },
+        {
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I support the idea of abstracting the pair of keys as opaque byte strings, and from them derive the required math objects.\r\n\r\nSo, a _deterministic key generation_ method is then required. The term 'derivation', I think, it will no longer apply.",
+          "createdAt": "2022-01-13T06:49:12Z",
+          "updatedAt": "2022-01-13T06:49:12Z"
         }
       ]
     },
@@ -21432,7 +21439,7 @@
       "labels": [],
       "body": "This refactor is predicated on the observation that 2HashDH and 3HashSDHI are equivalent for the non-verifiable case, and that public input is only really relevant for the verifiable case. The end result is three protocol variants in the spec: a base OPRF mode that is not variable, a 2HashDH verifiable mode without public input, and a 3HashDH-SDHI variant that is verifiable with public input. \r\n\r\nI think this is a good compromise given all the considerations involved -- threshold VOPRF, huzzah! -- and in the end yields a more understandable document. I also think the new structure should be easier to follow. \r\n\r\n[Rendered version of this PR](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/all-three/draft-irtf-cfrg-voprf.html).\r\n\r\nNote: test vectors have not yet been updated. I will do that in a followup series of commits once this gets some approvals.\r\n\r\ncc @kevinlewi, @bytemare, @hugokraw, @tomrist",
       "createdAt": "2022-01-07T00:32:49Z",
-      "updatedAt": "2022-01-12T01:25:20Z",
+      "updatedAt": "2022-01-15T20:09:48Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "master",
       "baseRefOid": "250a71063a5fb6e598f9823b53594a7fb4ad79c4",
@@ -21464,6 +21471,27 @@
           "body": "@bytemare I figured we'd leave that out for now, since this is _primarily_ a refactoring.",
           "createdAt": "2022-01-11T14:57:47Z",
           "updatedAt": "2022-01-11T14:57:47Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Ready for review. @alxdavids, please let me know if you will or will not have time to review this.",
+          "createdAt": "2022-01-13T00:57:34Z",
+          "updatedAt": "2022-01-13T00:57:34Z"
+        },
+        {
+          "author": "alxdavids",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@chris-wood I will review it, but I won't be able to get it done until the start of next week. Does this need to move on a quicker timeframe?",
+          "createdAt": "2022-01-13T13:43:52Z",
+          "updatedAt": "2022-01-13T13:43:52Z"
+        },
+        {
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "Forgot to confirm that vectors are ok!",
+          "createdAt": "2022-01-15T20:09:48Z",
+          "updatedAt": "2022-01-15T20:09:48Z"
         }
       ],
       "reviews": [
@@ -22049,6 +22077,79 @@
               "body": "Yep, good idea!",
               "createdAt": "2022-01-11T14:58:30Z",
               "updatedAt": "2022-01-11T14:58:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4yu6I6",
+          "commit": {
+            "abbreviatedOid": "741b019"
+          },
+          "author": "kevinlewi",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-01-13T01:13:23Z",
+          "updatedAt": "2022-01-13T01:13:23Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOBphpts4y4MAO",
+          "commit": {
+            "abbreviatedOid": "741b019"
+          },
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-01-15T20:09:05Z",
+          "updatedAt": "2022-01-15T20:09:05Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 308,
+      "id": "PR_kwDOBphpts4w8nLL",
+      "title": "DeriveKeyPair and serialization improvements",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/308",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Based on #304. Addresses #306. DO NOT MERGE.\r\n\r\n[Rendered version of this PR.](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/dkp-and-serialize/draft-irtf-cfrg-voprf.html)",
+      "createdAt": "2022-01-13T16:53:53Z",
+      "updatedAt": "2022-01-15T16:55:11Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "caw/all-three",
+      "baseRefOid": "741b019b69d5dab5b6a1d5d5d018ce7b2e88a5a4",
+      "headRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "headRefName": "caw/dkp-and-serialize",
+      "headRefOid": "be5a9f3ae09cbd53d3131813f2b1b711bff170d3",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOBphpts4y4IdX",
+          "commit": {
+            "abbreviatedOid": "7d6dd6b"
+          },
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2022-01-15T16:53:30Z",
+          "updatedAt": "2022-01-15T16:54:21Z",
+          "comments": [
+            {
+              "originalPosition": 220,
+              "body": "```suggestion\r\nUpon receipt, servers process `blindedElement` using the `Evaluate` function described\r\n```",
+              "createdAt": "2022-01-15T16:53:30Z",
+              "updatedAt": "2022-01-15T16:54:21Z"
             }
           ]
         }
