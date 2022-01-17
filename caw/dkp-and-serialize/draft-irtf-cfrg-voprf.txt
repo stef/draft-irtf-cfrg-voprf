@@ -5,10 +5,10 @@
 Network Working Group                                        A. Davidson
 Internet-Draft                                            Brave Software
 Intended status: Informational                          A. Faz-Hernandez
-Expires: 19 July 2022                                        N. Sullivan
+Expires: 21 July 2022                                        N. Sullivan
                                                                C.A. Wood
                                                         Cloudflare, Inc.
-                                                         15 January 2022
+                                                         17 January 2022
 
 
    Oblivious Pseudorandom Functions (OPRFs) using Prime-Order Groups
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 July 2022.
+   This Internet-Draft will expire on 21 July 2022.
 
 Copyright Notice
 
@@ -758,7 +758,7 @@ Table of Contents
    context used for executing the online phase of the protocol after
    agreeing on a mode and ciphersuite value suiteID.  The server key
    pair (skS, pkS) is generated using the following function, which
-   accepts a randmly generated seed of length Ns and optional public
+   accepts a randomly generated seed of length Ns and optional public
    info string:
 
    Input:
