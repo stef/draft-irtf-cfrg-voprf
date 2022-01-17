@@ -99,10 +99,9 @@ Table of Contents
      6.1.  Security Properties
      6.2.  Cryptographic Security
        6.2.1.  OPRF and VOPRF Assumptions
-       6.2.2.  Q-Strong-DH Oracle
-       6.2.3.  POPRF Assumptions
-       6.2.4.  2HashDH OPRF Equivalence
-       6.2.5.  Implications for Ciphersuite Choices
+       6.2.2.  POPRF Assumptions
+       6.2.3.  2HashDH OPRF Equivalence
+       6.2.4.  Implications for Ciphersuite Choices
      6.3.  Proof Randomness
      6.4.  Domain Separation
      6.5.  Element and Scalar Validation
@@ -1208,7 +1207,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info):
    Implementations may choose to not let applications control info in
    cases where this value is fixed or otherwise not useful to the
    application.  In this case, the resulting protocol is functionally
-   equivalent to an OPRF without public input.  See Section 6.2.4 for
+   equivalent to an OPRF without public input.  See Section 6.2.3 for
    discussion about repurposing existing non-verifiable OPRF
    implementations, i.e., those without the info parameter, using the
    construction in this specification.
@@ -1307,7 +1306,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info):
    protocol Section 6.1 under the OMDH assumption in the universal
    composability (UC) security model.
 
-6.2.2.  Q-Strong-DH Oracle
+6.2.1.1.  Q-Strong-DH Oracle
 
    A side-effect of the OPRF and VOPRF protocols is that it allows
    instantiation of a oracle for constructing Q-strong-DH (Q-sDH)
@@ -1346,7 +1345,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info):
    if they can distinguish the OPRF interaction from a protocol that
    computes the ideal functionality provided by the PRF.
 
-6.2.3.  POPRF Assumptions
+6.2.2.  POPRF Assumptions
 
    The POPRF construction in this document is based on the construction
    known as 3HashSDHI given by [TCRSTW21].  The construction is
@@ -1366,7 +1365,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info):
    construction from [JKK14], which is a predecessor to the design in
    this specification.)
 
-6.2.3.1.  Static q-DL Assumption
+6.2.2.1.  Static q-DL Assumption
 
    As with the OPRF and VOPRF variants, a side-effect of the POPRF
    design is that it allows instantiation of an oracle for retrieving
@@ -1395,7 +1394,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info):
    there exist a number of cryptanalytic studies to inform parameter
    choice and group instantiation (for example, [BG04] and [Cheon06]).
 
-6.2.4.  2HashDH OPRF Equivalence
+6.2.3.  2HashDH OPRF Equivalence
 
    The non-verifiable 3HashSDHI POPRF construction in this specification
    is equivalent to the non-verifiable 2HashDH OPRF from [JKK14] when
@@ -1427,7 +1426,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info):
 
    k = (1 - (k' * H2(t))) / k'
 
-6.2.5.  Implications for Ciphersuite Choices
+6.2.4.  Implications for Ciphersuite Choices
 
    The POPRF instantiations that we recommend in this document are
    informed by the cryptanalytic discussion above.  In particular,

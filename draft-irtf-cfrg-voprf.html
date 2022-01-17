@@ -1244,16 +1244,13 @@ elliptic curves.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
                     <p id="section-toc.1-1.6.2.2.2.1.1"><a href="#section-6.2.1" class="xref">6.2.1</a>.  <a href="#name-oprf-and-voprf-assumptions" class="xref">OPRF and VOPRF Assumptions</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2.2.2">
-                    <p id="section-toc.1-1.6.2.2.2.2.1"><a href="#section-6.2.2" class="xref">6.2.2</a>.  <a href="#name-q-strong-dh-oracle" class="xref">Q-Strong-DH Oracle</a></p>
+                    <p id="section-toc.1-1.6.2.2.2.2.1"><a href="#section-6.2.2" class="xref">6.2.2</a>.  <a href="#name-poprf-assumptions" class="xref">POPRF Assumptions</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2.2.3">
-                    <p id="section-toc.1-1.6.2.2.2.3.1"><a href="#section-6.2.3" class="xref">6.2.3</a>.  <a href="#name-poprf-assumptions" class="xref">POPRF Assumptions</a></p>
+                    <p id="section-toc.1-1.6.2.2.2.3.1"><a href="#section-6.2.3" class="xref">6.2.3</a>.  <a href="#name-2hashdh-oprf-equivalence" class="xref">2HashDH OPRF Equivalence</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2.2.4">
-                    <p id="section-toc.1-1.6.2.2.2.4.1"><a href="#section-6.2.4" class="xref">6.2.4</a>.  <a href="#name-2hashdh-oprf-equivalence" class="xref">2HashDH OPRF Equivalence</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2.2.5">
-                    <p id="section-toc.1-1.6.2.2.2.5.1"><a href="#section-6.2.5" class="xref">6.2.5</a>.  <a href="#name-implications-for-ciphersuit" class="xref">Implications for Ciphersuite Choices</a></p>
+                    <p id="section-toc.1-1.6.2.2.2.4.1"><a href="#section-6.2.4" class="xref">6.2.4</a>.  <a href="#name-implications-for-ciphersuit" class="xref">Implications for Ciphersuite Choices</a></p>
 </li>
                 </ul>
 </li>
@@ -2604,7 +2601,7 @@ constructing domain separation values.<a href="#section-5.2-2" class="pilcrow">�
 <p id="section-5.2-3">Implementations may choose to not let applications control <code>info</code> in cases where
 this value is fixed or otherwise not useful to the application. In this case,
 the resulting protocol is functionally equivalent to an OPRF without public
-input. See <a href="#equiv-2hashdh" class="xref">Section 6.2.4</a> for discussion about repurposing existing non-verifiable
+input. See <a href="#equiv-2hashdh" class="xref">Section 6.2.3</a> for discussion about repurposing existing non-verifiable
 OPRF implementations, i.e., those without the <code>info</code> parameter, using the construction
 in this specification.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
 </section>
@@ -2712,60 +2709,60 @@ the assumption that the One-More Gap DH is computationally difficult to solve.<a
 <p id="section-6.2.1-5">The original paper <span>[<a href="#JKK14" class="xref">JKK14</a>]</span> gives a security proof that the 2HashDH-NIZK
 construction satisfies the security guarantees of a VOPRF protocol <a href="#properties" class="xref">Section 6.1</a>
 under the OMDH assumption in the universal composability (UC) security model.<a href="#section-6.2.1-5" class="pilcrow">¶</a></p>
-</section>
-</div>
 <div id="qsdh">
-<section id="section-6.2.2">
-          <h4 id="name-q-strong-dh-oracle">
-<a href="#section-6.2.2" class="section-number selfRef">6.2.2. </a><a href="#name-q-strong-dh-oracle" class="section-name selfRef">Q-Strong-DH Oracle</a>
-          </h4>
-<p id="section-6.2.2-1">A side-effect of the OPRF and VOPRF protocols is that it allows instantiation of
+<section id="section-6.2.1.1">
+            <h5 id="name-q-strong-dh-oracle">
+<a href="#section-6.2.1.1" class="section-number selfRef">6.2.1.1. </a><a href="#name-q-strong-dh-oracle" class="section-name selfRef">Q-Strong-DH Oracle</a>
+            </h5>
+<p id="section-6.2.1.1-1">A side-effect of the OPRF and VOPRF protocols is that it allows instantiation of
 a oracle for constructing Q-strong-DH (Q-sDH) samples. The Q-Strong-DH
-problem asks the following.<a href="#section-6.2.2-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.2-2">
+problem asks the following.<a href="#section-6.2.1.1-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.2.1.1-2">
 <pre>
     Given G1, G2, h*G2, (h^2)*G2, ..., (h^Q)*G2; for G1 and G2
     generators of GG.
 
     Output ( (1/(k+c))*G1, c ) where c is an element of GF(p)
-</pre><a href="#section-6.2.2-2" class="pilcrow">¶</a>
+</pre><a href="#section-6.2.1.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-6.2.2-3">The assumption that this problem is hard was first introduced in
+<p id="section-6.2.1.1-3">The assumption that this problem is hard was first introduced in
 <span>[<a href="#BB04" class="xref">BB04</a>]</span>. Since then, there have been a number of cryptanalytic studies
 that have reduced the security of the assumption below that implied by
 the group instantiation (for example, <span>[<a href="#BG04" class="xref">BG04</a>]</span> and <span>[<a href="#Cheon06" class="xref">Cheon06</a>]</span>). In
 summary, the attacks reduce the security of the group instantiation by
 log_2(Q)/2 bits. Note that the attacks only work in situations where Q
 divides p-1 or p+1, where p is the order of the prime-order group used
-to instantiate the OPRF.<a href="#section-6.2.2-3" class="pilcrow">¶</a></p>
-<p id="section-6.2.2-4">As an example, suppose that a group instantiation is used that provides
+to instantiate the OPRF.<a href="#section-6.2.1.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.2.1.1-4">As an example, suppose that a group instantiation is used that provides
 128 bits of security against discrete log cryptanalysis. Then an
 adversary with access to a Q-sDH oracle and makes Q=2^20 queries can
 reduce the security of the instantiation by log_2(2^20)/2 = 10 bits.
-Launching this attack would require 2^(p/2-log_2(Q)/2) bits of memory.<a href="#section-6.2.2-4" class="pilcrow">¶</a></p>
-<p id="section-6.2.2-5">Notice that it is easy to instantiate a Q-sDH oracle using the OPRF
+Launching this attack would require 2^(p/2-log_2(Q)/2) bits of memory.<a href="#section-6.2.1.1-4" class="pilcrow">¶</a></p>
+<p id="section-6.2.1.1-5">Notice that it is easy to instantiate a Q-sDH oracle using the OPRF
 functionality that we provide. A client can just submit sequential
 queries of the form (G, k * G, (k^2)G, ..., (k^(Q-1))G), where each
 query is the output of the previous interaction. This means that any
 client that submits Q queries to the OPRF can use the aforementioned
 attacks to reduce the security of the group instantiation by
-(log_2(Q)/2) bits.<a href="#section-6.2.2-5" class="pilcrow">¶</a></p>
-<p id="section-6.2.2-6">Recall that from a malicious client's perspective, the adversary wins if
+(log_2(Q)/2) bits.<a href="#section-6.2.1.1-5" class="pilcrow">¶</a></p>
+<p id="section-6.2.1.1-6">Recall that from a malicious client's perspective, the adversary wins if
 they can distinguish the OPRF interaction from a protocol that computes
-the ideal functionality provided by the PRF.<a href="#section-6.2.2-6" class="pilcrow">¶</a></p>
+the ideal functionality provided by the PRF.<a href="#section-6.2.1.1-6" class="pilcrow">¶</a></p>
+</section>
+</div>
 </section>
 </div>
 <div id="poprf-assumptions">
-<section id="section-6.2.3">
+<section id="section-6.2.2">
           <h4 id="name-poprf-assumptions">
-<a href="#section-6.2.3" class="section-number selfRef">6.2.3. </a><a href="#name-poprf-assumptions" class="section-name selfRef">POPRF Assumptions</a>
+<a href="#section-6.2.2" class="section-number selfRef">6.2.2. </a><a href="#name-poprf-assumptions" class="section-name selfRef">POPRF Assumptions</a>
           </h4>
-<p id="section-6.2.3-1">The POPRF construction in this document is based on the construction known
+<p id="section-6.2.2-1">The POPRF construction in this document is based on the construction known
 as 3HashSDHI given by <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span>. The construction is identical to
 3HashSDHI, except that this design can optionally perform multiple POPRF
 evaluations in one go, whilst only constructing one NIZK proof object.
-This is enabled using an established batching technique.<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
-<p id="section-6.2.3-2">The cryptographic security of the construction is based on the assumption
+This is enabled using an established batching technique.<a href="#section-6.2.2-1" class="pilcrow">¶</a></p>
+<p id="section-6.2.2-2">The cryptographic security of the construction is based on the assumption
 that the One-More Gap Strong Diffie-Hellman Inversion (SDHI) assumption from
 <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span> is computationally difficult to solve. <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span> show that
 both the One-More Gap Computational Diffie Hellman (CDH)
@@ -2773,98 +2770,98 @@ assumption and the One-More Gap SDHI assumption reduce to the q-DL assumption
 in the algebraic group model, for some q number of <code>Evaluate</code> queries.
 (The One-More Gap CDH assumption was the hardness assumption used to
 evaluate the 2HashDH-NIZK construction from <span>[<a href="#JKK14" class="xref">JKK14</a>]</span>, which is a predecessor
-to the design in this specification.)<a href="#section-6.2.3-2" class="pilcrow">¶</a></p>
+to the design in this specification.)<a href="#section-6.2.2-2" class="pilcrow">¶</a></p>
 <div id="static-q-dl-assumption">
-<section id="section-6.2.3.1">
+<section id="section-6.2.2.1">
             <h5 id="name-static-q-dl-assumption">
-<a href="#section-6.2.3.1" class="section-number selfRef">6.2.3.1. </a><a href="#name-static-q-dl-assumption" class="section-name selfRef">Static q-DL Assumption</a>
+<a href="#section-6.2.2.1" class="section-number selfRef">6.2.2.1. </a><a href="#name-static-q-dl-assumption" class="section-name selfRef">Static q-DL Assumption</a>
             </h5>
-<p id="section-6.2.3.1-1">As with the OPRF and VOPRF variants, a side-effect of the POPRF design is
+<p id="section-6.2.2.1-1">As with the OPRF and VOPRF variants, a side-effect of the POPRF design is
 that it allows instantiation of an oracle for retrieving "strong-DH"
 evaluations, in which an adversary can query a group element
 B and scalar c, and receive evaluation output 1/(k+c)*B. This type of oracle allows
 an adversary to form elements of "repeated powers" of the server-side secret. This
 "repeated powers" structure has been studied in terms of the q-DL problem which
 asks the following: Given G1, G2, h*G2, (h^2)*G2, ..., (h^Q)*G2; for G1 and G2
-generators of GG. Output h where h is an element of GF(p)<a href="#section-6.2.3.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.2.3.1-2">For example, consider an adversary that queries the strong-DH oracle provided by the
+generators of GG. Output h where h is an element of GF(p)<a href="#section-6.2.2.1-1" class="pilcrow">¶</a></p>
+<p id="section-6.2.2.1-2">For example, consider an adversary that queries the strong-DH oracle provided by the
 POPRF on a fixed scalar c starting with group element G2, then passes the received
 evaluation group element back as input for the next evaluation. If we set h = 1/(k+c),
 such an adversary would receive exactly the evaluations given in the q-DL problem: h*G2,
-(h^2)*G2, ..., (h^Q)*G2.<a href="#section-6.2.3.1-2" class="pilcrow">¶</a></p>
-<p id="section-6.2.3.1-3"><span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span> capture the power of the strong-DH oracle in the One-More Gap SDHI assumption
+(h^2)*G2, ..., (h^Q)*G2.<a href="#section-6.2.2.1-2" class="pilcrow">¶</a></p>
+<p id="section-6.2.2.1-3"><span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span> capture the power of the strong-DH oracle in the One-More Gap SDHI assumption
 and show, in the algebraic group model, the security of this assumption can be reduced to
 the security of the q-DL problem, where q is the number of queries made to the blind
-evaluation oracle.<a href="#section-6.2.3.1-3" class="pilcrow">¶</a></p>
-<p id="section-6.2.3.1-4">The q-DL assumption has been well studied in the literature, and there exist a number of
+evaluation oracle.<a href="#section-6.2.2.1-3" class="pilcrow">¶</a></p>
+<p id="section-6.2.2.1-4">The q-DL assumption has been well studied in the literature, and there exist a number of
 cryptanalytic studies to inform parameter choice and group instantiation (for example,
-<span>[<a href="#BG04" class="xref">BG04</a>]</span> and <span>[<a href="#Cheon06" class="xref">Cheon06</a>]</span>).<a href="#section-6.2.3.1-4" class="pilcrow">¶</a></p>
+<span>[<a href="#BG04" class="xref">BG04</a>]</span> and <span>[<a href="#Cheon06" class="xref">Cheon06</a>]</span>).<a href="#section-6.2.2.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="equiv-2hashdh">
-<section id="section-6.2.4">
+<section id="section-6.2.3">
           <h4 id="name-2hashdh-oprf-equivalence">
-<a href="#section-6.2.4" class="section-number selfRef">6.2.4. </a><a href="#name-2hashdh-oprf-equivalence" class="section-name selfRef">2HashDH OPRF Equivalence</a>
+<a href="#section-6.2.3" class="section-number selfRef">6.2.3. </a><a href="#name-2hashdh-oprf-equivalence" class="section-name selfRef">2HashDH OPRF Equivalence</a>
           </h4>
-<p id="section-6.2.4-1">The non-verifiable 3HashSDHI POPRF construction in this specification is equivalent
+<p id="section-6.2.3-1">The non-verifiable 3HashSDHI POPRF construction in this specification is equivalent
 to the non-verifiable 2HashDH OPRF from <span>[<a href="#JKK14" class="xref">JKK14</a>]</span> when the input <code>info</code> is fixed.
 In particular, the 3HashSDHI POPRF computes the following given private key <code>k</code>,
 private input <code>x</code>, and public input <code>t</code>, where H1, H2, and H3 are GG.HashToGroup,
-GG.HashToScalar, and Hash, respectively:<a href="#section-6.2.4-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.4-2">
+GG.HashToScalar, and Hash, respectively:<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.2.3-2">
 <pre>
 H3(x, H1(x)^(1 / (k + H2(t))))
-</pre><a href="#section-6.2.4-2" class="pilcrow">¶</a>
+</pre><a href="#section-6.2.3-2" class="pilcrow">¶</a>
 </div>
-<p id="section-6.2.4-3">Similarly, the 2HashDH OPRF computes the following given private key <code>k'</code> and
-private input <code>x</code>:<a href="#section-6.2.4-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.4-4">
+<p id="section-6.2.3-3">Similarly, the 2HashDH OPRF computes the following given private key <code>k'</code> and
+private input <code>x</code>:<a href="#section-6.2.3-3" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.2.3-4">
 <pre>
 H3(x, H1(x)^k')
-</pre><a href="#section-6.2.4-4" class="pilcrow">¶</a>
+</pre><a href="#section-6.2.3-4" class="pilcrow">¶</a>
 </div>
-<p id="section-6.2.4-5">Given a fixed public input <code>t</code>, one can transform a 3HashSDHI private key <code>k</code>
-into an equivalent 2HashDH private key <code>k'</code> as follows:<a href="#section-6.2.4-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.4-6">
+<p id="section-6.2.3-5">Given a fixed public input <code>t</code>, one can transform a 3HashSDHI private key <code>k</code>
+into an equivalent 2HashDH private key <code>k'</code> as follows:<a href="#section-6.2.3-5" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.2.3-6">
 <pre>
 k' = 1 / (k + H2(t))
-</pre><a href="#section-6.2.4-6" class="pilcrow">¶</a>
+</pre><a href="#section-6.2.3-6" class="pilcrow">¶</a>
 </div>
-<p id="section-6.2.4-7">This transformation is undefined for values of <code>k</code> and <code>t</code> such that
+<p id="section-6.2.3-7">This transformation is undefined for values of <code>k</code> and <code>t</code> such that
 <code>k + H2(t) = 0</code>. Because only a single choice of <code>k</code> leads to this
 undefined case, the distribution of <code>k'</code> defined via this transformation
 is statistically close to the distribution of a randomly sampled <code>k'</code>
-as output from <code>GG.GenerateKeyPair</code>.<a href="#section-6.2.4-7" class="pilcrow">¶</a></p>
-<p id="section-6.2.4-8">Note that one can also transform any non-zero 2HashDH private key <code>k'</code> into
-an equivalent 3HashSDHI private key <code>k</code> as follows:<a href="#section-6.2.4-8" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.4-9">
+as output from <code>GG.GenerateKeyPair</code>.<a href="#section-6.2.3-7" class="pilcrow">¶</a></p>
+<p id="section-6.2.3-8">Note that one can also transform any non-zero 2HashDH private key <code>k'</code> into
+an equivalent 3HashSDHI private key <code>k</code> as follows:<a href="#section-6.2.3-8" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-6.2.3-9">
 <pre>
 k = (1 - (k' * H2(t))) / k'
-</pre><a href="#section-6.2.4-9" class="pilcrow">¶</a>
+</pre><a href="#section-6.2.3-9" class="pilcrow">¶</a>
 </div>
 </section>
 </div>
 <div id="implications-for-ciphersuite-choices">
-<section id="section-6.2.5">
+<section id="section-6.2.4">
           <h4 id="name-implications-for-ciphersuit">
-<a href="#section-6.2.5" class="section-number selfRef">6.2.5. </a><a href="#name-implications-for-ciphersuit" class="section-name selfRef">Implications for Ciphersuite Choices</a>
+<a href="#section-6.2.4" class="section-number selfRef">6.2.4. </a><a href="#name-implications-for-ciphersuit" class="section-name selfRef">Implications for Ciphersuite Choices</a>
           </h4>
-<p id="section-6.2.5-1">The POPRF instantiations that we recommend in this document are informed
+<p id="section-6.2.4-1">The POPRF instantiations that we recommend in this document are informed
 by the cryptanalytic discussion above. In particular, choosing elliptic
 curves configurations that describe 128-bit group instantiations would
 appear to in fact instantiate a POPRF with 128-(log_2(Q)/2) bits of
 security. Moreover, such attacks are only possible for those certain
 applications where the adversary can query the POPRF directly.
-In applications where such an oracle is not made available this security loss does not apply.<a href="#section-6.2.5-1" class="pilcrow">¶</a></p>
-<p id="section-6.2.5-2">In most cases, it would require an informed and persistent attacker to
+In applications where such an oracle is not made available this security loss does not apply.<a href="#section-6.2.4-1" class="pilcrow">¶</a></p>
+<p id="section-6.2.4-2">In most cases, it would require an informed and persistent attacker to
 launch a highly expensive attack to reduce security to anything much
 below 100 bits of security. We see this possibility as something that
 may result in problems in the future. Applications that admit the
 aforementioned oracle functionality, and that cannot tolerate discrete
 logarithm security of lower than 128 bits, are RECOMMENDED to only
-implement ciphersuites 0x0002, 0x0004, and 0x0005.<a href="#section-6.2.5-2" class="pilcrow">¶</a></p>
+implement ciphersuites 0x0002, 0x0004, and 0x0005.<a href="#section-6.2.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
