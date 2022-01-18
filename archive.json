@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-01-16T00:46:36.592390+00:00",
+  "timestamp": "2022-01-18T00:46:14.100081+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4131,15 +4131,15 @@
       "id": "I_kwDOBphpts4-0BwD",
       "title": "Add more prose",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/296",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Each function would benefit from a description of what's happening, and why. ",
       "createdAt": "2021-11-15T15:56:41Z",
-      "updatedAt": "2021-11-15T15:56:41Z",
-      "closedAt": null,
+      "updatedAt": "2022-01-17T14:16:54Z",
+      "closedAt": "2022-01-17T14:16:54Z",
       "comments": []
     },
     {
@@ -21432,24 +21432,26 @@
       "id": "PR_kwDOBphpts4wovPt",
       "title": "Major refactor to focus on three protocol variants: OPRF, VOPRF, and POPRF",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/304",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This refactor is predicated on the observation that 2HashDH and 3HashSDHI are equivalent for the non-verifiable case, and that public input is only really relevant for the verifiable case. The end result is three protocol variants in the spec: a base OPRF mode that is not variable, a 2HashDH verifiable mode without public input, and a 3HashDH-SDHI variant that is verifiable with public input. \r\n\r\nI think this is a good compromise given all the considerations involved -- threshold VOPRF, huzzah! -- and in the end yields a more understandable document. I also think the new structure should be easier to follow. \r\n\r\n[Rendered version of this PR](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/all-three/draft-irtf-cfrg-voprf.html).\r\n\r\nNote: test vectors have not yet been updated. I will do that in a followup series of commits once this gets some approvals.\r\n\r\ncc @kevinlewi, @bytemare, @hugokraw, @tomrist",
       "createdAt": "2022-01-07T00:32:49Z",
-      "updatedAt": "2022-01-15T20:09:48Z",
+      "updatedAt": "2022-01-17T14:16:42Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "master",
       "baseRefOid": "250a71063a5fb6e598f9823b53594a7fb4ad79c4",
       "headRepository": "cfrg/draft-irtf-cfrg-voprf",
       "headRefName": "caw/all-three",
       "headRefOid": "741b019b69d5dab5b6a1d5d5d018ce7b2e88a5a4",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2022-01-17T14:16:42Z",
+      "mergedAt": "2022-01-17T14:16:41Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "51637f1c3ad91bc24e9986133d32a6d5599cbd89"
+      },
       "comments": [
         {
           "author": "chris-wood",
@@ -22113,25 +22115,47 @@
       "id": "PR_kwDOBphpts4w8nLL",
       "title": "DeriveKeyPair and serialization improvements",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/308",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "Based on #304. Addresses #306. DO NOT MERGE.\r\n\r\n[Rendered version of this PR.](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/dkp-and-serialize/draft-irtf-cfrg-voprf.html)",
+      "body": "Based on #304. Addresses #306.\r\n\r\n[Rendered version of this PR.](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/dkp-and-serialize/draft-irtf-cfrg-voprf.html)",
       "createdAt": "2022-01-13T16:53:53Z",
-      "updatedAt": "2022-01-15T16:55:11Z",
+      "updatedAt": "2022-01-18T00:33:10Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
-      "baseRefName": "caw/all-three",
-      "baseRefOid": "741b019b69d5dab5b6a1d5d5d018ce7b2e88a5a4",
+      "baseRefName": "master",
+      "baseRefOid": "99f9894c4dd8e4ba3b23c3170b6652b6684c7cd5",
       "headRepository": "cfrg/draft-irtf-cfrg-voprf",
       "headRefName": "caw/dkp-and-serialize",
-      "headRefOid": "be5a9f3ae09cbd53d3131813f2b1b711bff170d3",
-      "closedAt": null,
+      "headRefOid": "b13fc8a650518e4cabe21d3f4e08526d6c72cc4c",
+      "closedAt": "2022-01-18T00:33:10Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@armfazh @bytemare this is ready for review.",
+          "createdAt": "2022-01-17T14:19:02Z",
+          "updatedAt": "2022-01-17T14:19:02Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Thanks for the reviews! I'll update based on the latest comments and then update test vectors, too. (This will change how keys are derived, so the vectors will change.)",
+          "createdAt": "2022-01-17T23:45:27Z",
+          "updatedAt": "2022-01-17T23:45:27Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This branch is incredibly screwed up. Blowing it away and starting anew.",
+          "createdAt": "2022-01-18T00:33:10Z",
+          "updatedAt": "2022-01-18T00:33:10Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOBphpts4y4IdX",
@@ -22152,8 +22176,336 @@
               "updatedAt": "2022-01-15T16:54:21Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y8yjL",
+          "commit": {
+            "abbreviatedOid": "be5a9f3"
+          },
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-17T21:40:00Z",
+          "updatedAt": "2022-01-17T21:40:00Z",
+          "comments": [
+            {
+              "originalPosition": 167,
+              "body": "`counter` is bound between 0 and 255, so technically an unsigned 8-bit integer, a byte. Does it make sense to explicitly I2OSP it to one byte?",
+              "createdAt": "2022-01-17T21:40:00Z",
+              "updatedAt": "2022-01-17T21:40:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y80bf",
+          "commit": {
+            "abbreviatedOid": "be5a9f3"
+          },
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2022-01-17T21:58:44Z",
+          "updatedAt": "2022-01-17T22:19:52Z",
+          "comments": [
+            {
+              "originalPosition": 219,
+              "body": "```suggestion\r\nClients store `blind` locally, and send `blindedElement` to the server for evaluation.\r\n```",
+              "createdAt": "2022-01-17T21:58:44Z",
+              "updatedAt": "2022-01-17T22:19:52Z"
+            },
+            {
+              "originalPosition": 428,
+              "body": "This part of the section\r\n\r\n> Some OPRF variants specified in this document have fallible operations. For example, `Finalize`\r\nand `Evaluate` can fail if any element received from the peer fails deserialization.\r\n\r\nmight need to be updated, since Finalize doesn't deserialize anymore",
+              "createdAt": "2022-01-17T22:19:36Z",
+              "updatedAt": "2022-01-17T22:19:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y83Ub",
+          "commit": {
+            "abbreviatedOid": "be5a9f3"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "CHANGES_REQUESTED",
+          "body": "",
+          "createdAt": "2022-01-17T22:29:13Z",
+          "updatedAt": "2022-01-17T22:47:36Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "we can leverage the TLS syntax notation to express these types.",
+              "createdAt": "2022-01-17T22:29:13Z",
+              "updatedAt": "2022-01-17T22:47:36Z"
+            },
+            {
+              "originalPosition": 72,
+              "body": "not really agree with this arrow. it was implicit that the client obtained server's key by any method, not precisely server sending its key to client.\r\ne.g. Client could get key by pre-installation.",
+              "createdAt": "2022-01-17T22:33:16Z",
+              "updatedAt": "2022-01-17T22:47:36Z"
+            },
+            {
+              "originalPosition": 72,
+              "body": "otoh, does the server require to use a certificate that proves ownership of the pair of keys? (*I was told the protocol is PKI-free)",
+              "createdAt": "2022-01-17T22:35:09Z",
+              "updatedAt": "2022-01-17T22:47:36Z"
+            },
+            {
+              "originalPosition": 120,
+              "body": "```suggestion\r\nto as `ID`; see {{ciphersuites}} for the registry of initial values.\r\n```\r\n",
+              "createdAt": "2022-01-17T22:35:54Z",
+              "updatedAt": "2022-01-17T22:47:36Z"
+            },
+            {
+              "originalPosition": 143,
+              "body": "```suggestion\r\nusing the following function, which accepts a randomly generated seed of length\r\n```",
+              "createdAt": "2022-01-17T22:36:55Z",
+              "updatedAt": "2022-01-17T22:47:36Z"
+            },
+            {
+              "originalPosition": 272,
+              "body": "Z is not defined",
+              "createdAt": "2022-01-17T22:40:55Z",
+              "updatedAt": "2022-01-17T22:47:36Z"
+            },
+            {
+              "originalPosition": 322,
+              "body": "```suggestion\r\nErrors: VerifyError\r\n```",
+              "createdAt": "2022-01-17T22:42:45Z",
+              "updatedAt": "2022-01-17T22:47:36Z"
+            },
+            {
+              "originalPosition": 404,
+              "body": "as U is a multiple of G, \r\nso blinded is a multiple of evaluated element, (double check)",
+              "createdAt": "2022-01-17T22:45:26Z",
+              "updatedAt": "2022-01-17T22:47:36Z"
+            },
+            {
+              "originalPosition": 426,
+              "body": "this means that applications can define its own serialization for objects? or applications must comply with the serialization recommended in this doc? not clear to me.",
+              "createdAt": "2022-01-17T22:47:17Z",
+              "updatedAt": "2022-01-17T22:47:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y85HH",
+          "commit": {
+            "abbreviatedOid": "be5a9f3"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-17T22:50:26Z",
+          "updatedAt": "2022-01-17T22:50:26Z",
+          "comments": [
+            {
+              "originalPosition": 6,
+              "body": "I don't think that's appropriate. These are just byte strings, not length prefixed byte strings or anything.",
+              "createdAt": "2022-01-17T22:50:26Z",
+              "updatedAt": "2022-01-17T22:50:26Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y85Mj",
+          "commit": {
+            "abbreviatedOid": "be5a9f3"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-17T22:51:30Z",
+          "updatedAt": "2022-01-17T22:51:30Z",
+          "comments": [
+            {
+              "originalPosition": 72,
+              "body": "This simply means the client gets the public key from the server, somehow. That can be preinstallation.",
+              "createdAt": "2022-01-17T22:51:30Z",
+              "updatedAt": "2022-01-17T22:51:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y85X_",
+          "commit": {
+            "abbreviatedOid": "7041d2a"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-17T22:53:44Z",
+          "updatedAt": "2022-01-17T22:53:44Z",
+          "comments": [
+            {
+              "originalPosition": 426,
+              "body": "It means that how applications choose to expose the external API is up to them. Does that clarify?",
+              "createdAt": "2022-01-17T22:53:44Z",
+              "updatedAt": "2022-01-17T22:53:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y85km",
+          "commit": {
+            "abbreviatedOid": "7041d2a"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-17T22:56:12Z",
+          "updatedAt": "2022-01-17T22:56:12Z",
+          "comments": [
+            {
+              "originalPosition": 426,
+              "body": "last question, does the wire format is no more a MUST in order to be compliant with this draft?",
+              "createdAt": "2022-01-17T22:56:12Z",
+              "updatedAt": "2022-01-17T22:56:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y85pr",
+          "commit": {
+            "abbreviatedOid": "45d922a"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-17T22:57:16Z",
+          "updatedAt": "2022-01-17T22:57:16Z",
+          "comments": [
+            {
+              "originalPosition": 404,
+              "body": "are you saying this is incorrect as is?",
+              "createdAt": "2022-01-17T22:57:16Z",
+              "updatedAt": "2022-01-17T22:57:16Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y85uL",
+          "commit": {
+            "abbreviatedOid": "45d922a"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-17T22:58:09Z",
+          "updatedAt": "2022-01-17T22:58:09Z",
+          "comments": [
+            {
+              "originalPosition": 426,
+              "body": "Applications that use the OPRF define how to send protocol messages. They can use the wire formats (serialized forms) defined here or something else.",
+              "createdAt": "2022-01-17T22:58:09Z",
+              "updatedAt": "2022-01-17T22:58:09Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y86hG",
+          "commit": {
+            "abbreviatedOid": "45d922a"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-17T23:08:14Z",
+          "updatedAt": "2022-01-17T23:08:14Z",
+          "comments": [
+            {
+              "originalPosition": 404,
+              "body": "I double-checked, it's fine because of the inverse of `t` ",
+              "createdAt": "2022-01-17T23:08:14Z",
+              "updatedAt": "2022-01-17T23:08:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4y87WR",
+          "commit": {
+            "abbreviatedOid": "45d922a"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-17T23:19:32Z",
+          "updatedAt": "2022-01-17T23:19:33Z",
+          "comments": [
+            {
+              "originalPosition": 167,
+              "body": "Yeah, I think so. We don't say the type of counter is an unsigned byte, so this makes it explicit. ",
+              "createdAt": "2022-01-17T23:19:33Z",
+              "updatedAt": "2022-01-17T23:19:33Z"
+            }
+          ]
         }
       ]
+    },
+    {
+      "number": 309,
+      "id": "PR_kwDOBphpts4xHdcZ",
+      "title": "fix capitalization GO -> Go",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/309",
+      "state": "MERGED",
+      "author": "bytemare",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2022-01-16T23:32:13Z",
+      "updatedAt": "2022-01-17T14:16:15Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "master",
+      "baseRefOid": "250a71063a5fb6e598f9823b53594a7fb4ad79c4",
+      "headRepository": "bytemare/draft-irtf-cfrg-voprf",
+      "headRefName": "patch-5",
+      "headRefOid": "15d22abde1d9bda437ee5e83466c5b79bde13f20",
+      "closedAt": "2022-01-17T14:16:15Z",
+      "mergedAt": "2022-01-17T14:16:15Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "f478d866523b73142f7df716921f1ef4a5149a0e"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 310,
+      "id": "PR_kwDOBphpts4xLObZ",
+      "title": "Add DeriveKeyPair and separate serialization code from main protocol routines",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/310",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #306.\r\n\r\n[Rendered version of this PR](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/dkp-with-serialization/draft-irtf-cfrg-voprf.html)\r\n\r\ncc @bytemare, @kevinlewi, @tomrist",
+      "createdAt": "2022-01-18T00:35:20Z",
+      "updatedAt": "2022-01-18T00:38:28Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "master",
+      "baseRefOid": "99f9894c4dd8e4ba3b23c3170b6652b6684c7cd5",
+      "headRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "headRefName": "caw/dkp-with-serialization",
+      "headRefOid": "4997f9aac76c629a56482624bd9a305a27264386",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
