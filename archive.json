@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-01-18T00:46:14.100081+00:00",
+  "timestamp": "2022-01-20T00:49:40.786091+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4179,16 +4179,24 @@
       "id": "I_kwDOBphpts5BauD1",
       "title": "`HashToGroup` and `HashToScalar` can produce invalid keys",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/305",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "daxpedda",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "`HashToGroup` can produce the identity element and `HashToScalar` can produce a zero scalar. It is extremely unlikely though.\r\n\r\nCurrently it's not specified how to behave when this happens. Potentially, on failure to produce a valid output, the program might just automatically try again, which would simply be rejection sampling. Maybe that's fine, IANA cryptographer.\r\n\r\nIn addition `DeriveKeyPair` relies on `HashToScalar`, but it's currently undefined how to handler zero scalars.\r\n```sage\r\ndef DeriveKeyPair(mode, suite, seed):\r\n  skS = GG.HashToScalar(seed, DST = \"HashToScalar-\" || contextString)\r\n  pkS = ScalarBaseMult(skS)\r\n  return skS, pkS\r\n```\r\nhttps://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-2.1-5\r\n> Two functions can be used for generating a (V)OPRF key pair (`skS`, `pkS`)\r\nwhere `skS` is a non-zero integer less than `p` and `pkS = ScalarBaseMult(skS)`:\r\n`GenerateKeyPair` and `DeriveKeyPair`.\r\n\r\nRelated: cfrg/draft-irtf-cfrg-opaque#298.",
       "createdAt": "2022-01-10T07:04:29Z",
-      "updatedAt": "2022-01-10T07:04:29Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2022-01-19T14:59:46Z",
+      "closedAt": "2022-01-19T14:59:45Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Let's track this in #307.",
+          "createdAt": "2022-01-19T14:59:45Z",
+          "updatedAt": "2022-01-19T14:59:45Z"
+        }
+      ]
     },
     {
       "number": 306,
@@ -22493,19 +22501,122 @@
       "labels": [],
       "body": "Closes #306.\r\n\r\n[Rendered version of this PR](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/dkp-with-serialization/draft-irtf-cfrg-voprf.html)\r\n\r\ncc @bytemare, @kevinlewi, @tomrist",
       "createdAt": "2022-01-18T00:35:20Z",
-      "updatedAt": "2022-01-18T00:38:28Z",
+      "updatedAt": "2022-01-20T00:08:55Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "master",
       "baseRefOid": "99f9894c4dd8e4ba3b23c3170b6652b6684c7cd5",
       "headRepository": "cfrg/draft-irtf-cfrg-voprf",
       "headRefName": "caw/dkp-with-serialization",
-      "headRefOid": "4997f9aac76c629a56482624bd9a305a27264386",
+      "headRefOid": "2a85106552d8f47d11cba782771b7e85c033bd11",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
-      "comments": [],
-      "reviews": []
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@armfazh @bytemare: reference implementation and test vectors updated!",
+          "createdAt": "2022-01-19T14:58:11Z",
+          "updatedAt": "2022-01-19T14:58:11Z"
+        },
+        {
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We can avoid the counter overflows by using an iterated hashing instead.\r\nwhat about something like this?\r\n```python\r\n1. T = 000000\r\n2. contextString = CreateContextString(mode, suiteID)\r\n3. deriveInput = seed || I2OSP(len(info), 2) || info\r\n4. MSG = deriveInput || T\r\n5. DST = \"DeriveKeyPair\" || contextString\r\n6. skS = GG.HashToScalar(MSG, DST)  \r\n7. if skS == 0\r\n8.    T = Hash(T)\r\n9.    return to Step 4.\r\nA. pks = ScalarBaseMult(skS)\r\nB. return (skS,pkS).\r\n```",
+          "createdAt": "2022-01-19T20:55:01Z",
+          "updatedAt": "2022-01-19T20:55:01Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> We can avoid the counter overflows by using an iterated hashing instead.\r\n\r\nProbability of counter overflow is negligible, so I don't think we need to be overly clever with the construction here. It seems best to match key generation routines used for other algorithms like [HPKE](https://cfrg.github.io/draft-irtf-cfrg-hpke/draft-irtf-cfrg-hpke.html#name-derivekeypair). I suggest we stick with what's here in this PR, and file this iterated hash variant as an issue to possibly do later on. ",
+          "createdAt": "2022-01-19T21:39:17Z",
+          "updatedAt": "2022-01-19T21:39:17Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOBphpts4y-h0n",
+          "commit": {
+            "abbreviatedOid": "4997f9a"
+          },
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-18T10:56:14Z",
+          "updatedAt": "2022-01-18T10:56:15Z",
+          "comments": [
+            {
+              "originalPosition": 185,
+              "body": "Is there interest in making this function infallible?\r\n\r\nIANA cryptographer, but could `HashToScalar` be changed to always return a non-zero scalar by using the reduction mod n-1 plus one method. My assumption here is actually that `HashToScalar` returning zero scalars is actually a problem in other functions.\r\n\r\n@armfazh mentions here https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/298#issuecomment-1006936162 that `HashToScalar` shouldn't be subject to change, may I ask why?\r\n\r\nI made a list of problems here https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/307 that are affected by `HashToScalar` returning a zero scalar.",
+              "createdAt": "2022-01-18T10:56:14Z",
+              "updatedAt": "2022-01-18T10:56:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zE5Hr",
+          "commit": {
+            "abbreviatedOid": "2a85106"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-19T14:59:02Z",
+          "updatedAt": "2022-01-19T14:59:02Z",
+          "comments": [
+            {
+              "originalPosition": 185,
+              "body": "The probably that this fails is negligible, so it's pretty reasonable for implementations to panic if this occurs. In any case, we'll address fallible functions separately, not in this PR.",
+              "createdAt": "2022-01-19T14:59:02Z",
+              "updatedAt": "2022-01-19T14:59:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zGc-H",
+          "commit": {
+            "abbreviatedOid": "2a85106"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-19T20:48:59Z",
+          "updatedAt": "2022-01-19T20:49:00Z",
+          "comments": [
+            {
+              "originalPosition": 185,
+              "body": "> @armfazh mentions here [cfrg/draft-irtf-cfrg-opaque#298 (comment)](https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/298#issuecomment-1006936162) that `HashToScalar` shouldn't be subject to change, may I ask why?\r\n\r\nWe would like the hash function behaves as a random oracle to the entire domain, in this case the whole field including zero.\r\nThis is similar to a regular hash function, for example, we cannot require that SHA-256 must not return 0.",
+              "createdAt": "2022-01-19T20:48:59Z",
+              "updatedAt": "2022-01-19T20:49:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zHGU3",
+          "commit": {
+            "abbreviatedOid": "2a85106"
+          },
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-20T00:08:54Z",
+          "updatedAt": "2022-01-20T00:08:55Z",
+          "comments": [
+            {
+              "originalPosition": 185,
+              "body": "> In any case, we'll address fallible functions separately, not in this PR.\r\n\r\nSounds good!",
+              "createdAt": "2022-01-20T00:08:55Z",
+              "updatedAt": "2022-01-20T00:08:55Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
