@@ -1030,7 +1030,7 @@ svg [stroke="fill"], svg [fill^="#fff"] {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Davidson, et al.</td>
-<td class="center">Expires 23 July 2022</td>
+<td class="center">Expires 24 July 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1043,12 +1043,12 @@ svg [stroke="fill"], svg [fill^="#fff"] {
 <dd class="internet-draft">draft-irtf-cfrg-voprf-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-01-19" class="published">19 January 2022</time>
+<time datetime="2022-01-20" class="published">20 January 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-07-23">23 July 2022</time></dd>
+<dd class="expires"><time datetime="2022-07-24">24 July 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1113,7 +1113,7 @@ elliptic curves.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 23 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 24 July 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2137,10 +2137,15 @@ parameters are assumed to exist:<a href="#section-3.3-1" class="pilcrow">¶</a><
           <li class="normal" id="section-3.3-2.3">skS and pkS, the private and public keys configured for client and server in <a href="#offline" class="xref">Section 3.2</a>.<a href="#section-3.3-2.3" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-3.3-3">All protocol elements are serialized between client and server for transmission.
-Specifically, values of type Element are transmitted as SerializedElement values,
+<p id="section-3.3-3">Applications serialize protocol messages between client and server for transmission.
+Specifically, values of type Element are serialized to SerializedElement values,
 and values of type Proof are serialized as the concatenation of two SerializedScalar
-values. Deserializing these values can fail, in which case the protocol MUST be aborted.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+values. Deserializing these values can fail, in which case the application MUST abort
+the protocol with a <code>DeserializeError</code> failure.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-4">Applications MUST check that input Element values received over the wire are not
+the group identity element. This check is handled when deserializing Element values
+using DeserializeElement; see <a href="#input-validation" class="xref">Section 6.5</a> for more information on input
+validation.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 <div id="oprf">
 <section id="section-3.3.1">
           <h4 id="name-oprf-protocol">
@@ -2167,10 +2172,9 @@ def Blind(input):
   return blind, blindedElement
 </pre><a href="#section-3.3.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.3.1-3">Clients store <code>blind</code> locally, and send a serialized <code>blindedElement</code> to the server for
-evaluation. Upon receipt, servers deserialize the value and process <code>blindedElement</code>
-using the <code>Evaluate</code> function described below. If deserialization fails, servers MUST
-abort the protocol with a <code>DeserializeError</code> failure.<a href="#section-3.3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.1-3">Clients store <code>blind</code> locally, and send <code>blindedElement</code> to the server for evaluation.
+Upon receipt, servers process <code>blindedElement</code> using the <code>Evaluate</code> function described
+below.<a href="#section-3.3.1-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.3.1-4">
 <pre>
 Finalize
@@ -2188,12 +2192,10 @@ def Evaluate(blindedElement):
   return evaluatedElement
 </pre><a href="#section-3.3.1-4" class="pilcrow">¶</a>
 </div>
-<p id="section-3.3.1-5">Servers serialize and send the output <code>evaluatedElement</code> to clients for processing.
+<p id="section-3.3.1-5">Servers send the output <code>evaluatedElement</code> to clients for processing.
 Recall that servers may batch multiple client inputs to <code>Evaluate</code>.<a href="#section-3.3.1-5" class="pilcrow">¶</a></p>
-<p id="section-3.3.1-6">Upon receipt of <code>evaluatedElement</code>, clients deserialize and process the result to
-complete the OPRF evaluation with the <code>Finalize</code> function described below.
-If deserialization fails, clients MUST abort the protocol with a <code>DeserializeError</code>
-failure.<a href="#section-3.3.1-6" class="pilcrow">¶</a></p>
+<p id="section-3.3.1-6">Upon receipt of <code>evaluatedElement</code>, clients process it to complete the
+OPRF evaluation with the <code>Finalize</code> function described below.<a href="#section-3.3.1-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.3.1-7">
 <pre>
 Input:
@@ -2225,11 +2227,9 @@ def Finalize(input, blind, evaluatedElement):
           </h4>
 <p id="section-3.3.2-1">The VOPRF protocol begins with the client blinding its input, using the same
 <code>Blind</code> function as in <a href="#oprf" class="xref">Section 3.3.1</a>. Clients store the output <code>blind</code> locally
-and send a serialized <code>blindedElement</code> to the server for evaluation. Upon
-receipt, servers deserialize and process <code>blindedElement</code> to compute an
-evaluated element and DLEQ proof using the following <code>Evaluate</code> function.
-If deserialization fails, servers MUST abort the protocol with a <code>DeserializeError</code>
-failure.<a href="#section-3.3.2-1" class="pilcrow">¶</a></p>
+and send <code>blindedElement</code> to the server for evaluation. Upon receipt,
+servers process <code>blindedElement</code> to compute an evaluated element and DLEQ
+proof using the following <code>Evaluate</code> function.<a href="#section-3.3.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.3.2-2">
 <pre>
 Input:
@@ -2247,11 +2247,9 @@ def Evaluate(blindedElement):
   return evaluatedElement, proof
 </pre><a href="#section-3.3.2-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.3.2-3">The server serializes and sends both <code>evaluatedElement</code> and <code>proof</code> back to
-the client. Upon receipt, the client deserializes and processes both values to
-complete the VOPRF computation using the <code>Finalize</code> function below. If
-deserialization of either value fails, clients MUST abort the protocol with
-a <code>DeserializeError</code> failure.<a href="#section-3.3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.2-3">The server sends both <code>evaluatedElement</code> and <code>proof</code> back to the client.
+Upon receipt, the client processes both values to complete the VOPRF computation
+using the <code>Finalize</code> function below.<a href="#section-3.3.2-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.3.2-4">
 <pre>
 Input:
@@ -2290,11 +2288,9 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof):
           </h4>
 <p id="section-3.3.3-1">The POPRF protocol begins with the client blinding its input, using the same
 <code>Blind</code> function as in <a href="#oprf" class="xref">Section 3.3.1</a>. Clients store the output <code>blind</code> locally
-and send a serialized <code>blindedElement</code> to the server for evaluation. Upon
-receipt, servers deserialize and process <code>blindedElement</code> to compute an
-evaluated element and DLEQ proof using the following <code>Evaluate</code> function.
-If deserialization fails, servers MUST abort the protocol with a <code>DeserializeError</code>
-failure.<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
+and send <code>blindedElement</code> to the server for evaluation. Upon receipt, servers
+process <code>blindedElement</code> to compute an evaluated element and DLEQ proof using
+the following <code>Evaluate</code> function.<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.3.3-2">
 <pre>
 Finalize
@@ -2326,11 +2322,9 @@ def Evaluate(blindedElement, info):
   return evaluatedElement, proof
 </pre><a href="#section-3.3.3-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.3.3-3">The server serializes and sends both <code>evaluatedElement</code> and <code>proof</code> back to
-the client. Upon receipt, the client deserializes and processes both values to
-complete the VOPRF computation using the <code>Finalize</code> function below. If
-deserialization of either value fails, clients MUST abort the protocol with
-a <code>DeserializeError</code> failure.<a href="#section-3.3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-3">The server sends both <code>evaluatedElement</code> and <code>proof</code> back to the client.
+Upon receipt, the client processes both values to complete the VOPRF computation
+using the <code>Finalize</code> function below.<a href="#section-3.3.3-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.3.3-4">
 <pre>
 Input:
