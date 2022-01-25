@@ -2153,8 +2153,9 @@ validation.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
           </h4>
 <p id="section-3.3.1-1">The OPRF protocol begins with the client blinding its input, as described
 by the <code>Blind</code> function below. Note that this function can fail with an
-<code>InvalidInputError</code> error for certain inputs. Dealing with this failure
-is an application-specific decision; see <a href="#errors" class="xref">Section 5.2</a>.<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
+<code>InvalidInputError</code> error for certain inputs that map to the group identity
+element. Dealing with this failure is an application-specific decision;
+see <a href="#errors" class="xref">Section 5.2</a>.<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.3.1-2">
 <pre>
 Input:
