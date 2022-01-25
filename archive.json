@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-01-23T00:41:00.761163+00:00",
+  "timestamp": "2022-01-25T00:45:52.920204+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4284,11 +4284,19 @@
         "armfazh"
       ],
       "labels": [],
-      "body": "This is a list of functions that contain group operations that might produce zero scalars or identity elements. I don't actually know if this is a problem or not in some of the cases, I'm going to leave that to actual cryptographers to figure out.\r\n\r\nAnother related issue is #305, which can yield identity points and zero scalars every time `HashToGroup` or `HashToScalar` is used, which is in a lot of places.\r\n\r\n- Unverifiable [`Evaluate`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.1.1-1) and verifiable [`Evaluate`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.2.1-1) use `HashToScalar`, which can return a zero scalar. It might not be an issue because it doesn't make the returned element an identity element.\r\n\r\n- [`FullEvaluate`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.1.2-1) uses `HashToGroup`, which could return the identity element. If `t = skS + m` yields one (zero is checked), `T = t^(-1) * P` would yield the identity element. This element is only used for the outputted hash, it might not be an issue after all.\r\n\r\n- [`GenerateProof`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.2.2-1) can return a zero scalar because of `s = (r - c * k) mod p`. Is this handled by the following `GG.SerializeScalar(s)`? I failed to find anything on that.\r\n\r\n- [`ComputeComposites`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.2.3-2) and [`ComputeCompositesFast`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.2.3-4) use `HashToScalar`, which can return a zero scalar, which is then used in `M = di * Cs[i] + M` and `Z = di * Ds[i] + Z`. At the end though, it can't actually return an identity element, so it might not be a problem.\r\n\r\n- [`Blind`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-3.3.3.1-1) can produce an identity element if `blind = GG.RandomScalar()` produces a 1 scalar. Which [seems to be allowed](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-2.1-4.5). This might not be a problem either because [`DeserializeElement`](https://www.ietf.org/archive/id/draft-irtf-cfrg-voprf-08.html#section-6.5-1) should make sure that it's not the identity element. But it would still be good if the error was caught earlier in the process.\r\n\r\n",
+      "body": "This is a list of functions that contain group operations that might produce zero scalars or identity elements. I don't actually know if this is a problem or not in some of the cases, I'm going to leave that to actual cryptographers to figure out.\r\n\r\n- [`GenerateProof`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.1-2) can return a zero scalar because of `s = (r - c * k) mod p`.\r\n\r\n- [`ComputeComposites`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.2-4) and [`ComputeCompositesFast`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.1-4) use `HashToScalar`, which can return a zero scalar, which is then used in `M = di * Cs[i] + M` and `Z = di * Ds[i] + Z`. Adding `M`, prevents producing an identity point, so it might not be a problem.\r\n\r\n- POPRF's [`Finalize`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-3.3.3-4) uses `HashToScalar`, which can return a zero scalar, which is then used in `T = ScalarBaseMult(m)`, which would produce the identity point. Afterwards, in `U = T + pkS`, adding a non-identity point would prevent `U` from becoming an identity point, so it might not be a problem.",
       "createdAt": "2022-01-12T07:41:31Z",
-      "updatedAt": "2022-01-21T22:45:17Z",
+      "updatedAt": "2022-01-24T15:24:24Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "I updated this to the current master, which resolved a lot of issues.",
+          "createdAt": "2022-01-24T15:24:24Z",
+          "updatedAt": "2022-01-24T15:24:24Z"
+        }
+      ]
     }
   ],
   "pulls": [
