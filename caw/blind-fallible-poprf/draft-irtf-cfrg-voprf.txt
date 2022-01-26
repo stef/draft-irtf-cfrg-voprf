@@ -980,6 +980,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof):
 
      Scalar blind
      Element blindedElement
+     Element tweakedKey
 
    Errors: InvalidInputError
 
