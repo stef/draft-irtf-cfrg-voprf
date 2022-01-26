@@ -2332,7 +2332,7 @@ def Blind(input, info):
   return blind, blindedElement, tweakedKey
 </pre><a href="#section-3.3.3-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.3.3-3">Clients store the outputs <code>blind</code> and <code>U</code> locally and send <code>blindedElement</code> to
+<p id="section-3.3.3-3">Clients store the outputs <code>blind</code> and <code>tweakedKey</code> locally and send <code>blindedElement</code> to
 the server for evaluation. Upon receipt, servers process <code>blindedElement</code> to
 compute an evaluated element and DLEQ proof using the following <code>Evaluate</code> function.<a href="#section-3.3.3-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.3.3-4">
