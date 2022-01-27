@@ -5,10 +5,10 @@
 Network Working Group                                        A. Davidson
 Internet-Draft                                            Brave Software
 Intended status: Informational                          A. Faz-Hernandez
-Expires: 30 July 2022                                        N. Sullivan
+Expires: 31 July 2022                                        N. Sullivan
                                                                C.A. Wood
                                                         Cloudflare, Inc.
-                                                         26 January 2022
+                                                         27 January 2022
 
 
    Oblivious Pseudorandom Functions (OPRFs) using Prime-Order Groups
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 30 July 2022.
+   This Internet-Draft will expire on 31 July 2022.
 
 Copyright Notice
 
@@ -967,9 +967,8 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof):
    the following modified Blind function.  Note that this function can
    fail with an InvalidInputError error for certain private inputs that
    map to the group identity element, as well as certain public inputs
-   that map lead to invalid public keys for server evaluation.  Dealing
-   with either failure is an application-specific decision; see
-   Section 5.2.
+   that map to invalid public keys for server evaluation.  Dealing with
+   either failure is an application-specific decision; see Section 5.2.
 
    Input:
 
