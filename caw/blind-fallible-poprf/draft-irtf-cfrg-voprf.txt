@@ -1005,8 +1005,6 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof):
    process blindedElement to compute an evaluated element and DLEQ proof
    using the following Evaluate function.
 
-Finalize
-
 Input:
 
   Element blindedElement
