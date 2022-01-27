@@ -446,8 +446,6 @@ Table of Contents
    D.  The output is a value of type Proof, which is a tuple of two
    Scalar values.
 
-   GenerateProof
-
    Input:
 
      Scalar k
@@ -488,8 +486,6 @@ Table of Contents
      return [c, s]
 
    The helper function ComputeCompositesFast is as defined below.
-
-   ComputeCompositesFast
 
    Input:
 
@@ -543,8 +539,6 @@ Table of Contents
    value indicating whether or not the proof is valid for the given DLEQ
    inputs.
 
-   VerifyProof
-
    Input:
 
      Element A
@@ -588,8 +582,6 @@ Table of Contents
      return expectedC == c
 
    The definition of ComputeComposites is given below.
-
-   ComputeComposites
 
    Input:
 
@@ -868,8 +860,6 @@ Table of Contents
    Clients store blind locally, and send blindedElement to the server
    for evaluation.  Upon receipt, servers process blindedElement using
    the Evaluate function described below.
-
-   Finalize
 
    Input:
 
