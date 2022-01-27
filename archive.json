@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-01-25T00:45:52.920204+00:00",
+  "timestamp": "2022-01-27T00:41:35.478953+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4281,12 +4281,12 @@
       "author": "daxpedda",
       "authorAssociation": "NONE",
       "assignees": [
-        "armfazh"
+        "chris-wood"
       ],
       "labels": [],
       "body": "This is a list of functions that contain group operations that might produce zero scalars or identity elements. I don't actually know if this is a problem or not in some of the cases, I'm going to leave that to actual cryptographers to figure out.\r\n\r\n- [`GenerateProof`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.1-2) can return a zero scalar because of `s = (r - c * k) mod p`.\r\n\r\n- [`ComputeComposites`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.2-4) and [`ComputeCompositesFast`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.1-4) use `HashToScalar`, which can return a zero scalar, which is then used in `M = di * Cs[i] + M` and `Z = di * Ds[i] + Z`. Adding `M`, prevents producing an identity point, so it might not be a problem.\r\n\r\n- POPRF's [`Finalize`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-3.3.3-4) uses `HashToScalar`, which can return a zero scalar, which is then used in `T = ScalarBaseMult(m)`, which would produce the identity point. Afterwards, in `U = T + pkS`, adding a non-identity point would prevent `U` from becoming an identity point, so it might not be a problem.",
       "createdAt": "2022-01-12T07:41:31Z",
-      "updatedAt": "2022-01-24T15:24:24Z",
+      "updatedAt": "2022-01-26T20:45:55Z",
       "closedAt": null,
       "comments": [
         {
@@ -4295,6 +4295,76 @@
           "body": "I updated this to the current master, which resolved a lot of issues.",
           "createdAt": "2022-01-24T15:24:24Z",
           "updatedAt": "2022-01-24T15:24:24Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@armfazh did some analysis and concluded that the only place where we need to be concerned with distinguished scalars is in the `Blind()` step. Fortunately, `Blind` uses `RandomScalar` to produce a scalar, which returns a _non-zero_ scalar. Thus, the only way for `Blind` to produce the identity element is for `HashToGroup` to produce the identity element, and since that is entirely determined by the input to `Blind`, the only thing the function can do is raise an error. ",
+          "createdAt": "2022-01-25T23:09:53Z",
+          "updatedAt": "2022-01-25T23:09:53Z"
+        },
+        {
+          "author": "hugokraw",
+          "authorAssociation": "NONE",
+          "body": "Chris asked me to take a look at this. The 2HashDH OPRF needs to specify the bind factor to be different than 0 since otherwise the de-blinding would not work. Pathological cases such as getting 0 when a random field value is chosen or getting the identity element when hashing into a curve (and possibly other cases like this) need to be handled as a severe error. Indeed, since the probability that this will happen by chance is essentially zero, such an output indicates a serious bug. \r\n\r\nBtw, OPAQUE also requires checking DH values to be in the prime group but this is irrelevant for the OPRF spec.",
+          "createdAt": "2022-01-26T06:47:49Z",
+          "updatedAt": "2022-01-26T06:47:49Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "> Thus, the only way for `Blind` to produce the identity element is for `HashToGroup` to produce the identity element, and since that is entirely determined by the input to `Blind`, the only thing the function can do is raise an error.\r\n\r\nThis is a problem for OPAQUE, which uses the `Blind` function with the input being the user password. This means that there is a user password out there that can't be used with OPAQUE.\r\n\r\nThat said, the chances are extremely low for that to happen and it ideally people should use a password manager ... I would still prefer this to not be fallible if at all possible.",
+          "createdAt": "2022-01-26T09:56:29Z",
+          "updatedAt": "2022-01-26T09:56:29Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Chris asked me to take a look at this. The 2HashDH OPRF needs to specify the bind factor to be different than 0 since otherwise the de-blinding would not work. Pathological cases such as getting 0 when a random field value is chosen or getting the identity element when hashing into a curve (and possibly other cases like this) need to be handled as a severe error. Indeed, since the probability that this will happen by chance is essentially zero, such an output indicates a serious bug.\r\n\r\nThanks @hugokraw! This is already handled by the spec. The scalar returned is guaranteed to be non-zero (unless an implementation does this wrong, of course).",
+          "createdAt": "2022-01-26T12:54:45Z",
+          "updatedAt": "2022-01-26T12:54:45Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> This is a problem for OPAQUE, which uses the Blind function with the input being the user password. This means that there is a user password out there that can't be used with OPAQUE.\r\n\r\n@hugokraw this is the more important comment, I think. In the context of OPAQUE, if the user's password maps to the identity element of the group, then indeed they cannot use that password with OPAQUE. ",
+          "createdAt": "2022-01-26T12:56:12Z",
+          "updatedAt": "2022-01-26T12:56:12Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@daxpedda here's my take on HashToScalar outputting zero in the cases identified:\r\n\r\n- ComputeComposites (computing `d_i`): A zero value does not invalidate the resulting (M, Z) output, so no special handling is needed here.\r\n- Proof generation and verification (computing `c`): A zero value does not invalidate the proof, since the private key is still perfectly blinded by `r`. \r\n- POPRF Finalize: Clients will not reach this step if servers appropriately abort when they can't find the multiplicative inverse of `skS + t`. If servers don't abort and somehow send garbage back to the client, then the proof verification will fail. \r\n\r\nAll in all, I don't think we need to do any additional special handling here. @armfazh, what do you think?",
+          "createdAt": "2022-01-26T13:19:56Z",
+          "updatedAt": "2022-01-26T13:19:56Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "> * POPRF Finalize: Clients will not reach this step if servers appropriately abort when they can't find the multiplicative inverse of `skS + t`. If servers don't abort and somehow send garbage back to the client, then the proof verification will fail.\r\n\r\nThank you for the explanation! This comes back then to the issue that the protocol can simply fail at POPRFs `Evaluate` and has to be restarted, which is less then ideal I would argue.\r\n\r\nWith the concerns resolved here, I don't have much of a stake in this anymore, I came here from the OPAQUE protocol. As far as I understand the OPAQUE protocol doesn't intend to use POPRF but plain OPRF.\r\nI would like to avoid failing the protocol and having to start it over for OPAQUE, but I can't argue for POPRF because I don't know the use-cases involved.\r\n\r\nHappy to provide feedback of course :smiley:.",
+          "createdAt": "2022-01-26T13:48:22Z",
+          "updatedAt": "2022-01-26T13:48:22Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Thank you for the explanation! This comes back then to the issue that the protocol can simply fail at POPRFs Evaluate and has to be restarted, which is less then ideal I would argue.\r\n\r\nFair point. We can likely make this fail earlier, in Blind. I'll send a PR to do that. ",
+          "createdAt": "2022-01-26T13:56:34Z",
+          "updatedAt": "2022-01-26T13:56:34Z"
+        },
+        {
+          "author": "hugokraw",
+          "authorAssociation": "NONE",
+          "body": "> > This is a problem for OPAQUE, which uses the Blind function with the input being the user password. This means that there is a user password out there that can't be used with OPAQUE.\r\n> \r\n> @hugokraw this is the more important comment, I think. In the context of OPAQUE, if the user's password maps to the identity element of the group, then indeed they cannot use that password with OPAQUE.\r\n\r\nEven with a password dictionary with entropy of 256 bits, the probability of this happening is 2^{-256}. There are worse things happening at that probability level including guessing OPRF keys, discrete logarithms, signature and encryption keys, multiple collisions, etc. If you get such a case there is a billions of times higher probability that this is  due to a programming bug or the break of the underlying hash function. This is why I recommend that if a program finds such a case (a password hashed to the identity element), you output a HUGE ERROR message. \r\n\r\nBy the way, in the case of OPAQUE with 2HashDH, even if the password is mapped to the identity (a fact that is learned by a passive adversary by seeing H(pw)^r), the attacker (including an active one or even the server itself) needs to run a dictionary attack on the password because the password is hashed together with the group identity. With a 256-bit entropy password this will take 2^255 time. So you could keep running OPAQUE with this password. \r\n\r\nCan these good discussions be linked from the OPAQUE github? They can be useful for future reference.",
+          "createdAt": "2022-01-26T17:42:58Z",
+          "updatedAt": "2022-01-26T17:42:58Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Even with a password dictionary with entropy of 256 bits, the probability of this happening is 2^{-256}. There are worse things happening at that probability level including guessing OPRF keys, discrete logarithms, signature and encryption keys, multiple collisions, etc. If you get such a case there is a billions of times higher probability that this is due to a programming bug or the break of the underlying hash function. This is why I recommend that if a program finds such a case (a password hashed to the identity element), you output a HUGE ERROR message.\r\n\r\nThis is true, and I don't think we have any security considerations text describing this case. I'll file an issue against the OPAQUE draft to add it.\r\n\r\n> Can these good discussions be linked from the OPAQUE github? They can be useful for future reference.\r\n\r\nYep =) ",
+          "createdAt": "2022-01-26T20:45:55Z",
+          "updatedAt": "2022-01-26T20:45:55Z"
         }
       ]
     }
@@ -22700,6 +22770,193 @@
         }
       ],
       "reviews": []
+    },
+    {
+      "number": 312,
+      "id": "PR_kwDOBphpts4xlTdF",
+      "title": "Update version constant and test vectors",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/312",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "cc @bytemare, @kevinlewi ",
+      "createdAt": "2022-01-25T21:00:30Z",
+      "updatedAt": "2022-01-25T21:58:58Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "main",
+      "baseRefOid": "4edd1fc6347d85c366a062c05cb01a4eaeb5fc5e",
+      "headRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "headRefName": "caw/update-version-constant",
+      "headRefOid": "545d9cdaf3313b62d2885950bf7ed1be0a11bba4",
+      "closedAt": "2022-01-25T21:58:58Z",
+      "mergedAt": "2022-01-25T21:58:58Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "0cd44667b7b359b81baac68cb3229181ba460326"
+      },
+      "comments": [
+        {
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "\u2705 lgtm!",
+          "createdAt": "2022-01-25T21:57:20Z",
+          "updatedAt": "2022-01-25T21:57:20Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOBphpts4zbveX",
+          "commit": {
+            "abbreviatedOid": "545d9cd"
+          },
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-01-25T21:57:02Z",
+          "updatedAt": "2022-01-25T21:57:02Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 313,
+      "id": "PR_kwDOBphpts4xloiK",
+      "title": "Make Blind fallible",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/313",
+      "state": "MERGED",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "@hugokraw, can you please have a look at this change? The [rationale](https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/307#issuecomment-1021694128) is in issue #307. \r\n\r\nCloses #307.\r\n\r\ncc @bytemare, @kevinlewi ",
+      "createdAt": "2022-01-25T23:17:21Z",
+      "updatedAt": "2022-01-26T12:56:26Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "main",
+      "baseRefOid": "0cd44667b7b359b81baac68cb3229181ba460326",
+      "headRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "headRefName": "caw/blind-error",
+      "headRefOid": "f5e0ed2bf4685c877fcb313ebbc345ed40e78ffa",
+      "closedAt": "2022-01-26T12:56:26Z",
+      "mergedAt": "2022-01-26T12:56:25Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "660fe02e04ea3440ece686e44332f050b19c295a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOBphpts4zcCkj",
+          "commit": {
+            "abbreviatedOid": "f5e0ed2"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-01-25T23:46:08Z",
+          "updatedAt": "2022-01-25T23:46:08Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 314,
+      "id": "PR_kwDOBphpts4xoUM0",
+      "title": "Make Blind fail earlier for the POPRF",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/314",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Note that this check on the client is equivalent to the server, since `(skS + t) == 0` is only true iff `pkS + tG = skS*G + tG = (skS + t)G` is the identity element.\r\n\r\nCloses #307.\r\n\r\ncc @bytemare, @kevinlewi ",
+      "createdAt": "2022-01-26T17:33:04Z",
+      "updatedAt": "2022-01-26T21:05:08Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "main",
+      "baseRefOid": "e6a6cfc8da77e3fbc4d9411a73c2e8ea87fe7211",
+      "headRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "headRefName": "caw/blind-fallible-poprf",
+      "headRefOid": "707c1e13094e8f232486cbd8570f16f1f183c284",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "(Please ignore @bifurcation!)",
+          "createdAt": "2022-01-26T17:34:50Z",
+          "updatedAt": "2022-01-26T17:34:50Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOBphpts4zgSoq",
+          "commit": {
+            "abbreviatedOid": "f88522d"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-26T21:04:19Z",
+          "updatedAt": "2022-01-26T21:04:20Z",
+          "comments": [
+            {
+              "originalPosition": 61,
+              "body": "```suggestion\r\n  Element blindedElement\r\n```\r\n```suggestion\r\n  Element blindedElement\r\n  Element tweakedKey\r\n```",
+              "createdAt": "2022-01-26T21:04:20Z",
+              "updatedAt": "2022-01-26T21:04:20Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zgSud",
+          "commit": {
+            "abbreviatedOid": "3992fc1"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-26T21:04:43Z",
+          "updatedAt": "2022-01-26T21:04:44Z",
+          "comments": [
+            {
+              "originalPosition": 84,
+              "body": "```suggestion\r\nClients store the outputs `blind` and `tweakedKey` locally and send `blindedElement` to\r\n```",
+              "createdAt": "2022-01-26T21:04:43Z",
+              "updatedAt": "2022-01-26T21:04:44Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zgSzN",
+          "commit": {
+            "abbreviatedOid": "3992fc1"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-26T21:05:03Z",
+          "updatedAt": "2022-01-26T21:05:04Z",
+          "comments": [
+            {
+              "originalPosition": 119,
+              "body": "```suggestion\r\ndef Finalize(input, blind, evaluatedElement, blindedElement, proof, info, tweakedKey):\r\n```",
+              "createdAt": "2022-01-26T21:05:03Z",
+              "updatedAt": "2022-01-26T21:05:04Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
