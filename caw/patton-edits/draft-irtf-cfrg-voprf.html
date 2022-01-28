@@ -1627,9 +1627,9 @@ also a member of the group. Also, for any <code>A</code> in the group, there exi
 <code>-A</code> such that <code>A + (-A) = (-A) + A = I</code>. Scalar multiplication is
 equivalent to the repeated application of the group operation on an
 element A with itself <code>r-1</code> times, this is denoted as <code>r*A = A + ... + A</code>.
-For any element <code>A</code>, <code>p*A=I</code>. We denote <code>G</code> as the fixed generator of
+For any element <code>A</code>, <code>p*A=I</code>. We denote <code>B</code> as the fixed generator of
 the group. Scalar base multiplication is equivalent to the repeated
-application of the group operation <code>G</code> with itself <code>r-1</code> times, this
+application of the group operation <code>B</code> with itself <code>r-1</code> times, this
 is denoted as <code>ScalarBaseMult(r)</code>. The set of scalars corresponds to
 <code>GF(p)</code>. This document uses types <code>Element</code> and <code>Scalar</code> to denote elements
 of the group and its set of scalars, respectively.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
@@ -2818,7 +2818,9 @@ in this specification.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
       </h2>
 <p id="section-6-1">This section discusses the cryptographic security of our protocol, along
 with some suggestions and trade-offs that arise from the implementation
-of the OPRF variants in this document.<a href="#section-6-1" class="pilcrow">¶</a></p>
+of the OPRF variants in this document. Note that the syntax of the POPRF
+variant is different from that of the OPRF and POPRF variants since it
+admits an additional public input, but the same security considerations apply.<a href="#section-6-1" class="pilcrow">¶</a></p>
 <div id="properties">
 <section id="section-6.1">
         <h3 id="name-security-properties">
@@ -2915,7 +2917,7 @@ and the One-More Gap SDHI assumption reduce to the q-DL (Discrete Log) assumptio
 in the algebraic group model, for some q number of <code>Evaluate</code> queries.
 (The One-More Gap CDH assumption was the hardness assumption used to
 evaluate the OPRF and VOPRF designs based on <span>[<a href="#JKK14" class="xref">JKK14</a>]</span>, which is a predecessor
-to the POPRF variant.)<a href="#section-6.2.2-2" class="pilcrow">¶</a></p>
+to the POPRF variant in <a href="#poprf" class="xref">Section 3.3.3</a>.)<a href="#section-6.2.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="equiv-2hashdh">
@@ -2967,6 +2969,7 @@ k = (1 - (k' * H2(t))) / k'
           </h4>
 <p id="section-6.2.4-1">A side-effect of the OPRF protocol variants in this document is that they allow
 instantiation of an oracle for constructing static DH samples; see <span>[<a href="#BG04" class="xref">BG04</a>]</span> and <span>[<a href="#Cheon06" class="xref">Cheon06</a>]</span>.
+These attacks are meant to recover (bits of) the server private key.
 Best-known attacks reduce the security of the prime-order group instantiation by log_2(Q)/2
 bits, where Q is the number of <code>Evalute()</code> calls made by the attacker.<a href="#section-6.2.4-1" class="pilcrow">¶</a></p>
 <p id="section-6.2.4-2">As a result of this class of this class of attack, choosing prime-order groups with a

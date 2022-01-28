@@ -362,9 +362,9 @@ Table of Contents
    element -A such that A + (-A) = (-A) + A = I.  Scalar multiplication
    is equivalent to the repeated application of the group operation on
    an element A with itself r-1 times, this is denoted as r*A = A + ...
-   + A.  For any element A, p*A=I.  We denote G as the fixed generator
+   + A.  For any element A, p*A=I.  We denote B as the fixed generator
    of the group.  Scalar base multiplication is equivalent to the
-   repeated application of the group operation G with itself r-1 times,
+   repeated application of the group operation B with itself r-1 times,
    this is denoted as ScalarBaseMult(r).  The set of scalars corresponds
    to GF(p).  This document uses types Element and Scalar to denote
    elements of the group and its set of scalars, respectively.
@@ -1399,7 +1399,10 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info, tweake
 
    This section discusses the cryptographic security of our protocol,
    along with some suggestions and trade-offs that arise from the
-   implementation of the OPRF variants in this document.
+   implementation of the OPRF variants in this document.  Note that the
+   syntax of the POPRF variant is different from that of the OPRF and
+   POPRF variants since it admits an additional public input, but the
+   same security considerations apply.
 
 6.1.  Security Properties
 
@@ -1491,7 +1494,8 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info, tweake
    assumption in the algebraic group model, for some q number of
    Evaluate queries.  (The One-More Gap CDH assumption was the hardness
    assumption used to evaluate the OPRF and VOPRF designs based on
-   [JKK14], which is a predecessor to the POPRF variant.)
+   [JKK14], which is a predecessor to the POPRF variant in
+   Section 3.3.3.)
 
 6.2.3.  VOPRF and POPRF Equivalence
 
@@ -1528,9 +1532,10 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info, tweake
 
    A side-effect of the OPRF protocol variants in this document is that
    they allow instantiation of an oracle for constructing static DH
-   samples; see [BG04] and [Cheon06].  Best-known attacks reduce the
-   security of the prime-order group instantiation by log_2(Q)/2 bits,
-   where Q is the number of Evalute() calls made by the attacker.
+   samples; see [BG04] and [Cheon06].  These attacks are meant to
+   recover (bits of) the server private key.  Best-known attacks reduce
+   the security of the prime-order group instantiation by log_2(Q)/2
+   bits, where Q is the number of Evalute() calls made by the attacker.
 
    As a result of this class of this class of attack, choosing prime-
    order groups with a 128-bit security level instantiates an OPRF with
