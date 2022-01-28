@@ -370,7 +370,7 @@ Table of Contents
    elements of the group and its set of scalars, respectively.
 
    We now detail a number of member functions that can be invoked on a
-   prime-order group, denoted Group.
+   prime-order group.
 
    *  Order(): Outputs the order of the group (i.e. p).
 
