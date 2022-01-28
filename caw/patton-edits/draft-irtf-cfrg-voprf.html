@@ -1624,12 +1624,12 @@ also a member of the group. Also, for any <code>A</code> in the group, there exi
 <code>-A</code> such that <code>A + (-A) = (-A) + A = I</code>. Scalar multiplication is
 equivalent to the repeated application of the group operation on an
 element A with itself <code>r-1</code> times, this is denoted as <code>r*A = A + ... + A</code>.
-For any element <code>A</code>, <code>p*A=I</code>. We denote <code>B</code> as the fixed generator of
-the group. Scalar base multiplication is equivalent to the repeated
-application of the group operation <code>B</code> with itself <code>r-1</code> times, this
-is denoted as <code>ScalarBaseMult(r)</code>. The set of scalars corresponds to
-<code>GF(p)</code>. This document uses types <code>Element</code> and <code>Scalar</code> to denote elements
-of the group and its set of scalars, respectively.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
+For any element <code>A</code>, <code>p*A=I</code>. Scalar base multiplication is equivalent
+to the repeated application of the group operation on the fixed group
+generator with itself <code>r-1</code> times, and is denoted as <code>ScalarBaseMult(r)</code>.
+The set of scalars corresponds to <code>GF(p)</code>. This document uses types
+<code>Element</code> and <code>Scalar</code> to denote elements of the group and its set of
+scalars, respectively.<a href="#section-2.1-2" class="pilcrow">¶</a></p>
 <p id="section-2.1-3">We now detail a number of member functions that can be invoked on a
 prime-order group.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
@@ -2491,9 +2491,8 @@ reducing integer values to a member of the corresponding scalar field.<a href="#
 </li>
       </ul>
 <p id="section-4-4">This section specifies an initial registry of ciphersuites with supported groups
-and hash functions. It also includes details for implementation details for
-each ciphersuite, focusing on input validation, as well as requirements for future
-ciphersuites.<a href="#section-4-4" class="pilcrow">¶</a></p>
+and hash functions. It also includes implementation details for each ciphersuite,
+focusing on input validation, as well as requirements for future ciphersuites.<a href="#section-4-4" class="pilcrow">¶</a></p>
 <div id="ciphersuite-registry">
 <section id="section-4.1">
         <h3 id="name-ciphersuite-registry">
@@ -2692,7 +2691,7 @@ the point is on the curve, and that the point is not the point at infinity.
 If these checks fail, deserialization returns an error.<a href="#section-4.2.1-2" class="pilcrow">¶</a></p>
 <p id="section-4.2.1-3">For ristretto255 and decaf448, elements are deserialized by invoking the Decode
 function from <span>[<a href="#RISTRETTO" class="xref">RISTRETTO</a>], <a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-ristretto255-decaf448-01#section-4.3.1" class="relref">Section 4.3.1</a></span> and <span>[<a href="#RISTRETTO" class="xref">RISTRETTO</a>], <a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-ristretto255-decaf448-01#section-5.3.1" class="relref">Section 5.3.1</a></span>, respectively,
-which returns false if the element is invalid. If this function returns false,
+which returns false if the input is invalid. If this function returns false,
 deserialization returns an error.<a href="#section-4.2.1-3" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -2705,9 +2704,9 @@ deserialization returns an error.<a href="#section-4.2.1-3" class="pilcrow">¶</
 byte array. Like DeserializeElement, this function validates that the element
 is a member of the scalar field and returns an error if this condition is not met.<a href="#section-4.2.2-1" class="pilcrow">¶</a></p>
 <p id="section-4.2.2-2">For P-256, P-384, and P-521 ciphersuites, this function ensures that the input,
-when treated as a big-endian integer, is a value between 0 and <code>Order()</code>. For
+when treated as a big-endian integer, is a value between 0 and <code>Order() - 1</code>. For
 ristretto255 and decaf448, this function ensures that the input, when treated as
-a little-endian integer, is a valud between 0 and <code>Order()</code>.<a href="#section-4.2.2-2" class="pilcrow">¶</a></p>
+a little-endian integer, is a value between 0 and <code>Order() - 1</code>.<a href="#section-4.2.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2839,33 +2838,40 @@ necessarily non-malleable (i.e. we cannot compute a new evaluation of F
 from an existing evaluation). A genuinely random function will be
 non-malleable with high probability, and so a pseudorandom function must
 be non-malleable to maintain indistinguishability.<a href="#section-6.1-4" class="pilcrow">¶</a></p>
-<p id="section-6.1-5">Additionally, for the VOPRF and POPRF protocol variants, there is an additional
-security property:<a href="#section-6.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.1-6.1">Verifiable: The client must only complete execution of the protocol if
-it can successfully assert that the POPRF output it computes is
-correct. This is taken with respect to the POPRF key held by the
-server.<a href="#section-6.1-6.1" class="pilcrow">¶</a>
+<li class="normal" id="section-6.1-5.1">Unconditional input secrecy: The server does not learn anything about
+the client input x, even with unbounded computation.<a href="#section-6.1-5.1" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-6.1-7">Any VOPRF or POPRF that satisfies the 'verifiable' security property is known
+<p id="section-6.1-6">In other words, an attacker with infinite compute cannot recover any information
+about the client's private input x from an invocation of the protocol.<a href="#section-6.1-6" class="pilcrow">¶</a></p>
+<p id="section-6.1-7">Additionally, for the VOPRF and POPRF protocol variants, there is an additional
+security property:<a href="#section-6.1-7" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-6.1-8.1">Verifiable: The client must only complete execution of the protocol if
+it can successfully assert that the POPRF output it computes is
+correct. This is taken with respect to the POPRF key held by the
+server.<a href="#section-6.1-8.1" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-6.1-9">Any VOPRF or POPRF that satisfies the 'verifiable' security property is known
 as 'verifiable'. In practice, the notion of verifiability requires that
 the server commits to the key before the actual protocol execution takes
 place. Then the client verifies that the server has used the key in the
 protocol using this commitment. In the following, we may also refer to this
-commitment as a public key.<a href="#section-6.1-7" class="pilcrow">¶</a></p>
-<p id="section-6.1-8">Finally, the POPRF variant also has the following security property:<a href="#section-6.1-8" class="pilcrow">¶</a></p>
+commitment as a public key.<a href="#section-6.1-9" class="pilcrow">¶</a></p>
+<p id="section-6.1-10">Finally, the POPRF variant also has the following security property:<a href="#section-6.1-10" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-6.1-9.1">Partial obliviousness: The server must learn nothing about the client's
+<li class="normal" id="section-6.1-11.1">Partial obliviousness: The server must learn nothing about the client's
 private input or the output of the function. In addition, the client must
 learn nothing about the server's private key. Both client and server learn
-the public input (info).<a href="#section-6.1-9.1" class="pilcrow">¶</a>
+the public input (info).<a href="#section-6.1-11.1" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-6.1-10">Essentially, partial obliviousness tells us that, even if the server learns
+<p id="section-6.1-12">Essentially, partial obliviousness tells us that, even if the server learns
 the client's private input x at some point in the future, then the server will
 not be able to link any particular POPRF evaluation to x. This property is
-also known as unlinkability <span>[<a href="#DGSTV18" class="xref">DGSTV18</a>]</span>.<a href="#section-6.1-10" class="pilcrow">¶</a></p>
+also known as unlinkability <span>[<a href="#DGSTV18" class="xref">DGSTV18</a>]</span>.<a href="#section-6.1-12" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="cryptanalysis">
@@ -2886,8 +2892,8 @@ In fact, the VOPRF construction is identical to the <span>[<a href="#JKK14" clas
 that this document supports batching so that multiple evaluations can happen
 at once whilst only constructing one proof object. This is enabled using
 an established batching technique.<a href="#section-6.2.1-1" class="pilcrow">¶</a></p>
-<p id="section-6.2.1-2">The pseudorandomness (and verifiability) of the OPRF (and VOPRF) variants is based on
-the assumption that the One-More Gap Computational Diffie Hellman (CDH) is computationally
+<p id="section-6.2.1-2">The pseudorandomness and input secrecy (and verifiability) of the OPRF (and VOPRF) variants
+is based on the assumption that the One-More Gap Computational Diffie Hellman (CDH) is computationally
 difficult to solve in the corresponding prime-order group. The original paper <span>[<a href="#JKK14" class="xref">JKK14</a>]</span>
 gives a security proof that the construction satisfies the security guarantees of a
 VOPRF protocol <a href="#properties" class="xref">Section 6.1</a> under the One-More Gap CDH assumption in the universal
@@ -2904,7 +2910,7 @@ as 3HashSDHI given by <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</spa
 3HashSDHI, except that this design can optionally perform multiple POPRF
 evaluations in one go, whilst only constructing one NIZK proof object.
 This is enabled using an established batching technique.<a href="#section-6.2.2-1" class="pilcrow">¶</a></p>
-<p id="section-6.2.2-2">Pseudorandomness, verifiability, and partial obliviousness of the POPRF variant is
+<p id="section-6.2.2-2">Pseudorandomness, input secrecy, verifiability, and partial obliviousness of the POPRF variant is
 based on the assumption that the One-More Gap Strong Diffie-Hellman Inversion (SDHI)
 assumption from <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span> is computationally difficult to solve in the corresponding
 prime-order group. <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span> show that both the One-More Gap CDH assumption
@@ -2925,8 +2931,8 @@ instantiation of an oracle for constructing static DH samples; see <span>[<a hre
 These attacks are meant to recover (bits of) the server private key.
 Best-known attacks reduce the security of the prime-order group instantiation by log_2(Q)/2
 bits, where Q is the number of <code>Evalute()</code> calls made by the attacker.<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
-<p id="section-6.2.3-2">As a result of this class of this class of attack, choosing prime-order groups with a
-128-bit security level instantiates an OPRF with 128-(log_2(Q)/2) bits of security.
+<p id="section-6.2.3-2">As a result of this class of attack, choosing prime-order groups with a 128-bit security
+level instantiates an OPRF with a reduced security level of 128-(log_2(Q)/2) bits of security.
 Moreover, such attacks are only possible for those certain applications where the
 adversary can query the OPRF directly. Applications can mitigate against this problem
 in a variety of ways, e.g., by rate-limiting client queries to <code>Evaluate()</code> or by
