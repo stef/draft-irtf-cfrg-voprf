@@ -1269,10 +1269,7 @@ elliptic curves.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
                     <p id="section-toc.1-1.6.2.2.2.2.1"><a href="#section-6.2.2" class="xref">6.2.2</a>.  <a href="#name-poprf-assumptions" class="xref">POPRF Assumptions</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2.2.3">
-                    <p id="section-toc.1-1.6.2.2.2.3.1"><a href="#section-6.2.3" class="xref">6.2.3</a>.  <a href="#name-voprf-and-poprf-equivalence" class="xref">VOPRF and POPRF Equivalence</a></p>
-</li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.6.2.2.2.4">
-                    <p id="section-toc.1-1.6.2.2.2.4.1"><a href="#section-6.2.4" class="xref">6.2.4</a>.  <a href="#name-static-diffie-hellman-attac" class="xref">Static Diffie Hellman Attack and Security Limits</a></p>
+                    <p id="section-toc.1-1.6.2.2.2.3.1"><a href="#section-6.2.3" class="xref">6.2.3</a>.  <a href="#name-static-diffie-hellman-attac" class="xref">Static Diffie Hellman Attack and Security Limits</a></p>
 </li>
                 </ul>
 </li>
@@ -2733,7 +2730,7 @@ instantiations of this functionality based on the functions described in
 must adhere to the implementation and security considerations discussed
 in <span>[<a href="#I-D.irtf-cfrg-hash-to-curve" class="xref">I-D.irtf-cfrg-hash-to-curve</a>]</span> when instantiating the function.<a href="#section-4.3-2" class="pilcrow">¶</a></p>
 <p id="section-4.3-3">Additionally, future ciphersuites must take care when choosing the
-security level of the group. See <a href="#limits" class="xref">Section 6.2.4</a> for additional details.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
+security level of the group. See <a href="#limits" class="xref">Section 6.2.3</a> for additional details.<a href="#section-4.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2804,9 +2801,7 @@ constructing domain separation values.<a href="#section-5.3-2" class="pilcrow">�
 <p id="section-5.3-3">Implementations may choose to not let applications control <code>info</code> in cases where
 this value is fixed or otherwise not useful to the application. In this case,
 the resulting protocol is functionally equivalent to an OPRF without public
-input. See <a href="#equiv-2hashdh" class="xref">Section 6.2.3</a> for discussion about repurposing existing non-verifiable
-OPRF implementations, i.e., those without the <code>info</code> parameter, using the construction
-in this specification.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+input.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -2920,70 +2915,28 @@ evaluate the OPRF and VOPRF designs based on <span>[<a href="#JKK14" class="xref
 to the POPRF variant in <a href="#poprf" class="xref">Section 3.3.3</a>.)<a href="#section-6.2.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="equiv-2hashdh">
-<section id="section-6.2.3">
-          <h4 id="name-voprf-and-poprf-equivalence">
-<a href="#section-6.2.3" class="section-number selfRef">6.2.3. </a><a href="#name-voprf-and-poprf-equivalence" class="section-name selfRef">VOPRF and POPRF Equivalence</a>
-          </h4>
-<p id="section-6.2.3-1">The POPRF variant in this specification is equivalent to the non-verifiable VOPRF
-variant from <span>[<a href="#JKK14" class="xref">JKK14</a>]</span> when the input <code>info</code> is fixed. In particular, the POPRF
-computes the following given private key <code>k</code>, private input <code>x</code>, and public input
-<code>t</code>, where H1, H2, and H3 are HashToGroup, HashToScalar, and Hash, respectively:<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.3-2">
-<pre>
-H3(x, H1(x)^(1 / (k + H2(t))))
-</pre><a href="#section-6.2.3-2" class="pilcrow">¶</a>
-</div>
-<p id="section-6.2.3-3">Similarly, the VOPRF computes the following given private key <code>k'</code> and private
-input <code>x</code>:<a href="#section-6.2.3-3" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.3-4">
-<pre>
-H3(x, H1(x)^k')
-</pre><a href="#section-6.2.3-4" class="pilcrow">¶</a>
-</div>
-<p id="section-6.2.3-5">Given a fixed public input <code>t</code>, one can transform a POPRF private key <code>k</code>
-into an equivalent VOPRF private key <code>k'</code> as follows:<a href="#section-6.2.3-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.3-6">
-<pre>
-k' = 1 / (k + H2(t))
-</pre><a href="#section-6.2.3-6" class="pilcrow">¶</a>
-</div>
-<p id="section-6.2.3-7">This transformation is undefined for values of <code>k</code> and <code>t</code> such that
-<code>k + H2(t) = 0</code>. Because only a single choice of <code>k</code> leads to this
-undefined case, the distribution of <code>k'</code> defined via this transformation
-is statistically close to the distribution of a randomly sampled <code>k'</code>
-as output from <code>GenerateKeyPair</code>.<a href="#section-6.2.3-7" class="pilcrow">¶</a></p>
-<p id="section-6.2.3-8">Note that one can also transform any non-zero VOPRF private key <code>k'</code> into
-an equivalent POPRF private key <code>k</code> as follows:<a href="#section-6.2.3-8" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-6.2.3-9">
-<pre>
-k = (1 - (k' * H2(t))) / k'
-</pre><a href="#section-6.2.3-9" class="pilcrow">¶</a>
-</div>
-</section>
-</div>
 <div id="limits">
-<section id="section-6.2.4">
+<section id="section-6.2.3">
           <h4 id="name-static-diffie-hellman-attac">
-<a href="#section-6.2.4" class="section-number selfRef">6.2.4. </a><a href="#name-static-diffie-hellman-attac" class="section-name selfRef">Static Diffie Hellman Attack and Security Limits</a>
+<a href="#section-6.2.3" class="section-number selfRef">6.2.3. </a><a href="#name-static-diffie-hellman-attac" class="section-name selfRef">Static Diffie Hellman Attack and Security Limits</a>
           </h4>
-<p id="section-6.2.4-1">A side-effect of the OPRF protocol variants in this document is that they allow
+<p id="section-6.2.3-1">A side-effect of the OPRF protocol variants in this document is that they allow
 instantiation of an oracle for constructing static DH samples; see <span>[<a href="#BG04" class="xref">BG04</a>]</span> and <span>[<a href="#Cheon06" class="xref">Cheon06</a>]</span>.
 These attacks are meant to recover (bits of) the server private key.
 Best-known attacks reduce the security of the prime-order group instantiation by log_2(Q)/2
-bits, where Q is the number of <code>Evalute()</code> calls made by the attacker.<a href="#section-6.2.4-1" class="pilcrow">¶</a></p>
-<p id="section-6.2.4-2">As a result of this class of this class of attack, choosing prime-order groups with a
+bits, where Q is the number of <code>Evalute()</code> calls made by the attacker.<a href="#section-6.2.3-1" class="pilcrow">¶</a></p>
+<p id="section-6.2.3-2">As a result of this class of this class of attack, choosing prime-order groups with a
 128-bit security level instantiates an OPRF with 128-(log_2(Q)/2) bits of security.
 Moreover, such attacks are only possible for those certain applications where the
 adversary can query the OPRF directly. In applications where such an oracle is not
-made available this security loss does not apply.<a href="#section-6.2.4-2" class="pilcrow">¶</a></p>
-<p id="section-6.2.4-3">In most cases, it would require an informed and persistent attacker to
+made available this security loss does not apply.<a href="#section-6.2.3-2" class="pilcrow">¶</a></p>
+<p id="section-6.2.3-3">In most cases, it would require an informed and persistent attacker to
 launch a highly expensive attack to reduce security to anything much
 below 100 bits of security. Applications that admit the aforementioned
 oracle functionality, and that cannot tolerate discrete logarithm security
 of lower than 128 bits, are RECOMMENDED to choose groups that target a
 higher security level, such as decaf448 (used by ciphersuite 0x0002),
-P-384 (used by 0x0004), or P-521 (used by 0x0005).<a href="#section-6.2.4-3" class="pilcrow">¶</a></p>
+P-384 (used by 0x0004), or P-521 (used by 0x0005).<a href="#section-6.2.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

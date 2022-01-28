@@ -106,8 +106,7 @@ Table of Contents
      6.2.  Security Assumptions
        6.2.1.  OPRF and VOPRF Assumptions
        6.2.2.  POPRF Assumptions
-       6.2.3.  VOPRF and POPRF Equivalence
-       6.2.4.  Static Diffie Hellman Attack and Security Limits
+       6.2.3.  Static Diffie Hellman Attack and Security Limits
      6.3.  Domain Separation
      6.4.  Timing Leaks
    7.  Acknowledgements
@@ -1327,7 +1326,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info, tweake
    instantiating the function.
 
    Additionally, future ciphersuites must take care when choosing the
-   security level of the group.  See Section 6.2.4 for additional
+   security level of the group.  See Section 6.2.3 for additional
    details.
 
 5.  Application Considerations
@@ -1390,10 +1389,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info, tweake
    Implementations may choose to not let applications control info in
    cases where this value is fixed or otherwise not useful to the
    application.  In this case, the resulting protocol is functionally
-   equivalent to an OPRF without public input.  See Section 6.2.3 for
-   discussion about repurposing existing non-verifiable OPRF
-   implementations, i.e., those without the info parameter, using the
-   construction in this specification.
+   equivalent to an OPRF without public input.
 
 6.  Security Considerations
 
@@ -1497,38 +1493,7 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof, info, tweake
    [JKK14], which is a predecessor to the POPRF variant in
    Section 3.3.3.)
 
-6.2.3.  VOPRF and POPRF Equivalence
-
-   The POPRF variant in this specification is equivalent to the non-
-   verifiable VOPRF variant from [JKK14] when the input info is fixed.
-   In particular, the POPRF computes the following given private key k,
-   private input x, and public input t, where H1, H2, and H3 are
-   HashToGroup, HashToScalar, and Hash, respectively:
-
-   H3(x, H1(x)^(1 / (k + H2(t))))
-
-   Similarly, the VOPRF computes the following given private key k' and
-   private input x:
-
-   H3(x, H1(x)^k')
-
-   Given a fixed public input t, one can transform a POPRF private key k
-   into an equivalent VOPRF private key k' as follows:
-
-   k' = 1 / (k + H2(t))
-
-   This transformation is undefined for values of k and t such that k +
-   H2(t) = 0.  Because only a single choice of k leads to this undefined
-   case, the distribution of k' defined via this transformation is
-   statistically close to the distribution of a randomly sampled k' as
-   output from GenerateKeyPair.
-
-   Note that one can also transform any non-zero VOPRF private key k'
-   into an equivalent POPRF private key k as follows:
-
-   k = (1 - (k' * H2(t))) / k'
-
-6.2.4.  Static Diffie Hellman Attack and Security Limits
+6.2.3.  Static Diffie Hellman Attack and Security Limits
 
    A side-effect of the OPRF protocol variants in this document is that
    they allow instantiation of an oracle for constructing static DH
