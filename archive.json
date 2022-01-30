@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-01-27T00:41:35.478953+00:00",
+  "timestamp": "2022-01-30T00:41:56.898396+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4277,7 +4277,7 @@
       "id": "I_kwDOBphpts5BkG_m",
       "title": "Unhandled zero scalars and identity elements",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/307",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "daxpedda",
       "authorAssociation": "NONE",
       "assignees": [
@@ -4286,8 +4286,8 @@
       "labels": [],
       "body": "This is a list of functions that contain group operations that might produce zero scalars or identity elements. I don't actually know if this is a problem or not in some of the cases, I'm going to leave that to actual cryptographers to figure out.\r\n\r\n- [`GenerateProof`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.1-2) can return a zero scalar because of `s = (r - c * k) mod p`.\r\n\r\n- [`ComputeComposites`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.2-4) and [`ComputeCompositesFast`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.1-4) use `HashToScalar`, which can return a zero scalar, which is then used in `M = di * Cs[i] + M` and `Z = di * Ds[i] + Z`. Adding `M`, prevents producing an identity point, so it might not be a problem.\r\n\r\n- POPRF's [`Finalize`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-3.3.3-4) uses `HashToScalar`, which can return a zero scalar, which is then used in `T = ScalarBaseMult(m)`, which would produce the identity point. Afterwards, in `U = T + pkS`, adding a non-identity point would prevent `U` from becoming an identity point, so it might not be a problem.",
       "createdAt": "2022-01-12T07:41:31Z",
-      "updatedAt": "2022-01-26T20:45:55Z",
-      "closedAt": null,
+      "updatedAt": "2022-01-28T10:58:19Z",
+      "closedAt": "2022-01-27T17:03:46Z",
       "comments": [
         {
           "author": "daxpedda",
@@ -4365,8 +4365,63 @@
           "body": "> Even with a password dictionary with entropy of 256 bits, the probability of this happening is 2^{-256}. There are worse things happening at that probability level including guessing OPRF keys, discrete logarithms, signature and encryption keys, multiple collisions, etc. If you get such a case there is a billions of times higher probability that this is due to a programming bug or the break of the underlying hash function. This is why I recommend that if a program finds such a case (a password hashed to the identity element), you output a HUGE ERROR message.\r\n\r\nThis is true, and I don't think we have any security considerations text describing this case. I'll file an issue against the OPAQUE draft to add it.\r\n\r\n> Can these good discussions be linked from the OPAQUE github? They can be useful for future reference.\r\n\r\nYep =) ",
           "createdAt": "2022-01-26T20:45:55Z",
           "updatedAt": "2022-01-26T20:45:55Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "> Even with a password dictionary with entropy of 256 bits, the probability of this happening is 2^{-256}. There are worse things happening at that probability level including guessing OPRF keys, discrete logarithms, signature and encryption keys, multiple collisions, etc. If you get such a case there is a billions of times higher probability that this is due to a programming bug or the break of the underlying hash function. This is why I recommend that if a program finds such a case (a password hashed to the identity element), you output a HUGE ERROR message.\r\n\r\nAs an implementer I'm still unsure what to do. Sure I can return an error message, but there is still a password out there that **correctly** maps to the identity point, so if this ever happens, there is no action I can take.\r\n\r\n> By the way, in the case of OPAQUE with 2HashDH, even if the password is mapped to the identity (a fact that is learned by a passive adversary by seeing H(pw)^r), the attacker (including an active one or even the server itself) needs to run a dictionary attack on the password because the password is hashed together with the group identity. With a 256-bit entropy password this will take 2^255 time. So you could keep running OPAQUE with this password.\r\n\r\nFor this to happen OPAQUE has to rely on a special version of `Blind` that doesn't return an error on an identity element.\r\n\r\n---\r\n\r\nThis could be easily solved in OPAQUE by making sure the `input` to `Blind` is not simply the password but add a counter to it like was done in `DeriveKeyPair`.\r\n\r\nI would like to understand though, why a non-fallible solution like using the reduction mod n-1 plus one method is undesired. It was mentioned before that it's undesirable to require `HashToScalar` or `HashToGroup` to not be able to return a zero scalar or identity element. If that is the problem, `HashToNonZeroScalar` and `HashToNonIdentityPoint` could be introduced for example. But the mod n-1 plus could also simply be added after using `HashToScalar` for example.\r\n\r\nI understand that there is not a high motivation to address this as the chances of it occurring are astronomically low.",
+          "createdAt": "2022-01-28T10:58:19Z",
+          "updatedAt": "2022-01-28T10:58:19Z"
         }
       ]
+    },
+    {
+      "number": 315,
+      "id": "I_kwDOBphpts5Ck9nH",
+      "title": "Chris P.'s review: Editorial",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/315",
+      "state": "OPEN",
+      "author": "cjpatton",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Some editorial feedback on the current version.\r\n\r\n# 1\r\n\r\n* The verifiability property of VOPRFs sounds similar to VRFs. Since there is a\r\n  draft for this, it's probably a good idea to reference as related work.\r\n\r\n* Quote:\r\n\r\n  > A Verifiable OPRF (VOPRF) is an OPRF wherein the server can prove to the\r\n  > client that F(k, x) was computed using the key k.\r\n\r\n  For this to make sense the client needs to know something about k. What about:\r\n  \"A Verifiable OPRF (VOPRF) is an OPRF wherein the server also proves to the\r\n  client that F(k, x) was produced by the key k corresponding to the public key\r\n  the client knows.\r\n\r\n* The term \"verifiable POPRF\" is used in this section. The word \"verifiable\" is\r\n  redundant since, if I understand correctly, POPRF is an extension of a VOPRF.\r\n  This inconsistency is a bit confusing, so I would just write \"POPRF\".\r\n\r\n* Quote:\r\n\r\n  > This document specifies OPRF, VOPRF, and POPRF protocols built upon\r\n  > prime-order groups based on the 2HashDH [JKKX16] and 3HashSDHI [TCRSTW21]\r\n  > designs, respectively.\r\n\r\n  It's not clear what type of primitive 2HashDH and 3HashSDHI are, since three\r\n  things (OPRF, VOPRF, and POPRF) can't be in 1:1 correspondence with two things\r\n  (2DHashDH and 3HashSDHI).\r\n\r\n# 2\r\n\r\n* Quote:\r\n\r\n  > A cryptographic hash function that is indifferentiable from a\r\n  Random Oracle.\r\n\r\n  I don't think that \"indifferentiable from a RO\" is something you can\r\n  meaningfully assert about a hash function. To me this statement is only\r\n  meaninfgul in the context of a security analysis. In particular you'd need to\r\n  add something like \"when modeling the underlying compression function as a\r\n  random oracle\".\r\n\r\n  It would be sufficient to just say here that `Hash` is a cryptograpphic hash\r\n  function. If you want to talk about its security considerations here, you\r\n  could say something this: \"A cryptographic hash function, modeled as a random\r\n  oracle in {{JKKX16}} and {{TCRSTW21}}.\"\r\n\r\n  Regarding indifferentiability: I'm not sure if this comes up in these papers\r\n  (I haven't checked): Indifferentiability from an RO (when the underlying\r\n  compression function is modeled as an RO) does not hold for all hash functions\r\n  (e.g., SHA-2). But whether this leads to an attack depends ultimately on the\r\n  application. It might be that length-extension attacks against SHA-2 aren't\r\n  exploitable in an attack against the constructions in this draft.\r\n\r\n  Finally, I wouldn't capitalize \"Random Oracle\".\r\n\r\n## 2.1\r\n\r\n* Part of this section is dedicated to enumerating the laws of any algebraic\r\n  group. Is this necessary? I ask because I haven't seen a CFRG document do\r\n  this before.\r\n\r\n* Quote:\r\n\r\n  > The fundamental group operation is addition `+` with identity element `I`.\r\n\r\n  In the remainder, `0` is used to denote the identity.\r\n\r\n# 3\r\n\r\n* The three figures don't show which steps depend on `pkS` and `skS`.\r\n  Presumasbly `Evaluate()` takes in `skS` and, for the verifiable modes,\r\n  `Finalize()` takes in `pkS`? Why not pass them to the functions that use\r\n  them?\r\n\r\n## 3.1\r\n\r\n* nit: RFC editor note and context string are out-of-sync. The former says\r\n  draft-08 and the latter says draft-09.\r\n\r\n* In the definition of `DeriveKeyPair()`, did you mean to write\r\n\r\n  ```\r\n  pkS = GG.ScalarBaseMult(skS)\r\n  ```\r\n\r\n  instead of\r\n\r\n  ```\r\n  pkS = ScalarBaseMult(skS)\r\n  ```\r\n\r\n### 3.3.3\r\n\r\n* `ScalarBaseMult(m)`/`GG.ScalarBAseMult(m)`?\r\n\r\n# 4\r\n\r\n* Quote:\r\n\r\n  > `Hash`: A cryptographic hash function that is indifferentiable from a Random\r\n  > Oracle, whose output length is Nh bytes long.\r\n\r\n  Same comment as in Section 2.\r\n\r\n* Editorial: The names of the ciphersuites have the format `OPRF(GG, Hash)`.\r\n  This convention is slightly misleading, since a ciphersuite is also applicable\r\n  to the VOPRF and POPRF.\r\n\r\n## 7\r\n\r\n* nit: s/Privacy Pass team/Privacy Pass working group/",
+      "createdAt": "2022-01-28T04:20:09Z",
+      "updatedAt": "2022-01-28T04:20:09Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 316,
+      "id": "I_kwDOBphpts5Ck9on",
+      "title": "Chris P.'s review: Protocol",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/316",
+      "state": "OPEN",
+      "author": "cjpatton",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Some comments on the spec itself. These are all suggestions for clarification,\r\nnone of them are breaking changes.\r\n\r\n## 2.1\r\n\r\n* Quote:\r\n\r\n  > Such groups are uniquely determined by the choice of the prime p that\r\n  > defines the order of the group.\r\n\r\n  This statement needs to be sharpened a bit. In particular, the order of the\r\n  group doesn't determine the encoding of group elements or the group action.\r\n  For example, it's possible to have multiple representations of the same\r\n  elliptic curve group, something that's exploited in the ed25519 paper.\r\n\r\n### 2.2.1\r\n\r\n* In ComputeCompositesFast:\r\n  * String `contextString` is undefined. I don't think it's clear from context\r\n    where this comes from. This is only made clear later on in the next section.\r\n  * The notiation for for-loops is `for i = 0 to m-1`. Is the range inclusive or\r\n    exclusive? To make this unambiguous, I woiuld write this in 100% Python,\r\n    e.g.: `for i in range(m)` for i from 0 to m (exclusive). (Here and in the\r\n    remainder.)\r\n\r\n## 3.2\r\n\r\n* In the definition of `SetupOPRFServer()`, the function `OPRFServerContext()`\r\n  is used but not defineed. However, I also noticed that `SetupOPRFServer()` is\r\n  never actually used. Is it appropriate to just remove it? (Similarly below.)\r\n\r\n## 3.3\r\n\r\n* Quote:\r\n\r\n  > Applications serialize protocol messages between client and server for\r\n  > transmission. Specifically, values of type Element are serialized to\r\n  > SerializedElement values, and values of type Proof are serialized as the\r\n  > concatenation of two SerializedScalar values. Deserializing these values can\r\n  > fail, in which case the application MUST abort the protocol with a\r\n  > DeserializeError failure.\r\n\r\n  This statement seems to imply that serialization is out-of-scope for this\r\n  document, but in Section 1.3 there is a paragraph that says all data\r\n  structures are represented in TLS-syntax. If the draft *does* intend to\r\n  specify the encoding of messages exchanged in the online protocol, then it\r\n  should do so unambiguously.\r\n\r\n  For example, in the definition of `Evaluate()` for VOPRF (Section 3.3.2), the\r\n  return value is the pair `evaluatedElement, proof`. Then the text says \"The\r\n  server sends both `evaulatedElement` and `proof` back to the client.\" The text\r\n  quoted above says how to encode these individually, but I'd argue it's not\r\n  clear what order they should be sent in.\r\n\r\n  Finally, TLS-syntax is not really used in this document.\r\n\r\n### 3.3.1\r\n\r\n* nit: The text makes clear where `skS` comes from, but I find it a bit jarring\r\n  that this isn't passed to `Evaluate()` as an explicit parameter. (Similarly\r\n  below, and similarly for `pkS`.)\r\n\r\n* The expression `blind^(-1)` isn't explicitly defined anywhere. To someone with\r\n  some basic algebra background, this is clearly the multiplicative inverse of\r\n  `blind` modulo `p` (the order of the group); but based on Section 2, my\r\n  impression is that we're not assuming the reader has this background.\r\n\r\n### 3.3.3\r\n\r\n* nit: `context` is similar to `contextString`, which is a bit confusing.\r\n  Consider giving it a different name, like `framed_info` or something.\r\n\r\n## 4.3\r\n\r\n  * I'm curious why you went for SHA-512 for Ristretto255 but are using SHA-256\r\n    for P-256.\r\n\r\n## 6.5\r\n\r\n* This section specifies deserialization and input validation for each\r\n  ciphersuite. As such I'm not sure it belongs in security considerations. I'd\r\n  lift this text to Section 4.\r\n\r\n## 6.6\r\n\r\n* Similarly, this section specifies hash-to-curve for each of ciphersuite and\r\n  ought to be lifted to Setion 4.",
+      "createdAt": "2022-01-28T04:20:20Z",
+      "updatedAt": "2022-01-28T04:20:20Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 317,
+      "id": "I_kwDOBphpts5Ck9qS",
+      "title": "Chris P.'s review: Security Considerations",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/317",
+      "state": "OPEN",
+      "author": "cjpatton",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "In my opinion, this is the weakest section of the document right now. (But it's not far \r\nfrom being great!) I'll start off with some high level thoughts and follow with detailed\r\ncomments.\r\n\r\nThe bulk of the security considerations is dedicated to discussion of\r\ncomputational assumptions used in security proofs. This is particularly\r\nimportant for this document because the assumptions are stronger than usual\r\nones, e.g., DLOG, CDH, DDH, and the like. The main consequence is that, compared\r\nto other protocols, adopters of this standard will have to be much more careful in\r\nchoosing the cryptographic parameters best suited for their application.\r\n\r\nThe reason for this is that the proposed protocols all inherently expose a\r\nso-called \"static-DH\" oracle. As the spec correctly points out, access to such\r\nan oracle leads to a key-recovery attack that, while not feasible for\r\nsufficiently large gropus, significantly degrades the security level,\r\npotentially making other attacks more likely. Yet the spec also points out that\r\nthe degreee to which security is degraded depends on the protocol, as well as\r\nthe application that is built upon it.\r\n\r\nThis is a murky state of affairs, and one I fear might lead to adopters making\r\nthe wrong choice. I think the document would benefit from providing clearer and\r\nmore conservative guidance. Some specific suggestions:\r\n\r\n1. Ideally we would be able to derive \"safety limits\" for each\r\n   ciphersuite and protocol. In particular, the document would specify how many times a\r\n   secret key operation can be performed before the key needs to be rotated. It's not immediately clear to me how this would work or how useful it would be, since the limits would have to be derived from the best known attacks. This is perhaps more of a research question than anything else.\r\n\r\n2. The document should provide stronger guidance on when using the smaller\r\n   groups (ristretto255 or P-256) is safe. My take (based on my read of the doc)\r\n   is that I would be comfortable just rate-limiting key operations for the\r\n   larger groups, but if I had to pick the smaller ones, I would really only\r\n   feel comfortable if there were some way of controlling the number of clients\r\n   that access oracle (by authenticating them, for instance). Of course, this may \r\n   end up being a question for the application.\r\n\r\n3. The document would benefit from providing examples of applications for which\r\n   the static DH oracle is not likely a problem and applications for which the\r\n   static DH oracle may be a problem. What about OPAQUE? PrivacyPass?\r\n\r\n4. Finally, because the computational assumptions are stronger, they are more\r\n   likely to be falsified one day than \"standard\" assumptions. If I were writing\r\n   this spec, I would probably NOT RECOMMEND that the smaller groups be used,\r\n   simply as a hedge against future advancements in cryptanalysis. I realize this\r\n   is probably a controversial position, so just take it as a suggestion. (As with all of\r\n   these comments, of course!)\r\n\r\n# 6\r\n\r\n* This section is written as if it only applies to POPROF. Is this intentional?\r\n  If so, what are the security considerations for OPRF and VOPRF?  I think it\r\n  would be better to be explicit about what considerations apply to which\r\n  protocol. For example, the definition of pseudorandomness applies to all\r\n  modes, as does the notion of oblivious (modulo the public input).\r\n\r\n  Perhaps the idea here is that OPRFs and VOPRFs can be viewed as special cases\r\n  of POPRFs. I think this makes sense, but it's not stated anywhere explicitly.\r\n\r\n* Quote:\r\n\r\n  > This section discusses the cryptographic security of our protocol, ...\r\n\r\n  Instead of \"our protocol\", I think this should be \"the POPRF protocol defined\r\n  in Section 3.3.3.\"\r\n\r\n## 6.2\r\n\r\n* The title of this section is \"Cryptographic Security\" is a bit confusing. I\r\n  expect it to define a set of security goals, but these were already enumerated\r\n  in Section 6.1. I think a better tittle would be \"Computational Assumptions\",\r\n  or even \"Cryptographic Assumptions\", since these are what the section\r\n  describes.\r\n\r\n* Throughout this section, the term \"cryptographic security\" is used as a\r\n  stand-in for some security property defined in Section 6.2. I think it would\r\n  be better to be specific. For example:\r\n\r\n  > Consequently, the cryptographic security of the OPRF and VOPRF variants is\r\n  > based on the assumption that the One-More Gap DH is computationally\r\n  > difficult to solve.\r\n\r\n  For which property is this assumption required: pseudorandomness,\r\n  obliviousness, or verifiabilty? All three perhaps?\r\n\r\n### 6.2.1\r\n\r\n* nit: I would revise \"the assumption that the One-More Gap DH is\r\n  computationally difficult to solve\" to \"the assumption that the One-More Gap\r\n  DH problem is computationally infeasible to solve for `GG`\".\r\n\r\n* What's the value of stating OMDH problem in this document? My guess is that a\r\n  reader who is interested in this would just refer to the paper.\r\n\r\n  One reason to not include it is that, in order understand what's going on, the\r\n  definition will require more detail than what's presented. In particular:\r\n    * What does the OPRF functionality do? Is it just an oracle that returns\r\n      `Evaluate()` on whatever input the attacker chooses?\r\n    * What is a \"DDH solver\", and what does it mean for their to be multiple DDH\r\n      solvers?\r\n    * How is `k` generated?\r\n    * \"`Q` is the number of allowed queries\": Queries to what? The OPRF\r\n      functionality or the DDH solvers?\r\n\r\n  I think these issues can be avoided by just simply naming the assumption and\r\n  providing a citation.\r\n\r\n* Quote:\r\n\r\n  > The original paper [JKK14] gives a security proof that the 2HashDH-NIZK\r\n  > construction satisfies the security guarantees of a VOPRF protocol Section\r\n  > 6.1 under the OMDH assumption in the universal composability (UC) security\r\n  > model.\r\n\r\n  It could be made more clear how this statement relates to the draft. What's\r\n  the relationship between 2HashDH-NIZK and the VOPRF in this draft? Is the\r\n  protocol Section 3.3.2 based on the protocol from the paper? Are there any\r\n  differences or are they the same protocol? Section 6.2.2 does this very well,\r\n  I think, so I weould just follow suit here.\r\n\r\n  nit: UC isn't a security model per say. I would instead say: \"... under the\r\n  OMDH assumption. The goals of pseudorandomness, obliviousness, and\r\n  verifiablity are formulated in the Universal Composability (UC) framework.\"\r\n  I'd also add a reference to the UC paper.\r\n\r\n#### 6.2.1.1\r\n\r\n* This section is too dense and can use a bit more exposition. In particular the\r\n  stated problem is that the OPRF/VOPRF protocols allow \"instantiation of a\r\n  oracle for construction Q-strong-DH (Q-sDH) samples\". This is fairly jargony,\r\n  and the average reader is not going to know what this means.\r\n\r\n  This section needs to start out by saying what attack vector is being\r\n  exploited, and to what end. For example: \"The OPRF and VOPRF protocols are\r\n  vulnerable to a class of key-recovery attacks in which a malicious client, by\r\n  issuing a carefully crafted sequence of messages to the server, can compute\r\n  bits of the server's secret.\"\r\n\r\n  Then, before getting into the details, I would pivot to what this means for\r\n  applications: \"The efficacy of these attacks depends on how much computational\r\n  power the adversary has at its disposal and how many queries it is able to\r\n  make. For applications in which the latter is difficult to control, it will be\r\n  necessary to choose a larger group.\"\r\n\r\n* At the end of this section I foundd myself wondering if Ristretto255 or P-256\r\n  are going to cut it. I noticed that this gets discussed later in Section 6.2.4.\r\n  I would add a forward reference here.\r\n\r\n* Quote:\r\n\r\n  > Recall that from a malicious client's perspective, the adversary wins if\r\n  > they can distinguish the OPRF interaction from a protocol that computes the\r\n  > ideal functionality provided by the PRF.\r\n\r\n  I'm not sure I understand this paragraph. It sounds like it's saying that the\r\n  the protocol is designed so that the client can't distinguish the output of\r\n  the POPRF/VOPRF/OPRF from a random function. What is \"an ideal functionality\r\n  provided by the PRF\"? This is the first time such an ideal functionality is\r\n  mentioned.\r\n\r\n  This seems like it's a vestage of something else that has been deleted.\r\n  Perhaps just remove the paragraph?\r\n\r\n### 6.2.2\r\n\r\n* Quote:\r\n\r\n  > The construction is identical to 3HashSDHI, except ...\r\n\r\n  Slightly simpler: \"Our construction is identical, except ...\".\r\n\r\n* Quote:\r\n\r\n  > Given G1, G2, h*G2, (h^2)*G2, ..., (h^Q)*G2; for G1 and G2 generators of\r\n  > GG. Output h where h is an element of GF(p)\r\n\r\n  There are grammar errors here that make this difficult to understand. How\r\n  about: \"Given G1, G2, h*G2, (h^2)*G2, ..., (h^Q)*G2, where G1 and G2 are both\r\n  generators of the group GG, compute the scalar h.\"\r\n\r\n#### 6.2.2.1\r\n\r\nSimnilar comments as for Section 6.2.1.1.\r\n\r\n### 6.2.3\r\n\r\n* This observation is interesting, but I don't see how it's relevant to the\r\n  spec. Would an implementor want to exploit this equivalence some how?\r\n\r\n  Incidentally, why is this section in Security Considerations? (I.e., what is\r\n  its relevance for security?)\r\n\r\n### 6.2.4\r\n\r\n* Quote:\r\n\r\n  > Moreover, such attacks are only possible for those certain applications\r\n  > where the adversary can query the POPRF directly. In applications where such\r\n  > an oracle is not made available this security loss does not apply.\r\n\r\n  Given how important this is, I think it would be worthwhile to cite\r\n  applications for which this is (and is not) a problem. For example, does\r\n  Privacy Pass expose a static-DH oracle?\r\n\r\n* I think the draft should provide more guidance for how to assess this risk and\r\n  mitigate the static DH oracles. Some thoughts:\r\n\r\n    * How do I know if my application is exposing this oracle?\r\n\r\n    * In some applications it might be possbible to slow down the attacker by\r\n      rate-limiting queries to the server.\r\n\r\n    * My understanding of the attacks involving static-DH oracles is that they\r\n      lead eventually to key recovery. Would one way to mitigate this be to\r\n      recommend frequent key rotation?\r\n\r\n* Quote:\r\n\r\n  > ... are RECOMMENDED to only implement ciphersuites 0x0002, 0x0004, and\r\n  > 0x0005.\r\n\r\n  Since future implementations might pick future ciphersuites, I think it makes\r\n  sense to sharpen the requirement here. How about: \"... are RECOMMENDED to\r\n  choose groups that target a higher security level, such as decaf448 (used by\r\n  ciphersuite 0x0002), P-384 (used by 0x0004), or P-521 (used by 0x0005).\r\n\r\n## 6.7\r\n\r\n* `GenerateProof()` is executed on sensitive data (namely `skS`), so I think it\r\n  too MUST run in constant-time.",
+      "createdAt": "2022-01-28T04:20:34Z",
+      "updatedAt": "2022-01-28T04:49:41Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -22747,7 +22802,7 @@
       "labels": [],
       "body": "Previously, the same `info` string was used for the POPRF evaluation and DeriveKeyPair function. Separating them is an improvement.\r\n\r\ncc @bytemare ",
       "createdAt": "2022-01-22T15:27:57Z",
-      "updatedAt": "2022-01-22T21:50:08Z",
+      "updatedAt": "2022-01-27T20:54:56Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "main",
       "baseRefOid": "aea43e012b4b7a39b265ee39c01b43ac92b087bc",
@@ -22783,7 +22838,7 @@
       "labels": [],
       "body": "cc @bytemare, @kevinlewi ",
       "createdAt": "2022-01-25T21:00:30Z",
-      "updatedAt": "2022-01-25T21:58:58Z",
+      "updatedAt": "2022-01-27T20:54:55Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "main",
       "baseRefOid": "4edd1fc6347d85c366a062c05cb01a4eaeb5fc5e",
@@ -22833,7 +22888,7 @@
       "labels": [],
       "body": "@hugokraw, can you please have a look at this change? The [rationale](https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/307#issuecomment-1021694128) is in issue #307. \r\n\r\nCloses #307.\r\n\r\ncc @bytemare, @kevinlewi ",
       "createdAt": "2022-01-25T23:17:21Z",
-      "updatedAt": "2022-01-26T12:56:26Z",
+      "updatedAt": "2022-01-27T20:54:54Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "main",
       "baseRefOid": "0cd44667b7b359b81baac68cb3229181ba460326",
@@ -22868,24 +22923,26 @@
       "id": "PR_kwDOBphpts4xoUM0",
       "title": "Make Blind fail earlier for the POPRF",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/314",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Note that this check on the client is equivalent to the server, since `(skS + t) == 0` is only true iff `pkS + tG = skS*G + tG = (skS + t)G` is the identity element.\r\n\r\nCloses #307.\r\n\r\ncc @bytemare, @kevinlewi ",
       "createdAt": "2022-01-26T17:33:04Z",
-      "updatedAt": "2022-01-26T21:05:08Z",
+      "updatedAt": "2022-01-27T20:54:53Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "main",
       "baseRefOid": "e6a6cfc8da77e3fbc4d9411a73c2e8ea87fe7211",
       "headRepository": "cfrg/draft-irtf-cfrg-voprf",
       "headRefName": "caw/blind-fallible-poprf",
-      "headRefOid": "707c1e13094e8f232486cbd8570f16f1f183c284",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "cfafa4fa2e157275f87019f9848d51ca9ebf8ed4",
+      "closedAt": "2022-01-27T17:03:46Z",
+      "mergedAt": "2022-01-27T17:03:46Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "74477afddaf9f409d1264b85d3d42b38553239f5"
+      },
       "comments": [
         {
           "author": "chris-wood",
@@ -22955,6 +23012,572 @@
               "updatedAt": "2022-01-26T21:05:04Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zkMU-",
+          "commit": {
+            "abbreviatedOid": "707c1e1"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-27T16:28:29Z",
+          "updatedAt": "2022-01-27T16:48:18Z",
+          "comments": [
+            {
+              "originalPosition": 48,
+              "body": "```suggestion\r\nidentity element, as well as certain public inputs that map to invalid\r\n```",
+              "createdAt": "2022-01-27T16:28:29Z",
+              "updatedAt": "2022-01-27T16:48:18Z"
+            },
+            {
+              "originalPosition": 89,
+              "body": "```suggestion\r\n```\r\n--remove Finalize",
+              "createdAt": "2022-01-27T16:31:42Z",
+              "updatedAt": "2022-01-27T16:48:18Z"
+            },
+            {
+              "originalPosition": 72,
+              "body": "once client arrives to this line, it follows \r\n```\r\nT + pkS     == 0\r\nT + skS * G == 0\r\nskS * G     == -T\r\nskS * G     == - m * G\r\nskS         == -m\r\n```\r\nand the server's private key is found.\r\nis this a concern for the server?",
+              "createdAt": "2022-01-27T16:45:38Z",
+              "updatedAt": "2022-01-27T16:48:19Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zkUp0",
+          "commit": {
+            "abbreviatedOid": "bc95d70"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-27T16:50:46Z",
+          "updatedAt": "2022-01-27T16:50:46Z",
+          "comments": [
+            {
+              "originalPosition": 72,
+              "body": "No, I don't think so, since it's an exceptional case and there's nothing a server can really do to prevent it.",
+              "createdAt": "2022-01-27T16:50:46Z",
+              "updatedAt": "2022-01-27T16:50:46Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zkXQ9",
+          "commit": {
+            "abbreviatedOid": "cfafa4f"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-01-27T16:58:48Z",
+          "updatedAt": "2022-01-27T16:58:48Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOBphpts4zkYLd",
+          "commit": {
+            "abbreviatedOid": "cfafa4f"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-27T17:01:36Z",
+          "updatedAt": "2022-01-27T17:01:36Z",
+          "comments": [
+            {
+              "originalPosition": 72,
+              "body": "(just adding more info for later)\r\nhitting the case `m==skS` is kind of different from freely searching on the entire space.\r\n`m` is generated by `HashToField`, so `m` is in the image of the hash function.",
+              "createdAt": "2022-01-27T17:01:36Z",
+              "updatedAt": "2022-01-27T17:01:36Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 318,
+      "id": "PR_kwDOBphpts4xvevn",
+      "title": "First cut at Patton's review",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/318",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Thanks for the review, @cjpatton! This PR tracks changes to most of your suggestions, with some tweaks.\r\n\r\nI took most of your editorial and protocol change suggestion as they were great. I reworked the security considerations section to remove unhelpful jargon and focus on applications and implementers. I'd like to call your attention to the {{limits}} section, which tries to collapse much of the previous text into a straightforward description of the static DH problem and its impact on the group security level.\r\n\r\nRight now I don't have any good ideas for sharpening the application guidance against this problem beyond what's there. (\"If you admit an oracle and want more than 128 bits of security, use a larger group.\") I would welcome concrete suggestions for improving the text here.\r\n\r\ncc @tomrist, @nirvantyagi for \ud83d\udc40  on the new security considerations, too, which you can find [rendered here](https://cfrg.github.io/draft-irtf-cfrg-voprf/caw/all-three/draft-irtf-cfrg-voprf.html).\r\n\r\ncc @kevinlewi, @bytemare for \ud83d\udc40  regarding other editorial changes.\r\n\r\nCloses #317.\r\nCloses #316.\r\nCloses #315.",
+      "createdAt": "2022-01-28T14:57:12Z",
+      "updatedAt": "2022-01-28T23:46:54Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "main",
+      "baseRefOid": "0254da8f5935b89a3120ccc0f24f1c1291d3ca81",
+      "headRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "headRefName": "caw/patton-edits",
+      "headRefOid": "1aee0e31ed4d20f56275db11c24df4c1fa7b408c",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> 1. For applications we know about, such as OPAQUE or PrivacyPass, say whether the static DH is exposed, and how.\r\n\r\nAs above, I don't think we should describe that in this document.\r\n\r\n> 2. Say that applications can partially mitigate attacks that use a static-DH oracle by rate-limiting requests from clients.\r\n> 3. RECOMMEND frequent key rotation.\r\n\r\nThese can be harmful for some applications, so I'll just note them as possibilities.\r\n",
+          "createdAt": "2022-01-28T18:35:04Z",
+          "updatedAt": "2022-01-28T18:35:04Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@cjpatton addressed your comments!",
+          "createdAt": "2022-01-28T18:36:15Z",
+          "updatedAt": "2022-01-28T18:36:15Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOBphpts4zo_W6",
+          "commit": {
+            "abbreviatedOid": "66656d1"
+          },
+          "author": "cjpatton",
+          "authorAssociation": "NONE",
+          "state": "COMMENTED",
+          "body": "Lookin' good. Some concrete suggestions for security considerations:\r\n\r\n1. For applications we know about, such as OPAQUE or PrivacyPass, say whether the static DH is exposed, and how.\r\n2. Say that applications can partially mitigate attacks that use a static-DH oracle by rate-limiting requests from clients.\r\n3. RECOMMEND frequent key rotation. ",
+          "createdAt": "2022-01-28T16:32:47Z",
+          "updatedAt": "2022-01-28T17:05:21Z",
+          "comments": [
+            {
+              "originalPosition": 101,
+              "body": "`0` is used as the identity in every section except this one. I suggest s/I/0/, here and below.",
+              "createdAt": "2022-01-28T16:35:56Z",
+              "updatedAt": "2022-01-28T17:05:21Z"
+            },
+            {
+              "originalPosition": 161,
+              "body": "This notation is not ideal since `G` is also used as the basepoint. I think `GG` works perfectly fine.",
+              "createdAt": "2022-01-28T16:36:46Z",
+              "updatedAt": "2022-01-28T17:05:21Z"
+            },
+            {
+              "originalPosition": 718,
+              "body": "The signature of `F` is slightly different for POPRF. I would just note this here and mention that the same security considerations apply.",
+              "createdAt": "2022-01-28T16:45:38Z",
+              "updatedAt": "2022-01-28T17:05:21Z"
+            },
+            {
+              "originalPosition": 890,
+              "body": "```suggestion\r\nto the POPRF construction of {{section-about-poprf}}.)\r\n```",
+              "createdAt": "2022-01-28T16:47:06Z",
+              "updatedAt": "2022-01-28T17:05:21Z"
+            },
+            {
+              "originalPosition": 896,
+              "body": "One question I had here, which is not addressed by this change: What's the relevance of this equivalence to security? Does this equivalence imply that the security analysis of {{JKK14}} applies to a variant of the POPRF with fixed `info`? That would certainly be useful, especially if the former analysis is not in the generic group model.\r\n\r\nIf this is the case, then I would say it.",
+              "createdAt": "2022-01-28T16:50:30Z",
+              "updatedAt": "2022-01-28T17:05:21Z"
+            },
+            {
+              "originalPosition": 958,
+              "body": "I don't think this qualification adds much, since there's no a priori reason the attacker shouldn't be able to make a number of queries that divides either `p-1` or `p+1`.\r\n\r\n```suggestion\r\nbits, where Q is the number of `Evalute()` calls made by the attacker.\r\n```",
+              "createdAt": "2022-01-28T16:53:40Z",
+              "updatedAt": "2022-01-28T17:05:21Z"
+            },
+            {
+              "originalPosition": 952,
+              "body": "This paragraph ought to say what the attacks do. In particular, Brown-Gallant-04's goal is to recover the key.",
+              "createdAt": "2022-01-28T16:55:02Z",
+              "updatedAt": "2022-01-28T17:05:21Z"
+            },
+            {
+              "originalPosition": 971,
+              "body": "What's an example of an application for which this oracle is not exposed? Take OPAQUE: The client's first step in the authentication flow is evaluate the OPRF under the client's password so that it can decrypt its envelope. Isn't the static-DH problem inevitable here?\r\n\r\nWhat about PrivacyPass?",
+              "createdAt": "2022-01-28T16:58:43Z",
+              "updatedAt": "2022-01-28T17:05:21Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zpf-Q",
+          "commit": {
+            "abbreviatedOid": "158dbd1"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T18:25:30Z",
+          "updatedAt": "2022-01-28T18:25:30Z",
+          "comments": [
+            {
+              "originalPosition": 971,
+              "body": "I don't think we want to get into application specific details here. Those can and should be dealt with by those relevant protocols.",
+              "createdAt": "2022-01-28T18:25:30Z",
+              "updatedAt": "2022-01-28T18:25:30Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zpgIC",
+          "commit": {
+            "abbreviatedOid": "158dbd1"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T18:26:12Z",
+          "updatedAt": "2022-01-28T18:26:12Z",
+          "comments": [
+            {
+              "originalPosition": 952,
+              "body": "Good point!",
+              "createdAt": "2022-01-28T18:26:12Z",
+              "updatedAt": "2022-01-28T18:26:12Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zpgnh",
+          "commit": {
+            "abbreviatedOid": "158dbd1"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T18:28:28Z",
+          "updatedAt": "2022-01-28T18:28:28Z",
+          "comments": [
+            {
+              "originalPosition": 161,
+              "body": "I'll fix by making the base point `B` to match RFC8032 =)",
+              "createdAt": "2022-01-28T18:28:28Z",
+              "updatedAt": "2022-01-28T18:28:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zphYY",
+          "commit": {
+            "abbreviatedOid": "6f23ce2"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T18:31:55Z",
+          "updatedAt": "2022-01-28T18:31:56Z",
+          "comments": [
+            {
+              "originalPosition": 896,
+              "body": "That's not quite it (and indeed not true, since the proof generation is different). Rather, it's to say that if you need verifiability, use the POPRF, since it also works for the VOPRF when the public input is fixed. I'll clarify.",
+              "createdAt": "2022-01-28T18:31:56Z",
+              "updatedAt": "2022-01-28T18:31:56Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zphvB",
+          "commit": {
+            "abbreviatedOid": "6f23ce2"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T18:33:34Z",
+          "updatedAt": "2022-01-28T18:33:35Z",
+          "comments": [
+            {
+              "originalPosition": 896,
+              "body": "Actually, it is somewhat obsolete now. Removing entirely.",
+              "createdAt": "2022-01-28T18:33:35Z",
+              "updatedAt": "2022-01-28T18:33:35Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zqYKT",
+          "commit": {
+            "abbreviatedOid": "1a7958b"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T21:59:15Z",
+          "updatedAt": "2022-01-28T23:22:03Z",
+          "comments": [
+            {
+              "originalPosition": 36,
+              "body": "```suggestion\r\nto the server's public key the client knows in advance. A Partially-Oblivious PRF (POPRF)\r\n```\r\n\r\nit may be wordy, but it is clearer to me. -- reshape if needed.",
+              "createdAt": "2022-01-28T21:59:16Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 36,
+              "body": "the proof object is mentioned at POPRF, it's better to introduce it here first.",
+              "createdAt": "2022-01-28T22:02:06Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 118,
+              "body": "```suggestion\r\nprime-order group.\r\n```\r\nIt was already hinted at lines 352, and 362.",
+              "createdAt": "2022-01-28T22:08:35Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 145,
+              "body": "```suggestion\r\n- DeserializeElement(x): A member function of `Group` that maps an array of bytes\r\n  `x` to a group element `A`, or fails if the input is not a valid\r\n```",
+              "createdAt": "2022-01-28T22:11:24Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 141,
+              "body": "array of bytes vs byte array.\r\n\r\n```suggestion\r\n- SerializeElement(A): A member function of `Group` that maps a group element `A`\r\n  to a unique byte array `buf` of fixed length `Ne`. The output type of\r\n```\r\n",
+              "createdAt": "2022-01-28T22:12:52Z",
+              "updatedAt": "2022-01-28T23:25:25Z"
+            },
+            {
+              "originalPosition": 265,
+              "body": "B variable collides with generator B\r\nwe can remove generator B by defining\r\n`ScalarBaseMult(s) := s * G.Generator()`",
+              "createdAt": "2022-01-28T22:19:31Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 597,
+              "body": "```suggestion\r\nand hash functions. It also includes implementation details for\r\n```",
+              "createdAt": "2022-01-28T22:25:39Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 665,
+              "body": "```suggestion\r\nThe DeserializeElement function recovers a group element from an array of\r\nbytes produced by a serialization function. This function validates that the element is a proper member\r\n```\r\n\r\nit is important to remark that Deserialize only works for inputs produced by a Serialization function, and not on arbitrary-length input strings. (reshape if needed)",
+              "createdAt": "2022-01-28T22:30:26Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 677,
+              "body": "```suggestion\r\nwhich returns false if the input is invalid. If this function returns false,\r\n```",
+              "createdAt": "2022-01-28T22:31:11Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 682,
+              "body": "idem as for DeserializeElement",
+              "createdAt": "2022-01-28T22:32:12Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 689,
+              "body": "```suggestion\r\na little-endian integer, is a valud between 0 and `Order()-1`.\r\n```",
+              "createdAt": "2022-01-28T23:08:42Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 785,
+              "body": "does unlinkability also applies to VOPRF? or it is a property of POPRF only? ",
+              "createdAt": "2022-01-28T23:12:52Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 969,
+              "body": "```suggestion\r\nAs a result of this class of attack, choosing prime-order groups with a\r\n```",
+              "createdAt": "2022-01-28T23:14:42Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 970,
+              "body": "```suggestion\r\n128-bit security level instantiates an OPRF with a reduced security level of 128-(log\\_2(Q)/2) bits of security.\r\n```",
+              "createdAt": "2022-01-28T23:15:40Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            },
+            {
+              "originalPosition": 974,
+              "body": "Reinforcing cjpatton's point: how does a user knows whether applications expose or not this oracle.\r\nI think, the oracle is there by construction. Applications/users must be aware of it, and must protect following the recommendations given above.\r\nSo, in which situation _the oracle is not made available_?",
+              "createdAt": "2022-01-28T23:19:54Z",
+              "updatedAt": "2022-01-28T23:22:03Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zqjOI",
+          "commit": {
+            "abbreviatedOid": "1a7958b"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T23:23:14Z",
+          "updatedAt": "2022-01-28T23:23:14Z",
+          "comments": [
+            {
+              "originalPosition": 36,
+              "body": "```suggestion\r\nto the server's public key the client knows. A Partially-Oblivious PRF (POPRF)\r\n```",
+              "createdAt": "2022-01-28T23:23:14Z",
+              "updatedAt": "2022-01-28T23:23:14Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zqjSU",
+          "commit": {
+            "abbreviatedOid": "1a7958b"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T23:23:57Z",
+          "updatedAt": "2022-01-28T23:23:57Z",
+          "comments": [
+            {
+              "originalPosition": 36,
+              "body": "There's no requirement for the client to know the key in advance, so I didn't take that suggestion.",
+              "createdAt": "2022-01-28T23:23:57Z",
+              "updatedAt": "2022-01-28T23:23:57Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zqjZZ",
+          "commit": {
+            "abbreviatedOid": "1038d57"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T23:24:59Z",
+          "updatedAt": "2022-01-28T23:25:00Z",
+          "comments": [
+            {
+              "originalPosition": 145,
+              "body": "This is the same as byte array, so I'm rejecting this suggestion.",
+              "createdAt": "2022-01-28T23:24:59Z",
+              "updatedAt": "2022-01-28T23:25:00Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zqjx9",
+          "commit": {
+            "abbreviatedOid": "9649bb3"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T23:28:58Z",
+          "updatedAt": "2022-01-28T23:28:58Z",
+          "comments": [
+            {
+              "originalPosition": 665,
+              "body": "Well, no, that's not true. One can _try_ to call deserialize on arbitrary strings, and it should fail in those cases.",
+              "createdAt": "2022-01-28T23:28:58Z",
+              "updatedAt": "2022-01-28T23:28:58Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zqj1T",
+          "commit": {
+            "abbreviatedOid": "9649bb3"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T23:29:31Z",
+          "updatedAt": "2022-01-28T23:29:31Z",
+          "comments": [
+            {
+              "originalPosition": 682,
+              "body": "See comment above.",
+              "createdAt": "2022-01-28T23:29:31Z",
+              "updatedAt": "2022-01-28T23:29:31Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zqkTD",
+          "commit": {
+            "abbreviatedOid": "9649bb3"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T23:34:25Z",
+          "updatedAt": "2022-01-28T23:34:25Z",
+          "comments": [
+            {
+              "originalPosition": 785,
+              "body": "The example here is just for the VOPRF. Unlinkability isn't a property for the OPRF. Rather, it's input secrecy. I'll add this property.",
+              "createdAt": "2022-01-28T23:34:25Z",
+              "updatedAt": "2022-01-28T23:34:25Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zqkZk",
+          "commit": {
+            "abbreviatedOid": "9649bb3"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T23:35:32Z",
+          "updatedAt": "2022-01-28T23:35:32Z",
+          "comments": [
+            {
+              "originalPosition": 974,
+              "body": "In applications that don't give an _attacker_ (malicious client) access to the oracle, for example.",
+              "createdAt": "2022-01-28T23:35:32Z",
+              "updatedAt": "2022-01-28T23:35:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zqkfA",
+          "commit": {
+            "abbreviatedOid": "9539378"
+          },
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2022-01-28T23:36:28Z",
+          "updatedAt": "2022-01-28T23:36:28Z",
+          "comments": [
+            {
+              "originalPosition": 265,
+              "body": "Good point -- I just rewrote the ScalarBaseMult definition.",
+              "createdAt": "2022-01-28T23:36:28Z",
+              "updatedAt": "2022-01-28T23:36:28Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOBphpts4zqlXi",
+          "commit": {
+            "abbreviatedOid": "1aee0e3"
+          },
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2022-01-28T23:46:54Z",
+          "updatedAt": "2022-01-28T23:46:54Z",
+          "comments": []
         }
       ]
     }
