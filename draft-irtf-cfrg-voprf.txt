@@ -75,7 +75,7 @@ Table of Contents
      1.2.  Requirements
      1.3.  Notation and Terminology
    2.  Preliminaries
-     2.1.  Prime-Order Group Dependency
+     2.1.  Prime-Order Group
      2.2.  Discrete Log Equivalence Proofs
        2.2.1.  Proof Generation
        2.2.2.  Proof Verification
@@ -171,6 +171,23 @@ Table of Contents
    along with application considerations, and their security properties.
 
 1.1.  Change log
+
+   draft-09 (https://tools.ietf.org/html/draft-irtf-cfrg-voprf-09):
+
+   *  Split syntax for OPRF, VOPRF, and POPRF functionalities.
+
+   *  Make Blind function fallible for invalid private and public
+      inputs.
+
+   *  Specify key generation.
+
+   *  Remove serialization steps from core protocol functions.
+
+   *  Refactor protocol presentation for clarity.
+
+   *  Simplify security considerations.
+
+   *  Update test vectors.
 
    draft-08 (https://tools.ietf.org/html/draft-irtf-cfrg-voprf-08):
 
@@ -344,7 +361,7 @@ Table of Contents
 
    Section 4 specifies ciphersuites as combinations of Group and Hash.
 
-2.1.  Prime-Order Group Dependency
+2.1.  Prime-Order Group
 
    In this document, we assume the construction of an additive, prime-
    order group Group for performing all mathematical operations.  Such
@@ -766,7 +783,8 @@ Table of Contents
    agreeing on a mode and ciphersuite value suiteID.  The server key
    pair (skS, pkS) is generated using the following function, which
    accepts a randomly generated seed of length Ns and optional public
-   info string.
+   info string.  The constant Ns corresponds to the size of a serialized
+   Scalar and is defined in Section 2.1.
 
    Input:
 

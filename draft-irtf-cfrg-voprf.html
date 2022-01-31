@@ -1160,7 +1160,7 @@ elliptic curves.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
             <p id="section-toc.1-1.2.1"><a href="#section-2" class="xref">2</a>.  <a href="#name-preliminaries" class="xref">Preliminaries</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.1">
-                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-prime-order-group-dependenc" class="xref">Prime-Order Group Dependency</a></p>
+                <p id="section-toc.1-1.2.2.1.1"><a href="#section-2.1" class="xref">2.1</a>.  <a href="#name-prime-order-group" class="xref">Prime-Order Group</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.2.2.2">
                 <p id="section-toc.1-1.2.2.2.1"><a href="#section-2.2" class="xref">2.2</a>.  <a href="#name-discrete-log-equivalence-pr" class="xref">Discrete Log Equivalence Proofs</a></p>
@@ -1414,121 +1414,138 @@ along with application considerations, and their security properties.<a href="#s
         <h3 id="name-change-log">
 <a href="#section-1.1" class="section-number selfRef">1.1. </a><a href="#name-change-log" class="section-name selfRef">Change log</a>
         </h3>
-<p id="section-1.1-1"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-08">draft-08</a>:<a href="#section-1.1-1" class="pilcrow">¶</a></p>
+<p id="section-1.1-1"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-09">draft-09</a>:<a href="#section-1.1-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-2.1">Adopt partially-oblivious PRF construction from <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span>.<a href="#section-1.1-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.1-2.1">Split syntax for OPRF, VOPRF, and POPRF functionalities.<a href="#section-1.1-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-2.2">Update P-384 suite to use SHA-384 instead of SHA-512.<a href="#section-1.1-2.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-2.2">Make Blind function fallible for invalid private and public inputs.<a href="#section-1.1-2.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-2.3">Update test vectors.<a href="#section-1.1-2.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-2.3">Specify key generation.<a href="#section-1.1-2.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-2.4">Apply various editorial changes.<a href="#section-1.1-2.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-2.4">Remove serialization steps from core protocol functions.<a href="#section-1.1-2.4" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-2.5">Refactor protocol presentation for clarity.<a href="#section-1.1-2.5" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-2.6">Simplify security considerations.<a href="#section-1.1-2.6" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-2.7">Update test vectors.<a href="#section-1.1-2.7" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-1.1-3"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-07">draft-07</a>:<a href="#section-1.1-3" class="pilcrow">¶</a></p>
+<p id="section-1.1-3"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-08">draft-08</a>:<a href="#section-1.1-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-4.1">Bind blinding mechanism to mode (additive for verifiable mode and
-multiplicative for base mode).<a href="#section-1.1-4.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.1-4.1">Adopt partially-oblivious PRF construction from <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span>.<a href="#section-1.1-4.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-4.2">Add explicit errors for deserialization.<a href="#section-1.1-4.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.2">Update P-384 suite to use SHA-384 instead of SHA-512.<a href="#section-1.1-4.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-4.3">Document explicit errors and API considerations.<a href="#section-1.1-4.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.3">Update test vectors.<a href="#section-1.1-4.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-4.4">Adopt SHAKE-256 for decaf448 ciphersuite.<a href="#section-1.1-4.4" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-1.1-4.5">Normalize HashToScalar functionality for all ciphersuites.<a href="#section-1.1-4.5" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-1.1-4.6">Refactor and generalize DLEQ proof functionality and domain separation
-tags for use in other protocols.<a href="#section-1.1-4.6" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-1.1-4.7">Update test vectors.<a href="#section-1.1-4.7" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-1.1-4.8">Apply various editorial changes.<a href="#section-1.1-4.8" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-4.4">Apply various editorial changes.<a href="#section-1.1-4.4" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-1.1-5"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-06">draft-06</a>:<a href="#section-1.1-5" class="pilcrow">¶</a></p>
+<p id="section-1.1-5"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-07">draft-07</a>:<a href="#section-1.1-5" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-6.1">Specify of group element and scalar serialization.<a href="#section-1.1-6.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.1-6.1">Bind blinding mechanism to mode (additive for verifiable mode and
+multiplicative for base mode).<a href="#section-1.1-6.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-6.2">Remove info parameter from the protocol API and update domain separation guidance.<a href="#section-1.1-6.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-6.2">Add explicit errors for deserialization.<a href="#section-1.1-6.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-6.3">Fold Unblind function into Finalize.<a href="#section-1.1-6.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-6.3">Document explicit errors and API considerations.<a href="#section-1.1-6.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-6.4">Optimize ComputeComposites for servers (using knowledge of the private key).<a href="#section-1.1-6.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-6.4">Adopt SHAKE-256 for decaf448 ciphersuite.<a href="#section-1.1-6.4" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-6.5">Specify deterministic key generation method.<a href="#section-1.1-6.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-6.5">Normalize HashToScalar functionality for all ciphersuites.<a href="#section-1.1-6.5" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-6.6">Update test vectors.<a href="#section-1.1-6.6" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-6.6">Refactor and generalize DLEQ proof functionality and domain separation
+tags for use in other protocols.<a href="#section-1.1-6.6" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-6.7">Apply various editorial changes.<a href="#section-1.1-6.7" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-6.7">Update test vectors.<a href="#section-1.1-6.7" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-6.8">Apply various editorial changes.<a href="#section-1.1-6.8" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-1.1-7"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-05">draft-05</a>:<a href="#section-1.1-7" class="pilcrow">¶</a></p>
+<p id="section-1.1-7"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-06">draft-06</a>:<a href="#section-1.1-7" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-8.1">Move to ristretto255 and decaf448 ciphersuites.<a href="#section-1.1-8.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.1-8.1">Specify of group element and scalar serialization.<a href="#section-1.1-8.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-8.2">Clean up ciphersuite definitions.<a href="#section-1.1-8.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-8.2">Remove info parameter from the protocol API and update domain separation guidance.<a href="#section-1.1-8.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-8.3">Pin domain separation tag construction to draft version.<a href="#section-1.1-8.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-8.3">Fold Unblind function into Finalize.<a href="#section-1.1-8.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-8.4">Move key generation outside of context construction functions.<a href="#section-1.1-8.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-8.4">Optimize ComputeComposites for servers (using knowledge of the private key).<a href="#section-1.1-8.4" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-8.5">Editorial changes.<a href="#section-1.1-8.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-8.5">Specify deterministic key generation method.<a href="#section-1.1-8.5" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-8.6">Update test vectors.<a href="#section-1.1-8.6" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-8.7">Apply various editorial changes.<a href="#section-1.1-8.7" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-1.1-9"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-04">draft-04</a>:<a href="#section-1.1-9" class="pilcrow">¶</a></p>
+<p id="section-1.1-9"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-05">draft-05</a>:<a href="#section-1.1-9" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-10.1">Introduce Client and Server contexts for controlling verifiability and
-required functionality.<a href="#section-1.1-10.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.1-10.1">Move to ristretto255 and decaf448 ciphersuites.<a href="#section-1.1-10.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-10.2">Condense API.<a href="#section-1.1-10.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-10.2">Clean up ciphersuite definitions.<a href="#section-1.1-10.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-10.3">Remove batching from standard functionality (included as an extension)<a href="#section-1.1-10.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-10.3">Pin domain separation tag construction to draft version.<a href="#section-1.1-10.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-10.4">Add Curve25519 and P-256 ciphersuites for applications that prevent
-strong-DH oracle attacks.<a href="#section-1.1-10.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-10.4">Move key generation outside of context construction functions.<a href="#section-1.1-10.4" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-10.5">Provide explicit prime-order group API and instantiation advice for
-each ciphersuite.<a href="#section-1.1-10.5" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-1.1-10.6">Proof-of-concept implementation in sage.<a href="#section-1.1-10.6" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-1.1-10.7">Remove privacy considerations advice as this depends on applications.<a href="#section-1.1-10.7" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-10.5">Editorial changes.<a href="#section-1.1-10.5" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-1.1-11"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-03">draft-03</a>:<a href="#section-1.1-11" class="pilcrow">¶</a></p>
+<p id="section-1.1-11"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-04">draft-04</a>:<a href="#section-1.1-11" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-12.1">Certify public key during VerifiableFinalize.<a href="#section-1.1-12.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.1-12.1">Introduce Client and Server contexts for controlling verifiability and
+required functionality.<a href="#section-1.1-12.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-12.2">Remove protocol integration advice.<a href="#section-1.1-12.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-12.2">Condense API.<a href="#section-1.1-12.2" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-12.3">Add text discussing how to perform domain separation.<a href="#section-1.1-12.3" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-12.3">Remove batching from standard functionality (included as an extension)<a href="#section-1.1-12.3" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-12.4">Drop OPRF_/VOPRF_ prefix from algorithm names.<a href="#section-1.1-12.4" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-12.4">Add Curve25519 and P-256 ciphersuites for applications that prevent
+strong-DH oracle attacks.<a href="#section-1.1-12.4" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-12.5">Make prime-order group assumption explicit.<a href="#section-1.1-12.5" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-12.5">Provide explicit prime-order group API and instantiation advice for
+each ciphersuite.<a href="#section-1.1-12.5" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-12.6">Changes to algorithms accepting batched inputs.<a href="#section-1.1-12.6" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-12.6">Proof-of-concept implementation in sage.<a href="#section-1.1-12.6" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-12.7">Changes to construction of batched DLEQ proofs.<a href="#section-1.1-12.7" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-1.1-12.8">Updated ciphersuites to be consistent with hash-to-curve and added
-OPRF specific ciphersuites.<a href="#section-1.1-12.8" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-12.7">Remove privacy considerations advice as this depends on applications.<a href="#section-1.1-12.7" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-1.1-13"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-02">draft-02</a>:<a href="#section-1.1-13" class="pilcrow">¶</a></p>
+<p id="section-1.1-13"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-03">draft-03</a>:<a href="#section-1.1-13" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-14.1">Added section discussing cryptographic security and static DH oracles.<a href="#section-1.1-14.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.1-14.1">Certify public key during VerifiableFinalize.<a href="#section-1.1-14.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-14.2">Updated batched proof algorithms.<a href="#section-1.1-14.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-14.2">Remove protocol integration advice.<a href="#section-1.1-14.2" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-14.3">Add text discussing how to perform domain separation.<a href="#section-1.1-14.3" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-14.4">Drop OPRF_/VOPRF_ prefix from algorithm names.<a href="#section-1.1-14.4" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-14.5">Make prime-order group assumption explicit.<a href="#section-1.1-14.5" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-14.6">Changes to algorithms accepting batched inputs.<a href="#section-1.1-14.6" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-14.7">Changes to construction of batched DLEQ proofs.<a href="#section-1.1-14.7" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-14.8">Updated ciphersuites to be consistent with hash-to-curve and added
+OPRF specific ciphersuites.<a href="#section-1.1-14.8" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-1.1-15"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-01">draft-01</a>:<a href="#section-1.1-15" class="pilcrow">¶</a></p>
+<p id="section-1.1-15"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-02">draft-02</a>:<a href="#section-1.1-15" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-1.1-16.1">Updated ciphersuites to be in line with
-https://tools.ietf.org/html/draft-irtf-cfrg-hash-to-curve-04.<a href="#section-1.1-16.1" class="pilcrow">¶</a>
+<li class="normal" id="section-1.1-16.1">Added section discussing cryptographic security and static DH oracles.<a href="#section-1.1-16.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-1.1-16.2">Made some necessary modular reductions more explicit.<a href="#section-1.1-16.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-1.1-16.2">Updated batched proof algorithms.<a href="#section-1.1-16.2" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-1.1-17"><a href="https://tools.ietf.org/html/draft-irtf-cfrg-voprf-01">draft-01</a>:<a href="#section-1.1-17" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-1.1-18.1">Updated ciphersuites to be in line with
+https://tools.ietf.org/html/draft-irtf-cfrg-hash-to-curve-04.<a href="#section-1.1-18.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-1.1-18.2">Made some necessary modular reductions more explicit.<a href="#section-1.1-18.2" class="pilcrow">¶</a>
 </li>
         </ul>
 </section>
@@ -1606,8 +1623,8 @@ with base point defined in the corresponding reference for each group.
 <p id="section-2-3"><a href="#ciphersuites" class="xref">Section 4</a> specifies ciphersuites as combinations of <code>Group</code> and <code>Hash</code>.<a href="#section-2-3" class="pilcrow">¶</a></p>
 <div id="pog">
 <section id="section-2.1">
-        <h3 id="name-prime-order-group-dependenc">
-<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-prime-order-group-dependenc" class="section-name selfRef">Prime-Order Group Dependency</a>
+        <h3 id="name-prime-order-group">
+<a href="#section-2.1" class="section-number selfRef">2.1. </a><a href="#name-prime-order-group" class="section-name selfRef">Prime-Order Group</a>
         </h3>
 <p id="section-2.1-1">In this document, we assume the construction of an additive, prime-order
 group <code>Group</code> for performing all mathematical operations. Such groups are
@@ -2073,7 +2090,8 @@ def CreateContextString(mode, suiteID):
 for executing the online phase of the protocol after agreeing on a mode and
 ciphersuite value suiteID. The server key pair (<code>skS</code>, <code>pkS</code>) is generated
 using the following function, which accepts a randomly generated seed of length
-<code>Ns</code> and optional public info string.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<code>Ns</code> and optional public info string. The constant <code>Ns</code> corresponds to the size
+of a serialized Scalar and is defined in <a href="#pog" class="xref">Section 2.1</a>.<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.2-2">
 <pre>
 Input:
