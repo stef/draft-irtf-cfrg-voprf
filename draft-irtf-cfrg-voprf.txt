@@ -674,21 +674,21 @@ Table of Contents
    learns output and the server learns nothing.  This interaction is
    shown below.
 
-     Client                                                  Server(skS)
-   ---------------------------------------------------------------------
-   blind, blindedElement = Blind(input)
+       Client                                                Server(skS)
+     -------------------------------------------------------------------
+     blind, blindedElement = Blind(input)
 
-                              blindedElement
-                                ---------->
+                                blindedElement
+                                  ---------->
 
-                            evaluatedElement = Evaluate(blindedElement)
+                             evaluatedElement = Evaluate(blindedElement)
 
-                              evaluatedElement
-                                <----------
+                                evaluatedElement
+                                  <----------
 
-   output = Finalize(input, blind, evaluatedElement, blindedElement)
+     output = Finalize(input, blind, evaluatedElement, blindedElement)
 
-                    Figure 1: OPRF protocol overview
+                      Figure 1: OPRF protocol overview
 
    In the verifiable mode, the client additionally receives proof that
    the server used skS in computing the function.  To achieve
@@ -699,22 +699,22 @@ Table of Contents
    the protocol.  This proof does not reveal the server's private key to
    the client.  This interaction is shown below.
 
-     Client(pkS)            <---- pkS ------                 Server(skS)
-   ---------------------------------------------------------------------
-   blind, blindedElement = Blind(input)
+       Client(pkS)            <---- pkS ------               Server(skS)
+     -------------------------------------------------------------------
+     blind, blindedElement = Blind(input)
 
-                              blindedElement
-                                ---------->
+                                blindedElement
+                                  ---------->
 
                       evaluatedElement, proof = Evaluate(blindedElement)
 
-                          evaluatedElement, proof
-                                <----------
+                            evaluatedElement, proof
+                                  <----------
 
-   output = Finalize(input, blind, evaluatedElement,
-                     blindedElement, proof)
+     output = Finalize(input, blind, evaluatedElement,
+                       blindedElement, proof)
 
-        Figure 2: VOPRF protocol overview with additional proof
+          Figure 2: VOPRF protocol overview with additional proof
 
    The partially-oblivious mode extends the VOPRF mode such that the
    client and server can additionally provide a public input info that
@@ -723,22 +723,22 @@ Table of Contents
    support additional public input, the client and server augment the
    pkS and skS, respectively, using the info value, as in [TCRSTW21].
 
-     Client(pkS, info)        <---- pkS ------        Server(skS, info)
-   ---------------------------------------------------------------------
-   blind, blindedElement, tweakedKey = Blind(input, info)
+       Client(pkS, info)        <---- pkS ------       Server(skS, info)
+     -------------------------------------------------------------------
+     blind, blindedElement, tweakedKey = Blind(input, info)
 
-                              blindedElement
-                                ---------->
+                                blindedElement
+                                  ---------->
 
                 evaluatedElement, proof = Evaluate(blindedElement, info)
 
-                          evaluatedElement, proof
-                                <----------
+                            evaluatedElement, proof
+                                  <----------
 
-   output = Finalize(input, blind, evaluatedElement,
-                     blindedElement, proof, info, tweakedKey)
+     output = Finalize(input, blind, evaluatedElement,
+                       blindedElement, proof, info, tweakedKey)
 
-     Figure 3: POPRF protocol overview with additional public input
+       Figure 3: POPRF protocol overview with additional public input
 
    Each protocol consists of an offline setup phase and an online phase,
    described in Section 3.2 and Section 3.3, respectively.
@@ -965,60 +965,62 @@ Table of Contents
    an evaluated element and DLEQ proof using the following Evaluate
    function.
 
-Input:
+   Input:
 
-  Element blindedElement
+     Element blindedElement
 
-Output:
+   Output:
 
-  Element evaluatedElement
-  Proof proof
+     Element evaluatedElement
+     Proof proof
 
-Parameters:
+   Parameters:
 
-  Group G
-  Scalar skS
-  Element pkS
+     Group G
+     Scalar skS
+     Element pkS
 
-def Evaluate(blindedElement):
-  evaluatedElement = skS * blindedElement
-  proof = GenerateProof(skS, G.Generator(), pkS, blindedElement, evaluatedElement)
-  return evaluatedElement, proof
+   def Evaluate(blindedElement):
+     evaluatedElement = skS * blindedElement
+     proof = GenerateProof(skS, G.Generator(), pkS,
+                           blindedElement, evaluatedElement)
+     return evaluatedElement, proof
 
    The server sends both evaluatedElement and proof back to the client.
    Upon receipt, the client processes both values to complete the VOPRF
    computation using the Finalize function below.
 
-Input:
+   Input:
 
-  PrivateInput input
-  Scalar blind
-  Element evaluatedElement
-  Element blindedElement
-  Proof proof
+     PrivateInput input
+     Scalar blind
+     Element evaluatedElement
+     Element blindedElement
+     Proof proof
 
-Output:
+   Output:
 
-  opaque output[Nh]
+     opaque output[Nh]
 
-Parameters:
+   Parameters:
 
-  Group G
-  Element pkS
+     Group G
+     Element pkS
 
-Errors: VerifyError
+   Errors: VerifyError
 
-def Finalize(input, blind, evaluatedElement, blindedElement, proof):
-  if VerifyProof(G.Generator(), pkS, blindedElement, evaluatedElement, proof) == false:
-    raise VerifyError
+   def Finalize(input, blind, evaluatedElement, blindedElement, proof):
+     if VerifyProof(G.Generator(), pkS, blindedElement,
+                    evaluatedElement, proof) == false:
+       raise VerifyError
 
-  N = G.ScalarInverse(blind) * evaluatedElement
-  unblindedElement = G.SerializeElement(N)
+     N = G.ScalarInverse(blind) * evaluatedElement
+     unblindedElement = G.SerializeElement(N)
 
-  hashInput = I2OSP(len(input), 2) || input ||
-              I2OSP(len(unblindedElement), 2) || unblindedElement ||
-              "Finalize"
-  return Hash(hashInput)
+     hashInput = I2OSP(len(input), 2) || input ||
+                 I2OSP(len(unblindedElement), 2) || unblindedElement ||
+                 "Finalize"
+     return Hash(hashInput)
 
 3.3.3.  POPRF Protocol
 
@@ -1069,73 +1071,76 @@ def Finalize(input, blind, evaluatedElement, blindedElement, proof):
    process blindedElement to compute an evaluated element and DLEQ proof
    using the following Evaluate function.
 
-Input:
+   Input:
 
-  Element blindedElement
-  PublicInput info
+     Element blindedElement
+     PublicInput info
 
-Output:
+   Output:
 
-  Element evaluatedElement
-  Proof proof
+     Element evaluatedElement
+     Proof proof
 
-Parameters:
+   Parameters:
 
-  Group G
-  Scalar skS
-  Element pkS
+     Group G
+     Scalar skS
+     Element pkS
 
-Errors: InverseError
+   Errors: InverseError
 
-def Evaluate(blindedElement, info):
-  framedInfo = "Info" || I2OSP(len(info), 2) || info
-  m = G.HashToScalar(framedInfo)
-  t = skS + m
-  if t == 0:
-    raise InverseError
+   def Evaluate(blindedElement, info):
+     framedInfo = "Info" || I2OSP(len(info), 2) || info
+     m = G.HashToScalar(framedInfo)
+     t = skS + m
+     if t == 0:
+       raise InverseError
 
-  evaluatedElement = G.ScalarInverse(t) * blindedElement
+     evaluatedElement = G.ScalarInverse(t) * blindedElement
 
-  tweakedKey = G.ScalarBaseMult(t)
-  proof = GenerateProof(t, G.Generator(), tweakedKey, evaluatedElement, blindedElement)
+     tweakedKey = G.ScalarBaseMult(t)
+     proof = GenerateProof(t, G.Generator(), tweakedKey,
+                           evaluatedElement, blindedElement)
 
-  return evaluatedElement, proof
+     return evaluatedElement, proof
 
    The server sends both evaluatedElement and proof back to the client.
    Upon receipt, the client processes both values to complete the VOPRF
    computation using the Finalize function below.
 
-Input:
+   Input:
 
-  PrivateInput input
-  Scalar blind
-  Element evaluatedElement
-  Element blindedElement
-  Proof proof
-  PublicInput info
-  Element tweakedKey
+     PrivateInput input
+     Scalar blind
+     Element evaluatedElement
+     Element blindedElement
+     Proof proof
+     PublicInput info
+     Element tweakedKey
 
-Output:
+   Output:
 
-  opaque output[Nh]
+     opaque output[Nh]
 
-Parameters:
+   Parameters:
 
-  Group G
-  Element pkS
+     Group G
+     Element pkS
 
-def Finalize(input, blind, evaluatedElement, blindedElement, proof, info, tweakedKey):
-  if VerifyProof(G.Generator(), tweakedKey, evaluatedElement, blindedElement, proof) == false:
-    raise VerifyError
+   def Finalize(input, blind, evaluatedElement, blindedElement,
+                proof, info, tweakedKey):
+     if VerifyProof(G.Generator(), tweakedKey, evaluatedElement,
+                    blindedElement, proof) == false:
+       raise VerifyError
 
-  N = G.ScalarInverse(blind) * evaluatedElement
-  unblindedElement = G.SerializeElement(N)
+     N = G.ScalarInverse(blind) * evaluatedElement
+     unblindedElement = G.SerializeElement(N)
 
-  hashInput = I2OSP(len(input), 2) || input ||
-              I2OSP(len(info), 2) || info ||
-              I2OSP(len(unblindedElement), 2) || unblindedElement ||
-              "Finalize"
-  return Hash(hashInput)
+     hashInput = I2OSP(len(input), 2) || input ||
+                 I2OSP(len(info), 2) || info ||
+                 I2OSP(len(unblindedElement), 2) || unblindedElement ||
+                 "Finalize"
+     return Hash(hashInput)
 
 4.  Ciphersuites
 

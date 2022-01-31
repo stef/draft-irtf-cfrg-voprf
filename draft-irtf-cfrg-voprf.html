@@ -1956,14 +1956,14 @@ This interaction is shown below.<a href="#section-3-2" class="pilcrow">¶</a></p
 <figure id="figure-1">
         <div class="alignLeft art-text artwork" id="section-3-3.1">
 <pre>
-    Client                                                  Server(skS)
-  ---------------------------------------------------------------------
+    Client                                                Server(skS)
+  -------------------------------------------------------------------
   blind, blindedElement = Blind(input)
 
                              blindedElement
                                ----------&gt;
 
-                           evaluatedElement = Evaluate(blindedElement)
+                          evaluatedElement = Evaluate(blindedElement)
 
                              evaluatedElement
                                &lt;----------
@@ -1985,14 +1985,14 @@ private key to the client. This interaction is shown below.<a href="#section-3-4
 <figure id="figure-2">
         <div class="alignLeft art-text artwork" id="section-3-5.1">
 <pre>
-    Client(pkS)            &lt;---- pkS ------                 Server(skS)
-  ---------------------------------------------------------------------
+    Client(pkS)            &lt;---- pkS ------               Server(skS)
+  -------------------------------------------------------------------
   blind, blindedElement = Blind(input)
 
                              blindedElement
                                ----------&gt;
 
-                     evaluatedElement, proof = Evaluate(blindedElement)
+                   evaluatedElement, proof = Evaluate(blindedElement)
 
                          evaluatedElement, proof
                                &lt;----------
@@ -2015,14 +2015,14 @@ as in <span>[<a href="#TCRSTW21" class="xref">TCRSTW21</a>]</span>.<a href="#sec
 <figure id="figure-3">
         <div class="alignLeft art-text artwork" id="section-3-7.1">
 <pre>
-    Client(pkS, info)        &lt;---- pkS ------        Server(skS, info)
-  ---------------------------------------------------------------------
+    Client(pkS, info)        &lt;---- pkS ------       Server(skS, info)
+  -------------------------------------------------------------------
   blind, blindedElement, tweakedKey = Blind(input, info)
 
                              blindedElement
                                ----------&gt;
 
-               evaluatedElement, proof = Evaluate(blindedElement, info)
+             evaluatedElement, proof = Evaluate(blindedElement, info)
 
                          evaluatedElement, proof
                                &lt;----------
@@ -2310,7 +2310,8 @@ Parameters:
 
 def Evaluate(blindedElement):
   evaluatedElement = skS * blindedElement
-  proof = GenerateProof(skS, G.Generator(), pkS, blindedElement, evaluatedElement)
+  proof = GenerateProof(skS, G.Generator(), pkS,
+                        blindedElement, evaluatedElement)
   return evaluatedElement, proof
 </pre><a href="#section-3.3.2-2" class="pilcrow">¶</a>
 </div>
@@ -2339,7 +2340,8 @@ Parameters:
 Errors: VerifyError
 
 def Finalize(input, blind, evaluatedElement, blindedElement, proof):
-  if VerifyProof(G.Generator(), pkS, blindedElement, evaluatedElement, proof) == false:
+  if VerifyProof(G.Generator(), pkS, blindedElement,
+                 evaluatedElement, proof) == false:
     raise VerifyError
 
   N = G.ScalarInverse(blind) * evaluatedElement
@@ -2435,7 +2437,8 @@ def Evaluate(blindedElement, info):
   evaluatedElement = G.ScalarInverse(t) * blindedElement
 
   tweakedKey = G.ScalarBaseMult(t)
-  proof = GenerateProof(t, G.Generator(), tweakedKey, evaluatedElement, blindedElement)
+  proof = GenerateProof(t, G.Generator(), tweakedKey,
+                        evaluatedElement, blindedElement)
 
   return evaluatedElement, proof
 </pre><a href="#section-3.3.3-4" class="pilcrow">¶</a>
@@ -2464,8 +2467,10 @@ Parameters:
   Group G
   Element pkS
 
-def Finalize(input, blind, evaluatedElement, blindedElement, proof, info, tweakedKey):
-  if VerifyProof(G.Generator(), tweakedKey, evaluatedElement, blindedElement, proof) == false:
+def Finalize(input, blind, evaluatedElement, blindedElement,
+             proof, info, tweakedKey):
+  if VerifyProof(G.Generator(), tweakedKey, evaluatedElement,
+                 blindedElement, proof) == false:
     raise VerifyError
 
   N = G.ScalarInverse(blind) * evaluatedElement
