@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-02-01T00:43:25.873886+00:00",
+  "timestamp": "2022-02-03T00:40:54.950445+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4286,7 +4286,7 @@
       "labels": [],
       "body": "This is a list of functions that contain group operations that might produce zero scalars or identity elements. I don't actually know if this is a problem or not in some of the cases, I'm going to leave that to actual cryptographers to figure out.\r\n\r\n- [`GenerateProof`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.1-2) can return a zero scalar because of `s = (r - c * k) mod p`.\r\n\r\n- [`ComputeComposites`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.2-4) and [`ComputeCompositesFast`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-2.2.1-4) use `HashToScalar`, which can return a zero scalar, which is then used in `M = di * Cs[i] + M` and `Z = di * Ds[i] + Z`. Adding `M`, prevents producing an identity point, so it might not be a problem.\r\n\r\n- POPRF's [`Finalize`](https://cfrg.github.io/draft-irtf-cfrg-voprf/draft-irtf-cfrg-voprf.html#section-3.3.3-4) uses `HashToScalar`, which can return a zero scalar, which is then used in `T = ScalarBaseMult(m)`, which would produce the identity point. Afterwards, in `U = T + pkS`, adding a non-identity point would prevent `U` from becoming an identity point, so it might not be a problem.",
       "createdAt": "2022-01-12T07:41:31Z",
-      "updatedAt": "2022-01-28T10:58:19Z",
+      "updatedAt": "2022-02-01T07:07:19Z",
       "closedAt": "2022-01-27T17:03:46Z",
       "comments": [
         {
@@ -4369,9 +4369,9 @@
         {
           "author": "daxpedda",
           "authorAssociation": "NONE",
-          "body": "> Even with a password dictionary with entropy of 256 bits, the probability of this happening is 2^{-256}. There are worse things happening at that probability level including guessing OPRF keys, discrete logarithms, signature and encryption keys, multiple collisions, etc. If you get such a case there is a billions of times higher probability that this is due to a programming bug or the break of the underlying hash function. This is why I recommend that if a program finds such a case (a password hashed to the identity element), you output a HUGE ERROR message.\r\n\r\nAs an implementer I'm still unsure what to do. Sure I can return an error message, but there is still a password out there that **correctly** maps to the identity point, so if this ever happens, there is no action I can take.\r\n\r\n> By the way, in the case of OPAQUE with 2HashDH, even if the password is mapped to the identity (a fact that is learned by a passive adversary by seeing H(pw)^r), the attacker (including an active one or even the server itself) needs to run a dictionary attack on the password because the password is hashed together with the group identity. With a 256-bit entropy password this will take 2^255 time. So you could keep running OPAQUE with this password.\r\n\r\nFor this to happen OPAQUE has to rely on a special version of `Blind` that doesn't return an error on an identity element.\r\n\r\n---\r\n\r\nThis could be easily solved in OPAQUE by making sure the `input` to `Blind` is not simply the password but add a counter to it like was done in `DeriveKeyPair`.\r\n\r\nI would like to understand though, why a non-fallible solution like using the reduction mod n-1 plus one method is undesired. It was mentioned before that it's undesirable to require `HashToScalar` or `HashToGroup` to not be able to return a zero scalar or identity element. If that is the problem, `HashToNonZeroScalar` and `HashToNonIdentityPoint` could be introduced for example. But the mod n-1 plus could also simply be added after using `HashToScalar` for example.\r\n\r\nI understand that there is not a high motivation to address this as the chances of it occurring are astronomically low.",
+          "body": "> Even with a password dictionary with entropy of 256 bits, the probability of this happening is 2^{-256}. There are worse things happening at that probability level including guessing OPRF keys, discrete logarithms, signature and encryption keys, multiple collisions, etc. If you get such a case there is a billions of times higher probability that this is due to a programming bug or the break of the underlying hash function. This is why I recommend that if a program finds such a case (a password hashed to the identity element), you output a HUGE ERROR message.\r\n\r\nAs an implementer I'm still unsure what to do. Sure I can return an error message, but there is still passwords out there that **correctly** map to the identity point, so if this ever happens, there is no action I can take.\r\n\r\n> By the way, in the case of OPAQUE with 2HashDH, even if the password is mapped to the identity (a fact that is learned by a passive adversary by seeing H(pw)^r), the attacker (including an active one or even the server itself) needs to run a dictionary attack on the password because the password is hashed together with the group identity. With a 256-bit entropy password this will take 2^255 time. So you could keep running OPAQUE with this password.\r\n\r\nFor this to happen OPAQUE has to rely on a special version of `Blind` that doesn't return an error on an identity element.\r\n\r\n---\r\n\r\nThis could be easily solved in OPAQUE by making sure the `input` to `Blind` is not simply the password but add a counter to it like was done in `DeriveKeyPair`.\r\n\r\nI would like to understand though, why a non-fallible solution like using the reduction mod n-1 plus one method is undesired. It was mentioned before that it's undesirable to require `HashToScalar` or `HashToGroup` to not be able to return a zero scalar or identity element. If that is the problem, `HashToNonZeroScalar` and `HashToNonIdentityPoint` could be introduced for example. But the mod n-1 plus could also simply be added after using `HashToScalar` for example.\r\n\r\nI understand that there is not a high motivation to address this as the chances of it occurring are astronomically low.",
           "createdAt": "2022-01-28T10:58:19Z",
-          "updatedAt": "2022-01-28T10:58:19Z"
+          "updatedAt": "2022-02-01T07:07:19Z"
         }
       ]
     },
@@ -4422,6 +4422,243 @@
       "updatedAt": "2022-01-31T15:41:39Z",
       "closedAt": "2022-01-31T15:41:39Z",
       "comments": []
+    },
+    {
+      "number": 320,
+      "id": "I_kwDOBphpts5CxpBZ",
+      "title": "Infallible functions",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/320",
+      "state": "OPEN",
+      "author": "daxpedda",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "> Even with a password dictionary with entropy of 256 bits, the probability of this happening is 2^{-256}. There are worse things happening at that probability level including guessing OPRF keys, discrete logarithms, signature and encryption keys, multiple collisions, etc. If you get such a case there is a billions of times higher probability that this is due to a programming bug or the break of the underlying hash function. This is why I recommend that if a program finds such a case (a password hashed to the identity element), you output a HUGE ERROR message.\r\n\r\nAs an implementer I'm still unsure what to do. Sure I can return an error message, but there are still passwords out there that **correctly** map to the identity point, so if this ever happens, there is no action I can take.\r\n\r\n> By the way, in the case of OPAQUE with 2HashDH, even if the password is mapped to the identity (a fact that is learned by a passive adversary by seeing H(pw)^r), the attacker (including an active one or even the server itself) needs to run a dictionary attack on the password because the password is hashed together with the group identity. With a 256-bit entropy password this will take 2^255 time. So you could keep running OPAQUE with this password.\r\n\r\nFor this to happen OPAQUE has to rely on a special version of `Blind` that doesn't return an error on an identity element.\r\n\r\n---\r\n\r\nThis could be easily solved in OPAQUE by making sure the `input` to `Blind` is not simply the password but add a counter to it like was done in `DeriveKeyPair`.\r\n\r\nI would like to understand though, why a non-fallible solution like using the reduction mod n-1 plus one method is undesired. It was mentioned before that it's undesirable to require `HashToScalar` or `HashToGroup` to not be able to return a zero scalar or identity element. If that is the problem, `HashToNonZeroScalar` and `HashToNonIdentityPoint` could be introduced for example. But the mod n-1 plus could also simply be added after using `HashToScalar` for example.\r\n\r\nI understand that there is not a high motivation to address this as the chances of it occurring are astronomically low.\r\n\r\n---\r\n\r\nContinuation from https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/307#issuecomment-1024103769.",
+      "createdAt": "2022-02-01T07:09:26Z",
+      "updatedAt": "2022-02-02T16:52:30Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Please take this issue to the OPAQUE repo :) This is not something the VOPRF spec should address. ",
+          "createdAt": "2022-02-01T13:39:15Z",
+          "updatedAt": "2022-02-01T13:40:21Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oops, I didn't read the bottom half of this issue! (I was perusing on my phone.) Sorry about that.\r\n\r\nYou ask:\r\n\r\n> I would like to understand though, why a non-fallible solution like using the reduction mod n-1 plus one method is undesired. It was mentioned before that it's undesirable to require HashToScalar or HashToGroup to not be able to return a zero scalar or identity element. If that is the problem, HashToNonZeroScalar and HashToNonIdentityPoint could be introduced for example. But the mod n-1 plus could also simply be added after using HashToScalar for example.\r\n\r\nThe hash-to-group operation is assumed to act like a random map from inputs to _all_ group elements, including the identity element. We [don't currently have an implementation](https://cfrg.github.io/draft-irtf-cfrg-hash-to-curve/draft-irtf-cfrg-hash-to-curve.html) of hash-to-group-excluding-identity, which, as you point out, would address this issue for `Blind`. One could wrap hash-to-group with a counter-like thing to implement it, but I'm not convinced this is worth the complexity for something that happens with negligible probability. ",
+          "createdAt": "2022-02-01T13:48:14Z",
+          "updatedAt": "2022-02-01T13:48:14Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "Specifically I would like to know why the \"reduction mod n-1 plus one\" method can't be used instead of a counter, which is rejection sampling and not constant-time.\r\n\r\n> One could wrap hash-to-group with a counter-like thing to implement it\r\n\r\nIndeed, that would have been my suggestion.\r\n\r\n> ... I'm not convinced this is worth the complexity for something that happens with negligible probability.\r\n\r\nI understand the hesitation:\r\n- For OPAQUE it is important because otherwise specific password can't be used. The chance of that actually occurring is (extremely) low, but not impossible, something that for example a traditional password hash like Argon2 doesn't suffer from.\r\n- A counter is undesirable, besides from being not constant-time, because it would still need to be fallible in the code. This makes auditing harder (a tiny bit) and for example doesn't easily allow for encoding the infallibility of it through the type system. For example, in Rust, one could `panic` instead, but that's even more undesirable. Again, something that Argon2 doesn't suffer from.\r\n\r\nI'm very much seeing this from the lens of implementing the OPAQUE protocol in Rust. I would like to provide a non-fallible API to consumers where I can advertise that this can neither panic nor fail otherwise.\r\nWhen consumers of this library review the error codes, they will find obvious ones, like `PasswordMismatch`, but `ProtocolFailure`, something that will deterministically fail won't look that good when trying to convince people to switch from traditional password hashing to PAKE.",
+          "createdAt": "2022-02-01T14:10:46Z",
+          "updatedAt": "2022-02-01T14:10:46Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> I'm very much seeing this from the lens of implementing the OPAQUE protocol in Rust. I would like to provide a non-fallible API to consumers where I can advertise that this can neither panic nor fail otherwise.\r\n\r\nYeah, I understand the motivation here, and I agree that this would be a nice property to advertise to users. However, as you say, even if we went with a counter (or similar) based try-and-increment solution, the code would inherently need to deal with failures, right? I simply don't see a solution right now that would yield an infallible interface. ",
+          "createdAt": "2022-02-01T14:14:05Z",
+          "updatedAt": "2022-02-01T14:14:05Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "> I simply don't see a solution right now that would yield an infallible interface.\r\n\r\nThe \"reduction mod n-1 plus one\" method could work.",
+          "createdAt": "2022-02-01T14:15:36Z",
+          "updatedAt": "2022-02-01T14:15:36Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "@armfazh is the one who pointed this out in https://github.com/cfrg/draft-irtf-cfrg-opaque/issues/298#issuecomment-1006936162.\r\n\r\nIt's used, for example, in ECDSA key generation as specified in [NIST FIPS 186-4](https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.186-4.pdf#%5B%7B%22num%22%3A152%2C%22gen%22%3A0%7D%2C%7B%22name%22%3A%22XYZ%22%7D%2C70%2C632%2C0%5D).",
+          "createdAt": "2022-02-01T14:23:12Z",
+          "updatedAt": "2022-02-01T14:28:51Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> The \"reduction mod n-1 plus one\" method could work.\r\n\r\nSorry, maybe I'm not following you here. For OPAQUE, we only care about the OPRF, and the only way that `Blind` can fail is if hash-to-group yields the identity element. What does \"reduction mod n-1 plus one\" mean in the context of that function?",
+          "createdAt": "2022-02-01T14:41:21Z",
+          "updatedAt": "2022-02-01T14:41:21Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "Forgive me, the whole time I was thinking of `HashToScalar`, which \"reduction mod n-1 plus one\" applies to, and forgot that we are actually talking about `HashToGroup` here! My bad \ud83d\ude05!\r\n\r\nI'm assuming there is no method to coerce an element to a non-identity element?\r\n\r\nAlternatively I can think of the following solutions:\r\n- Implement a counter into `Blind`, not ideal as it is still fallible but it's best effort.\r\n- Propose a `HashToNonIdentityElement` to the hash-to-curve spec and see if something comes out of it.",
+          "createdAt": "2022-02-01T14:47:28Z",
+          "updatedAt": "2022-02-01T14:47:56Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Implement a counter into Blind, not ideal as it is still fallible but it's best effort.\r\n\r\nWouldn't this still need to fail or panic?\r\n\r\n> Propose a HashToNonIdentityElement to the hash-to-curve spec and see if something comes out of it.\r\n\r\nUnfortunately the hash-to-curve spec is beyond the point where we can introduce non-essential changes. That said, I'll ask some folks (the real experts) if they have any thoughts on how to address this.",
+          "createdAt": "2022-02-01T14:52:22Z",
+          "updatedAt": "2022-02-01T14:52:22Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "> > Implement a counter into Blind, not ideal as it is still fallible but it's best effort.\r\n> \r\n> Wouldn't this still need to fail or panic?\r\n\r\nRight, as I said. My assumption here is that, from the lens of OPAQUE again, there are password that will fail for sure here, even if it's unlikely, they exist. A counter would prevent that, for sure, in the sense of there is no password that can fail through the counter. (IANA cryptographer, please call me out if I'm talking nonsense)\r\n\r\n> That said, I'll ask some folks (the real experts) if they have any thoughts on how to address this.\r\n\r\nThat would be amazing. Thank you!",
+          "createdAt": "2022-02-01T14:57:05Z",
+          "updatedAt": "2022-02-01T14:57:05Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Right, as I said. My assumption here is that, from the lens of OPAQUE again, there are password that will fail for sure here, even if it's unlikely, they exist. A counter would prevent that, for sure, in the sense of there is no password that can fail through the counter. (IANA cryptographer, please call me out if I'm talking nonsense)\r\n\r\nI'm still not sure I'm following. Let's say one implemented the counter. Surely there must be code that's hit when the counter reaches its limit, right? So how exactly does a counter make the function infallible?",
+          "createdAt": "2022-02-01T14:59:19Z",
+          "updatedAt": "2022-02-01T14:59:19Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "> Implement a counter into Blind, not ideal as it is still fallible but it's best effort.\r\n\r\nThis would **not** be infallible. It would just address the OPAQUE issue I pointed out above, which is some passwords being unable to be used (if my assumptions are correct).\r\n\r\nEven though this is fallible, it's better then nothing. I would suggest to move my idea of a counter to a separate issue after we explore this issue, which would be infallibility.",
+          "createdAt": "2022-02-01T15:04:59Z",
+          "updatedAt": "2022-02-01T15:15:46Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/321 if we can't make `Blind` infallible.",
+          "createdAt": "2022-02-01T15:09:26Z",
+          "updatedAt": "2022-02-01T15:09:26Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I don't see how this is infallible. Let's assume you have prepend a counter to the input. Let's say further that _every_ prepended input maps to the identity element, perhaps because the hash-to-group function is borked. There's two situations here: either the counter keeps incrementing endlessly, never terminating (bad), or the counter does reach a limit and the function stops. In the latter case, you'd fail. \r\n\r\nWhat am I missing? ",
+          "createdAt": "2022-02-01T15:17:05Z",
+          "updatedAt": "2022-02-01T15:20:22Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "Forgive me, I was assuming that the counter is implemented like in `DeriveKeyPair`, with a limit of `255` because it's using `I2OSP(counter, 1)`. Yes, if the counter has no limit, it would basically be infallible.",
+          "createdAt": "2022-02-01T15:20:27Z",
+          "updatedAt": "2022-02-01T15:20:27Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If the counter _does_ have a limit, and if every prepended input maps to the identity element, then the function fails, correct?",
+          "createdAt": "2022-02-01T15:20:54Z",
+          "updatedAt": "2022-02-01T15:20:54Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "Yes!",
+          "createdAt": "2022-02-01T15:21:05Z",
+          "updatedAt": "2022-02-01T15:21:05Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "I'm starting to have doubts about my english, I kept saying it's **not** infallible, am I using a wrong expression or something? \ud83d\ude04",
+          "createdAt": "2022-02-01T15:21:57Z",
+          "updatedAt": "2022-02-01T15:21:57Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Oh, hah, no, it's my fault. I should read more carefully. =)\r\n\r\nOK, so we agree that the counter based approach would make the function fallible. And if that's the case, why have a counter at all if the probability of failure is negligible with or without a counter?",
+          "createdAt": "2022-02-01T15:23:10Z",
+          "updatedAt": "2022-02-01T15:23:10Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "My assumption (I might be wrong, IANA cryptographer), is that a counter would make it \"actually\" infallible, just not in code. But if all it does is only decrease, the already astronomically small, chance that it would fail, then of course it's pointless.",
+          "createdAt": "2022-02-01T15:25:57Z",
+          "updatedAt": "2022-02-01T15:27:13Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> But if all it does is only decrease the already astronomically small chance that it would fail, then of course it's pointless.\r\n\r\nRight, this is my take =) ",
+          "createdAt": "2022-02-01T15:27:06Z",
+          "updatedAt": "2022-02-01T15:27:06Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "Alright. So the only option left is to hope that we can come up with a truly infallible solution.\r\n\r\nThank you for clearing this up for me!",
+          "createdAt": "2022-02-01T15:28:28Z",
+          "updatedAt": "2022-02-01T15:28:40Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "No problem -- thanks for the discussion!",
+          "createdAt": "2022-02-01T15:34:11Z",
+          "updatedAt": "2022-02-01T15:34:11Z"
+        },
+        {
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> The \"reduction mod n-1 plus one\" method could work.\r\n\r\nYes, it works; however, this will require new code for performing reductions modulo `n-1`. \r\n\r\n",
+          "createdAt": "2022-02-01T19:01:05Z",
+          "updatedAt": "2022-02-01T19:01:05Z"
+        },
+        {
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "body": "\r\n> Alright. So the only option left is to hope that we can come up with a truly infallible solution.\r\n\r\n\r\nInstead of increasing a counter, one can derive a new one through, for example, iterated hashing.\r\n\r\n```js\r\n1. function foo(input) {\r\n2.   C = 0\r\n3.   while true {\r\n4.     P = HashToGroup(input || C)\r\n5.     if P != G.Identity()\r\n6.       return P\r\n7.     C = Hash(C)\r\n8.   }\r\n9. }  \r\n```\r\n\r\nThis approach has the disadvantage that it can run endlessly, which could be a target for attackers or when HashToGroup is broken.",
+          "createdAt": "2022-02-01T19:11:31Z",
+          "updatedAt": "2022-02-01T19:11:31Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@armfazh this is still another instance of the try-and-increment approach, correct? It either must terminate after a certain number of iterations, or it must provably yield a non-identity element. We don't have (b), and (a) implies that the function is fallible. As you point out, we can't specify non-terminating behavior. And since this doesn't change the resulting failure probability -- it's still negligible -- I'm struggling to see why it's an improvement.",
+          "createdAt": "2022-02-01T20:52:58Z",
+          "updatedAt": "2022-02-01T20:52:58Z"
+        },
+        {
+          "author": "armfazh",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, that code is just another try-and-increment method. \r\nNot claiming superiority, only mentioned that the code snippet don't fail (unless something is broken) in response to the quest for an _infalible solution_. \r\n",
+          "createdAt": "2022-02-02T16:52:30Z",
+          "updatedAt": "2022-02-02T16:52:30Z"
+        }
+      ]
+    },
+    {
+      "number": 321,
+      "id": "I_kwDOBphpts5Czjhj",
+      "title": "Introduce a counter to `Blind`",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/321",
+      "state": "CLOSED",
+      "author": "daxpedda",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Currently some inputs exist that can't be used in `Blind` because they could yield the identity element through `HashToGroup`. One solution to this problem could be to introduce a counter, like in `DeriveKeyPair`.\r\n\r\nFrom #320.",
+      "createdAt": "2022-02-01T15:09:03Z",
+      "updatedAt": "2022-02-01T15:29:13Z",
+      "closedAt": "2022-02-01T15:29:13Z",
+      "comments": [
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "This doesn't solve the problem. It just makes the (already negligible) probability of failure smaller. ",
+          "createdAt": "2022-02-01T15:17:46Z",
+          "updatedAt": "2022-02-01T15:17:46Z"
+        },
+        {
+          "author": "daxpedda",
+          "authorAssociation": "NONE",
+          "body": "> This doesn't solve the problem. It just makes the (already negligible) probability of failure smaller.\r\n\r\nAs discussed in #320, this is pointless.",
+          "createdAt": "2022-02-01T15:29:13Z",
+          "updatedAt": "2022-02-01T15:29:13Z"
+        }
+      ]
     }
   ],
   "pulls": [
