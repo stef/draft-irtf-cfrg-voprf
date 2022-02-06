@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-02-03T00:40:54.950445+00:00",
+  "timestamp": "2022-02-06T00:49:29.962963+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4435,7 +4435,7 @@
       "labels": [],
       "body": "> Even with a password dictionary with entropy of 256 bits, the probability of this happening is 2^{-256}. There are worse things happening at that probability level including guessing OPRF keys, discrete logarithms, signature and encryption keys, multiple collisions, etc. If you get such a case there is a billions of times higher probability that this is due to a programming bug or the break of the underlying hash function. This is why I recommend that if a program finds such a case (a password hashed to the identity element), you output a HUGE ERROR message.\r\n\r\nAs an implementer I'm still unsure what to do. Sure I can return an error message, but there are still passwords out there that **correctly** map to the identity point, so if this ever happens, there is no action I can take.\r\n\r\n> By the way, in the case of OPAQUE with 2HashDH, even if the password is mapped to the identity (a fact that is learned by a passive adversary by seeing H(pw)^r), the attacker (including an active one or even the server itself) needs to run a dictionary attack on the password because the password is hashed together with the group identity. With a 256-bit entropy password this will take 2^255 time. So you could keep running OPAQUE with this password.\r\n\r\nFor this to happen OPAQUE has to rely on a special version of `Blind` that doesn't return an error on an identity element.\r\n\r\n---\r\n\r\nThis could be easily solved in OPAQUE by making sure the `input` to `Blind` is not simply the password but add a counter to it like was done in `DeriveKeyPair`.\r\n\r\nI would like to understand though, why a non-fallible solution like using the reduction mod n-1 plus one method is undesired. It was mentioned before that it's undesirable to require `HashToScalar` or `HashToGroup` to not be able to return a zero scalar or identity element. If that is the problem, `HashToNonZeroScalar` and `HashToNonIdentityPoint` could be introduced for example. But the mod n-1 plus could also simply be added after using `HashToScalar` for example.\r\n\r\nI understand that there is not a high motivation to address this as the chances of it occurring are astronomically low.\r\n\r\n---\r\n\r\nContinuation from https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/307#issuecomment-1024103769.",
       "createdAt": "2022-02-01T07:09:26Z",
-      "updatedAt": "2022-02-02T16:52:30Z",
+      "updatedAt": "2022-02-04T12:37:17Z",
       "closedAt": null,
       "comments": [
         {
@@ -4626,6 +4626,13 @@
           "body": "Yes, that code is just another try-and-increment method. \r\nNot claiming superiority, only mentioned that the code snippet don't fail (unless something is broken) in response to the quest for an _infalible solution_. \r\n",
           "createdAt": "2022-02-02T16:52:30Z",
           "updatedAt": "2022-02-02T16:52:30Z"
+        },
+        {
+          "author": "chris-wood",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> Yes, that code is just another try-and-increment method. \n> \n> Not claiming superiority, only mentioned that the code snippet don't fail (unless something is broken) in response to the quest for an _infalible solution_. \n> \n> \n\nWell, as has been discussed in this thread, there's two outcomes for a try-and-increment approach: (1) the function terminates only when it finds a valid value, or (2) the function terminates after a certain number of iterations. \n\nI think we all agree that (2) means the function must be fallible, whereas (1) is, in theory, not fallible. However, importantly, it is possible for (1) to not terminate in pathological cases or e.g. where the underling hash function is broken. Certainly a function shouldn't endlessly loop, so any actual implementation will stop iteration after a certain amount of tries. And in that case, I claim the implementation of (1) effectively yields something close to (2), which is fallible. ",
+          "createdAt": "2022-02-04T12:37:17Z",
+          "updatedAt": "2022-02-04T12:37:17Z"
         }
       ]
     },
@@ -4659,6 +4666,70 @@
           "updatedAt": "2022-02-01T15:29:13Z"
         }
       ]
+    },
+    {
+      "number": 322,
+      "id": "I_kwDOBphpts5C6Wz7",
+      "title": "Update reference implementation to match pseudocode",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/322",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Naming of parameters and arguments has fallen behind the pseudocode description, even though the two match functionally. We should update the reference implementation to make things easier to line up. While we're in there, we should also provide some documentation for folks that want to use the reference implementation in other specifications.",
+      "createdAt": "2022-02-03T02:44:06Z",
+      "updatedAt": "2022-02-03T02:44:06Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 323,
+      "id": "I_kwDOBphpts5C-X7y",
+      "title": "Test vectors for POPRF: batching?",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/323",
+      "state": "OPEN",
+      "author": "kevinlewi",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Should the test vectors for POPRF include batch sizes > 1, since they support batch evaluation?",
+      "createdAt": "2022-02-03T23:12:57Z",
+      "updatedAt": "2022-02-03T23:12:57Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 324,
+      "id": "I_kwDOBphpts5C-YJT",
+      "title": "Remove extraneous reference to \"Context-\" string",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/324",
+      "state": "OPEN",
+      "author": "kevinlewi",
+      "authorAssociation": "CONTRIBUTOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Here: https://github.com/cfrg/draft-irtf-cfrg-voprf/blame/main/draft-irtf-cfrg-voprf.md#L345 this sentence makes a little less sense now that \"Context-\" doesn't actually appear anywhere in the protocol anymore. Perhaps we could consider renaming this example to something that does appear, like \"Finalize\"?",
+      "createdAt": "2022-02-03T23:14:18Z",
+      "updatedAt": "2022-02-03T23:14:18Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 326,
+      "id": "I_kwDOBphpts5DDZgP",
+      "title": "PublicInput and PrivateInput length bounds",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/326",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "These are currently 2^13, but they should be 2^16, since we encode their length in two bytes. We could remove this constraint since these are currently passed as inputs to hash functions, but then we would need to define the limits of these hash functions, which we should probably do anyway.",
+      "createdAt": "2022-02-05T16:01:19Z",
+      "updatedAt": "2022-02-05T16:01:19Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -23861,6 +23932,58 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 325,
+      "id": "PR_kwDOBphpts4yGqtl",
+      "title": "Fix batch test vector generation",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/325",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Small bug in the test generation code. Thanks, @kevinlewi!\r\n\r\nThis change trickles down and affects other test vectors due to the way we fix the RNG seed for tests. (It depends on the order in which `random` is invoked, which is silly and something we should fix. I'll do that in #322.)\r\n\r\nCloses #323.\r\nCloses #324.",
+      "createdAt": "2022-02-04T21:00:27Z",
+      "updatedAt": "2022-02-04T21:00:27Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "main",
+      "baseRefOid": "f1f8e0fb1f1d1eceb6cd40875240289b514c1674",
+      "headRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "headRefName": "caw/poprf-batch",
+      "headRefOid": "fd2a79a3a6173373ef3a612a3a4ed2bb57d547a7",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 327,
+      "id": "PR_kwDOBphpts4yH_FR",
+      "title": "Note that some errors occur with negligible probability",
+      "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/327",
+      "state": "OPEN",
+      "author": "chris-wood",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "cc @hugokraw in case he has opinions on any additional language that should be said here. (We should deal with the error case in OPAQUE separately, I think.)",
+      "createdAt": "2022-02-05T22:59:06Z",
+      "updatedAt": "2022-02-05T22:59:43Z",
+      "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "baseRefName": "main",
+      "baseRefOid": "f1f8e0fb1f1d1eceb6cd40875240289b514c1674",
+      "headRepository": "cfrg/draft-irtf-cfrg-voprf",
+      "headRefName": "caw/error-probability",
+      "headRefOid": "bb9acdf0c2eecf639b469c9e016f0166130df61d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
