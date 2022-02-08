@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2022-02-06T00:49:29.962963+00:00",
+  "timestamp": "2022-02-08T00:43:52.937255+00:00",
   "repo": "cfrg/draft-irtf-cfrg-voprf",
   "labels": [
     {
@@ -4688,15 +4688,15 @@
       "id": "I_kwDOBphpts5C-X7y",
       "title": "Test vectors for POPRF: batching?",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/323",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kevinlewi",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Should the test vectors for POPRF include batch sizes > 1, since they support batch evaluation?",
       "createdAt": "2022-02-03T23:12:57Z",
-      "updatedAt": "2022-02-03T23:12:57Z",
-      "closedAt": null,
+      "updatedAt": "2022-02-07T15:25:41Z",
+      "closedAt": "2022-02-07T15:25:41Z",
       "comments": []
     },
     {
@@ -4704,15 +4704,15 @@
       "id": "I_kwDOBphpts5C-YJT",
       "title": "Remove extraneous reference to \"Context-\" string",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/issues/324",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "kevinlewi",
       "authorAssociation": "CONTRIBUTOR",
       "assignees": [],
       "labels": [],
       "body": "Here: https://github.com/cfrg/draft-irtf-cfrg-voprf/blame/main/draft-irtf-cfrg-voprf.md#L345 this sentence makes a little less sense now that \"Context-\" doesn't actually appear anywhere in the protocol anymore. Perhaps we could consider renaming this example to something that does appear, like \"Finalize\"?",
       "createdAt": "2022-02-03T23:14:18Z",
-      "updatedAt": "2022-02-03T23:14:18Z",
-      "closedAt": null,
+      "updatedAt": "2022-02-07T15:25:41Z",
+      "closedAt": "2022-02-07T15:25:41Z",
       "comments": []
     },
     {
@@ -23938,25 +23938,35 @@
       "id": "PR_kwDOBphpts4yGqtl",
       "title": "Fix batch test vector generation",
       "url": "https://github.com/cfrg/draft-irtf-cfrg-voprf/pull/325",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "chris-wood",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Small bug in the test generation code. Thanks, @kevinlewi!\r\n\r\nThis change trickles down and affects other test vectors due to the way we fix the RNG seed for tests. (It depends on the order in which `random` is invoked, which is silly and something we should fix. I'll do that in #322.)\r\n\r\nCloses #323.\r\nCloses #324.",
       "createdAt": "2022-02-04T21:00:27Z",
-      "updatedAt": "2022-02-04T21:00:27Z",
+      "updatedAt": "2022-02-07T15:25:41Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "main",
       "baseRefOid": "f1f8e0fb1f1d1eceb6cd40875240289b514c1674",
       "headRepository": "cfrg/draft-irtf-cfrg-voprf",
       "headRefName": "caw/poprf-batch",
       "headRefOid": "fd2a79a3a6173373ef3a612a3a4ed2bb57d547a7",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "closedAt": "2022-02-07T15:25:41Z",
+      "mergedAt": "2022-02-07T15:25:41Z",
+      "mergedBy": "chris-wood",
+      "mergeCommit": {
+        "oid": "81deca6a23e4d196c5c7d4e9c62cb6f5185edd99"
+      },
+      "comments": [
+        {
+          "author": "bytemare",
+          "authorAssociation": "CONTRIBUTOR",
+          "body": "lgtm \u2705 ",
+          "createdAt": "2022-02-07T00:53:44Z",
+          "updatedAt": "2022-02-07T00:53:44Z"
+        }
+      ],
       "reviews": []
     },
     {
@@ -23971,7 +23981,7 @@
       "labels": [],
       "body": "cc @hugokraw in case he has opinions on any additional language that should be said here. (We should deal with the error case in OPAQUE separately, I think.)",
       "createdAt": "2022-02-05T22:59:06Z",
-      "updatedAt": "2022-02-05T22:59:43Z",
+      "updatedAt": "2022-02-06T17:34:47Z",
       "baseRepository": "cfrg/draft-irtf-cfrg-voprf",
       "baseRefName": "main",
       "baseRefOid": "f1f8e0fb1f1d1eceb6cd40875240289b514c1674",
