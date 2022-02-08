@@ -98,9 +98,10 @@ Table of Contents
        4.2.2.  DeserializeScalar Validation
      4.3.  Future Ciphersuites
    5.  Application Considerations
-     5.1.  External Interface Recommendations
-     5.2.  Error Considerations
-     5.3.  POPRF Public Input
+     5.1.  Input Limits
+     5.2.  External Interface Recommendations
+     5.3.  Error Considerations
+     5.4.  POPRF Public Input
    6.  Security Considerations
      6.1.  Security Properties
      6.2.  Security Assumptions
@@ -881,7 +882,7 @@ Table of Contents
    described by the Blind function below.  Note that this function can
    fail with an InvalidInputError error for certain inputs that map to
    the group identity element.  Dealing with this failure is an
-   application-specific decision; see Section 5.2.
+   application-specific decision; see Section 5.3.
 
    Input:
 
@@ -1029,7 +1030,7 @@ Table of Contents
    fail with an InvalidInputError error for certain private inputs that
    map to the group identity element, as well as certain public inputs
    that map to invalid public keys for server evaluation.  Dealing with
-   either failure is an application-specific decision; see Section 5.2.
+   either failure is an application-specific decision; see Section 5.3.
 
    Input:
 
@@ -1361,14 +1362,26 @@ Table of Contents
    external interface recommendations, explicit error treatment, and
    public input representation for the POPRF protocol variant.
 
-5.1.  External Interface Recommendations
+5.1.  Input Limits
+
+   Application inputs, expressed as PrivateInput or PublicInput values,
+   MUST be smaller than 2^13 bytes in length.  Applications that require
+   longer inputs can use a cryptographic hash function to map these
+   longer inputs to a fixed-length input that fits within the
+   PublicInput or PrivateInput length bounds.  Note that some
+   cryptographic hash functions have input length restrictions
+   themselves, but these limits are often large enough to not be a
+   concern in practice.  For example, SHA-256 has an input limit of 2^61
+   bytes.
+
+5.2.  External Interface Recommendations
 
    The protocol functions in Section 3.3 are specified in terms of
    prime-order group Elements and Scalars.  However, applications can
    treat these as internal functions, and instead expose interfaces that
    operate in terms of wire format messages.
 
-5.2.  Error Considerations
+5.3.  Error Considerations
 
    Some OPRF variants specified in this document have fallible
    operations.  For example, Finalize and Evaluate can fail if any
@@ -1397,7 +1410,7 @@ Table of Contents
    implementation might emit.  For example, implementations might run
    out of memory and return a corresponding error.
 
-5.3.  POPRF Public Input
+5.4.  POPRF Public Input
 
    Functionally, the VOPRF and POPRF variants differ in that the POPRF
    variant admits public input, whereas the VOPRF variant does not.

@@ -1243,13 +1243,16 @@ elliptic curves.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
             <p id="section-toc.1-1.5.1"><a href="#section-5" class="xref">5</a>.  <a href="#name-application-considerations" class="xref">Application Considerations</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.1">
-                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="xref">5.1</a>.  <a href="#name-external-interface-recommen" class="xref">External Interface Recommendations</a></p>
+                <p id="section-toc.1-1.5.2.1.1"><a href="#section-5.1" class="xref">5.1</a>.  <a href="#name-input-limits" class="xref">Input Limits</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.2">
-                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-error-considerations" class="xref">Error Considerations</a></p>
+                <p id="section-toc.1-1.5.2.2.1"><a href="#section-5.2" class="xref">5.2</a>.  <a href="#name-external-interface-recommen" class="xref">External Interface Recommendations</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.3">
-                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="xref">5.3</a>.  <a href="#name-poprf-public-input" class="xref">POPRF Public Input</a></p>
+                <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="xref">5.3</a>.  <a href="#name-error-considerations" class="xref">Error Considerations</a></p>
+</li>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4">
+                <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="xref">5.4</a>.  <a href="#name-poprf-public-input" class="xref">POPRF Public Input</a></p>
 </li>
             </ul>
 </li>
@@ -2199,7 +2202,7 @@ validation.<a href="#section-3.3-4" class="pilcrow">¶</a></p>
 by the <code>Blind</code> function below. Note that this function can fail with an
 <code>InvalidInputError</code> error for certain inputs that map to the group identity
 element. Dealing with this failure is an application-specific decision;
-see <a href="#errors" class="xref">Section 5.2</a>.<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
+see <a href="#errors" class="xref">Section 5.3</a>.<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.3.1-2">
 <pre>
 Input:
@@ -2365,7 +2368,7 @@ following modified <code>Blind</code> function. Note that this function can fail
 <code>InvalidInputError</code> error for certain private inputs that map to the group
 identity element, as well as certain public inputs that map to invalid
 public keys for server evaluation. Dealing with either failure is an
-application-specific decision; see <a href="#errors" class="xref">Section 5.2</a>.<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
+application-specific decision; see <a href="#errors" class="xref">Section 5.3</a>.<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.3.3-2">
 <pre>
 Input:
@@ -2767,69 +2770,82 @@ security level of the group. See <a href="#limits" class="xref">Section 6.2.3</a
 <p id="section-5-1">This section describes considerations for applications, including external interface
 recommendations, explicit error treatment, and public input representation for the
 POPRF protocol variant.<a href="#section-5-1" class="pilcrow">¶</a></p>
-<div id="external-interface-recommendations">
+<div id="input-limits">
 <section id="section-5.1">
-        <h3 id="name-external-interface-recommen">
-<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-external-interface-recommen" class="section-name selfRef">External Interface Recommendations</a>
+        <h3 id="name-input-limits">
+<a href="#section-5.1" class="section-number selfRef">5.1. </a><a href="#name-input-limits" class="section-name selfRef">Input Limits</a>
         </h3>
-<p id="section-5.1-1">The protocol functions in <a href="#online" class="xref">Section 3.3</a> are specified in terms of prime-order group
+<p id="section-5.1-1">Application inputs, expressed as PrivateInput or PublicInput values, MUST be smaller
+than 2^13 bytes in length. Applications that require longer inputs can use a cryptographic
+hash function to map these longer inputs to a fixed-length input that fits within the
+PublicInput or PrivateInput length bounds. Note that some cryptographic hash functions
+have input length restrictions themselves, but these limits are often large enough to
+not be a concern in practice. For example, SHA-256 has an input limit of 2^61 bytes.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="external-interface-recommendations">
+<section id="section-5.2">
+        <h3 id="name-external-interface-recommen">
+<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-external-interface-recommen" class="section-name selfRef">External Interface Recommendations</a>
+        </h3>
+<p id="section-5.2-1">The protocol functions in <a href="#online" class="xref">Section 3.3</a> are specified in terms of prime-order group
 Elements and Scalars. However, applications can treat these as internal functions,
-and instead expose interfaces that operate in terms of wire format messages.<a href="#section-5.1-1" class="pilcrow">¶</a></p>
+and instead expose interfaces that operate in terms of wire format messages.<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="errors">
-<section id="section-5.2">
+<section id="section-5.3">
         <h3 id="name-error-considerations">
-<a href="#section-5.2" class="section-number selfRef">5.2. </a><a href="#name-error-considerations" class="section-name selfRef">Error Considerations</a>
+<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-error-considerations" class="section-name selfRef">Error Considerations</a>
         </h3>
-<p id="section-5.2-1">Some OPRF variants specified in this document have fallible operations. For example, <code>Finalize</code>
+<p id="section-5.3-1">Some OPRF variants specified in this document have fallible operations. For example, <code>Finalize</code>
 and <code>Evaluate</code> can fail if any element received from the peer fails deserialization.
 The explicit errors generated throughout this specification, along with the
-conditions that lead to each error, are as follows:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
+conditions that lead to each error, are as follows:<a href="#section-5.3-1" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.2-2.1">
-            <code>VerifyError</code>: Verifiable OPRF proof verification failed; <a href="#voprf" class="xref">Section 3.3.2</a> and <a href="#poprf" class="xref">Section 3.3.3</a>.<a href="#section-5.2-2.1" class="pilcrow">¶</a>
+<li class="normal" id="section-5.3-2.1">
+            <code>VerifyError</code>: Verifiable OPRF proof verification failed; <a href="#voprf" class="xref">Section 3.3.2</a> and <a href="#poprf" class="xref">Section 3.3.3</a>.<a href="#section-5.3-2.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-5.2-2.2">
-            <code>DeserializeError</code>: Group Element or Scalar deserialization failure; <a href="#pog" class="xref">Section 2.1</a> and <a href="#online" class="xref">Section 3.3</a>.<a href="#section-5.2-2.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-5.3-2.2">
+            <code>DeserializeError</code>: Group Element or Scalar deserialization failure; <a href="#pog" class="xref">Section 2.1</a> and <a href="#online" class="xref">Section 3.3</a>.<a href="#section-5.3-2.2" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-5.2-3">There are other explicit errors generated in this specification, however they occur with
-negligible probability in practice. We note them here for completeness.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-3">There are other explicit errors generated in this specification, however they occur with
+negligible probability in practice. We note them here for completeness.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 <ul class="normal">
-<li class="normal" id="section-5.2-4.1">
-            <code>InvalidInputError</code>: OPRF Blind input produces an invalid output element; <a href="#oprf" class="xref">Section 3.3.1</a> and <a href="#poprf" class="xref">Section 3.3.3</a>.<a href="#section-5.2-4.1" class="pilcrow">¶</a>
+<li class="normal" id="section-5.3-4.1">
+            <code>InvalidInputError</code>: OPRF Blind input produces an invalid output element; <a href="#oprf" class="xref">Section 3.3.1</a> and <a href="#poprf" class="xref">Section 3.3.3</a>.<a href="#section-5.3-4.1" class="pilcrow">¶</a>
 </li>
-          <li class="normal" id="section-5.2-4.2">
-            <code>InverseError</code>: A tweaked private key is invalid (has no multiplicative inverse); <a href="#pog" class="xref">Section 2.1</a> and <a href="#online" class="xref">Section 3.3</a>.<a href="#section-5.2-4.2" class="pilcrow">¶</a>
+          <li class="normal" id="section-5.3-4.2">
+            <code>InverseError</code>: A tweaked private key is invalid (has no multiplicative inverse); <a href="#pog" class="xref">Section 2.1</a> and <a href="#online" class="xref">Section 3.3</a>.<a href="#section-5.3-4.2" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-5.2-5">In general, the errors in this document are meant as a guide to implementors.
+<p id="section-5.3-5">In general, the errors in this document are meant as a guide to implementors.
 They are not an exhaustive list of all the errors an implementation might emit.
-For example, implementations might run out of memory and return a corresponding error.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
+For example, implementations might run out of memory and return a corresponding error.<a href="#section-5.3-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="poprf-public-input">
-<section id="section-5.3">
+<section id="section-5.4">
         <h3 id="name-poprf-public-input">
-<a href="#section-5.3" class="section-number selfRef">5.3. </a><a href="#name-poprf-public-input" class="section-name selfRef">POPRF Public Input</a>
+<a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-poprf-public-input" class="section-name selfRef">POPRF Public Input</a>
         </h3>
-<p id="section-5.3-1">Functionally, the VOPRF and POPRF variants differ in that the POPRF variant
+<p id="section-5.4-1">Functionally, the VOPRF and POPRF variants differ in that the POPRF variant
 admits public input, whereas the VOPRF variant does not. Public input allows
 clients and servers to cryptographically bind additional data to the POPRF output.
 A POPRF with fixed public input is functionally equivalent to a VOPRF. However, there
 are differences in the underlying security assumptions made about each variant;
-see <a href="#cryptanalysis" class="xref">Section 6.2</a> for more details.<a href="#section-5.3-1" class="pilcrow">¶</a></p>
-<p id="section-5.3-2">This public input is known to both parties at the start of the protocol. It is RECOMMENDED
+see <a href="#cryptanalysis" class="xref">Section 6.2</a> for more details.<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+<p id="section-5.4-2">This public input is known to both parties at the start of the protocol. It is RECOMMENDED
 that this public input be constructed with some type of higher-level domain separation
 to avoid cross protocol attacks or related issues. For example, protocols using
 this construction might ensure that the public input uses a unique, prefix-free encoding.
 See <span>[<a href="#I-D.irtf-cfrg-hash-to-curve" class="xref">I-D.irtf-cfrg-hash-to-curve</a>], <a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-hash-to-curve-13#section-10.4" class="relref">Section 10.4</a></span> for further discussion on
-constructing domain separation values.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
-<p id="section-5.3-3">Implementations of the POPRF may choose to not let applications control <code>info</code> in
+constructing domain separation values.<a href="#section-5.4-2" class="pilcrow">¶</a></p>
+<p id="section-5.4-3">Implementations of the POPRF may choose to not let applications control <code>info</code> in
 cases where this value is fixed or otherwise not useful to the application. In this
 case, the resulting protocol is functionally equivalent to the VOPRF, which does not
-admit public input.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+admit public input.<a href="#section-5.4-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
