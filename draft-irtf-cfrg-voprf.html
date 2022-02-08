@@ -2826,10 +2826,10 @@ to avoid cross protocol attacks or related issues. For example, protocols using
 this construction might ensure that the public input uses a unique, prefix-free encoding.
 See <span>[<a href="#I-D.irtf-cfrg-hash-to-curve" class="xref">I-D.irtf-cfrg-hash-to-curve</a>], <a href="https://datatracker.ietf.org/doc/html/draft-irtf-cfrg-hash-to-curve-13#section-10.4" class="relref">Section 10.4</a></span> for further discussion on
 constructing domain separation values.<a href="#section-5.3-2" class="pilcrow">¶</a></p>
-<p id="section-5.3-3">Implementations may choose to not let applications control <code>info</code> in cases where
-this value is fixed or otherwise not useful to the application. In this case,
-the resulting protocol is functionally equivalent to an OPRF without public
-input.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
+<p id="section-5.3-3">Implementations of the POPRF may choose to not let applications control <code>info</code> in
+cases where this value is fixed or otherwise not useful to the application. In this
+case, the resulting protocol is functionally equivalent to the VOPRF, which does not
+admit public input.<a href="#section-5.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
