@@ -1030,7 +1030,7 @@ svg [stroke="fill"], svg [fill^="#fff"] {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Davidson, et al.</td>
-<td class="center">Expires 11 August 2022</td>
+<td class="center">Expires 12 August 2022</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1043,12 +1043,12 @@ svg [stroke="fill"], svg [fill^="#fff"] {
 <dd class="internet-draft">draft-irtf-cfrg-voprf-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2022-02-07" class="published">7 February 2022</time>
+<time datetime="2022-02-08" class="published">8 February 2022</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Informational</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2022-08-11">11 August 2022</time></dd>
+<dd class="expires"><time datetime="2022-08-12">12 August 2022</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1113,7 +1113,7 @@ elliptic curves.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 11 August 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 12 August 2022.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -2786,21 +2786,25 @@ The explicit errors generated throughout this specification, along with the
 conditions that lead to each error, are as follows:<a href="#section-5.2-1" class="pilcrow">¶</a></p>
 <ul class="normal">
 <li class="normal" id="section-5.2-2.1">
-            <code>InvalidInputError</code>: OPRF input deterministically maps to the group identity element; <a href="#oprf" class="xref">Section 3.3.1</a> and <a href="#poprf" class="xref">Section 3.3.3</a>.<a href="#section-5.2-2.1" class="pilcrow">¶</a>
+            <code>VerifyError</code>: Verifiable OPRF proof verification failed; <a href="#voprf" class="xref">Section 3.3.2</a> and <a href="#poprf" class="xref">Section 3.3.3</a>.<a href="#section-5.2-2.1" class="pilcrow">¶</a>
 </li>
           <li class="normal" id="section-5.2-2.2">
-            <code>VerifyError</code>: Verifiable OPRF proof verification failed; <a href="#voprf" class="xref">Section 3.3.2</a> and <a href="#poprf" class="xref">Section 3.3.3</a>.<a href="#section-5.2-2.2" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-5.2-2.3">
-            <code>DeserializeError</code>: Group element or scalar deserialization failure; <a href="#pog" class="xref">Section 2.1</a> and <a href="#online" class="xref">Section 3.3</a>.<a href="#section-5.2-2.3" class="pilcrow">¶</a>
-</li>
-          <li class="normal" id="section-5.2-2.4">
-            <code>InverseError</code>: A scalar is zero and has no inverse; <a href="#pog" class="xref">Section 2.1</a> and <a href="#online" class="xref">Section 3.3</a>.<a href="#section-5.2-2.4" class="pilcrow">¶</a>
+            <code>DeserializeError</code>: Group Element or Scalar deserialization failure; <a href="#pog" class="xref">Section 2.1</a> and <a href="#online" class="xref">Section 3.3</a>.<a href="#section-5.2-2.2" class="pilcrow">¶</a>
 </li>
         </ul>
-<p id="section-5.2-3">The errors in this document are meant as a guide to implementors. They are not
-an exhaustive list of all the errors an implementation might emit. For example,
-implementations might run out of memory and return a corresponding error.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<p id="section-5.2-3">There are other explicit errors generated in this specification, however they occur with
+negligible probability in practice. We note them here for completeness.<a href="#section-5.2-3" class="pilcrow">¶</a></p>
+<ul class="normal">
+<li class="normal" id="section-5.2-4.1">
+            <code>InvalidInputError</code>: OPRF Blind input produces an invalid output element; <a href="#oprf" class="xref">Section 3.3.1</a> and <a href="#poprf" class="xref">Section 3.3.3</a>.<a href="#section-5.2-4.1" class="pilcrow">¶</a>
+</li>
+          <li class="normal" id="section-5.2-4.2">
+            <code>InverseError</code>: A tweaked private key is invalid (has no multiplicative inverse); <a href="#pog" class="xref">Section 2.1</a> and <a href="#online" class="xref">Section 3.3</a>.<a href="#section-5.2-4.2" class="pilcrow">¶</a>
+</li>
+        </ul>
+<p id="section-5.2-5">In general, the errors in this document are meant as a guide to implementors.
+They are not an exhaustive list of all the errors an implementation might emit.
+For example, implementations might run out of memory and return a corresponding error.<a href="#section-5.2-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="poprf-public-input">
