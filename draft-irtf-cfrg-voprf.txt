@@ -188,6 +188,8 @@ Table of Contents
 
    *  Simplify security considerations.
 
+   *  Update application interface considerations.
+
    *  Update test vectors.
 
    draft-08 (https://tools.ietf.org/html/draft-irtf-cfrg-voprf-08):
