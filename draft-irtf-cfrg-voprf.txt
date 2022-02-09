@@ -5,10 +5,10 @@
 Network Working Group                                        A. Davidson
 Internet-Draft                                            Brave Software
 Intended status: Informational                          A. Faz-Hernandez
-Expires: 12 August 2022                                      N. Sullivan
+Expires: 13 August 2022                                      N. Sullivan
                                                                C.A. Wood
                                                         Cloudflare, Inc.
-                                                         8 February 2022
+                                                         9 February 2022
 
 
    Oblivious Pseudorandom Functions (OPRFs) using Prime-Order Groups
@@ -52,7 +52,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 12 August 2022.
+   This Internet-Draft will expire on 13 August 2022.
 
 Copyright Notice
 
@@ -163,7 +163,7 @@ Table of Contents
    secret sharing schemes [JKKX16], privacy-preserving password stores
    [SJKS17], and password-authenticated key exchange or PAKE
    [I-D.irtf-cfrg-opaque].  Verifiable POPRFs are necessary in some
-   applications such as Privacy Pass [I-D.davidson-pp-protocol].
+   applications such as Privacy Pass [I-D.ietf-privacypass-protocol].
    Verifiable POPRFs have also been used for password-protected secret
    sharing schemes such as that of [JKK14].
 
@@ -1610,11 +1610,13 @@ Table of Contents
 
 8.1.  Normative References
 
-   [I-D.davidson-pp-protocol]
-              Davidson, A., "Privacy Pass: The Protocol", Work in
-              Progress, Internet-Draft, draft-davidson-pp-protocol-01,
-              13 July 2020, <https://datatracker.ietf.org/doc/html/
-              draft-davidson-pp-protocol-01>.
+   [I-D.ietf-privacypass-protocol]
+              Celi, S., Davidson, A., Faz-Hernandez, A., Valdez, S., and
+              C. A. Wood, "Privacy Pass Issuance Protocol", Work in
+              Progress, Internet-Draft, draft-ietf-privacypass-protocol-
+              02, 31 January 2022,
+              <https://datatracker.ietf.org/doc/html/draft-ietf-
+              privacypass-protocol-02>.
 
    [I-D.irtf-cfrg-hash-to-curve]
               Faz-Hernandez, A., Scott, S., Sullivan, N., Wahby, R. S.,
